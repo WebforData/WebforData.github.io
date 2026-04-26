@@ -1,14 +1,14 @@
 export const siteUrl = "https://aouroui.dev";
 
 export const defaultSeo = {
-  title: "Abderrahmane Ouroui | OCI DevOps & Platform Engineer",
+  title: "Abderrahmane Ouroui - OCI Platform Engineer",
   description:
-    "Abderrahmane Ouroui is an OCI DevOps and Platform Engineer in Casablanca building Terraform, Kubernetes/OKE, secure networking, observability, data, and MLOps platforms.",
+    "OCI Platform Engineer and DevOps Engineer focused on Terraform, OKE/Kubernetes, secure networking, observability, CI/CD, and MLOps-ready production platforms, with cloud-portable standards adaptable across AWS, GCP, Azure, and beyond.",
   image: `${siteUrl}/assets/aouroui-og.png`,
-  imageAlt: "Abderrahmane Ouroui OCI DevOps and Platform Engineer portfolio preview"
+  imageAlt: "Abderrahmane Ouroui OCI Platform Engineer portfolio preview"
 };
 
-export const storySections = [
+export const portfolioSections = [
   {
     id: "top",
     label: "Intro",
@@ -27,31 +27,13 @@ export const storySections = [
     priority: "0.9"
   },
   {
-    id: "about",
-    label: "About",
-    path: "/about/",
-    title: "About Abderrahmane Ouroui | Platform Engineer",
-    description:
-      "Platform engineering profile focused on OCI architecture, delivery automation, production ownership, and reliable cloud operations.",
-    priority: "0.8"
-  },
-  {
     id: "work",
-    label: "Work",
+    label: "Case Studies",
     path: "/work/",
-    title: "Platform Engineering Work | Abderrahmane Ouroui",
+    title: "Platform Engineering Case Studies | Abderrahmane Ouroui",
     description:
-      "Public-safe case studies covering OCI landing zones, secure ingress, tenancy and data migration, observability, and MLOps foundations.",
+      "Platform engineering case studies covering Terraform-safe OCI landing zones, secure network and identity edge patterns, and MLOps/data platform foundations.",
     priority: "0.95"
-  },
-  {
-    id: "stack",
-    label: "Stack",
-    path: "/stack/",
-    title: "DevOps, OCI, Kubernetes, and MLOps Stack | Abderrahmane Ouroui",
-    description:
-      "A practical engineering stack covering Oracle Cloud Infrastructure, Terraform, Kubernetes/OKE, CI/CD, Grafana, data, and AI platform tooling.",
-    priority: "0.85"
   },
   {
     id: "experience",
@@ -59,8 +41,17 @@ export const storySections = [
     path: "/experience/",
     title: "Experience and Proof of Work | Abderrahmane Ouroui",
     description:
-      "Career timeline, certifications, and public-safe proof of work for OCI DevOps, platform engineering, migration, and reliability work.",
+      "Career timeline and delivery patterns for OCI DevOps, platform engineering, migration, and reliability work.",
     priority: "0.85"
+  },
+  {
+    id: "certifications",
+    label: "Certificates",
+    path: "/certifications/",
+    title: "Certifications | Abderrahmane Ouroui",
+    description:
+      "Verified Oracle Cloud Infrastructure and engineering certifications for Abderrahmane Ouroui.",
+    priority: "0.8"
   },
   {
     id: "contact",
@@ -68,10 +59,42 @@ export const storySections = [
     path: "/contact/",
     title: "Contact Abderrahmane Ouroui | DevOps and Platform Engineer",
     description:
-      "Contact Abderrahmane Ouroui for OCI, DevOps, platform engineering, Kubernetes, Terraform, observability, and MLOps work.",
+      "Contact Abderrahmane Ouroui for OCI, DevOps, platform engineering, Kubernetes, Terraform, observability, MLOps, and cloud-platform work adaptable across providers.",
     priority: "0.75"
   }
 ];
+
+export const caseStudySections = [
+  {
+    id: "case-terraform-safe-oci-landing-zone-runway",
+    label: "Landing Zone",
+    path: "/case-studies/terraform-safe-oci-landing-zone-runway/",
+    title: "Terraform-Safe OCI Landing Zone Runway | Abderrahmane Ouroui",
+    description:
+      "Case study on safer OCI environment delivery with Terraform boundaries, IAM guardrails, promotion gates, and reviewable release paths.",
+    priority: "0.85"
+  },
+  {
+    id: "case-secure-network-and-identity-edge",
+    label: "Secure Edge",
+    path: "/case-studies/secure-network-and-identity-edge/",
+    title: "Secure Network and Identity Edge | Abderrahmane Ouroui",
+    description:
+      "Case study on OCI networking, IAM, private ingress, Traefik, and authN/authZ patterns for production platform workloads.",
+    priority: "0.85"
+  },
+  {
+    id: "case-mlops-data-platform-foundation-oci",
+    label: "MLOps Base",
+    path: "/case-studies/mlops-data-platform-foundation-oci/",
+    title: "MLOps and Data Platform Foundation on OCI | Abderrahmane Ouroui",
+    description:
+      "Case study on OCI MLOps foundations using MLflow, Object Storage, Data Flow/Spark, artifact tracking, and reproducible workflows.",
+    priority: "0.85"
+  }
+];
+
+export const storySections = [...portfolioSections, ...caseStudySections];
 
 export const extraSitemapUrls = [
   {

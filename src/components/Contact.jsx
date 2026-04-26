@@ -5,29 +5,29 @@ import { profile } from "../data/portfolio.js";
 const recruiterActions = [
   {
     label: "Open LinkedIn",
-    detail: "Profile and work history",
+    detail: "Profile and professional history",
     href: profile.linkedin,
     logo: "/assets/social/linkedin.svg"
   },
   {
-    label: "View CV Online",
-    detail: "Indexable HTML resume",
+    label: "View GitHub",
+    detail: "Code and platform examples",
+    href: profile.github,
+    logo: "/assets/social/github.svg",
+    invertOnLight: true
+  },
+  {
+    label: "View CV online",
+    detail: "Readable web version",
     href: profile.cvHtml,
     Icon: FileText
   },
   {
     label: "Download CV",
-    detail: "PDF resume",
+    detail: "Recruiter-ready PDF",
     href: profile.cv,
     Icon: Download,
     download: true
-  },
-  {
-    label: "View GitHub",
-    detail: "Code and public repos",
-    href: profile.github,
-    logo: "/assets/social/github.svg",
-    invertOnLight: true
   }
 ];
 
@@ -35,7 +35,19 @@ export default function Contact() {
   const [copied, setCopied] = useState(false);
 
   const copyEmail = async () => {
-    await navigator.clipboard.writeText(profile.email);
+    try {
+      await navigator.clipboard.writeText(profile.email);
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = profile.email;
+      input.setAttribute("readonly", "");
+      input.style.position = "fixed";
+      input.style.left = "-9999px";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      input.remove();
+    }
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
   };
@@ -48,20 +60,20 @@ export default function Contact() {
             <div>
               <p className="font-mono text-xs uppercase text-redwood-700">contact</p>
               <h2 className="mt-4 max-w-3xl font-display text-4xl font-semibold leading-tight sm:text-5xl">
-                Bring me in where cloud delivery and reliability have to work together.
+                Let&apos;s build reliable cloud platforms.
               </h2>
               <p className="mt-5 max-w-2xl text-base leading-7 opacity-75">
-                Fastest paths for recruiters and engineering teams: copy my email, review my public profile, read the CV online, or download it.
+                Hiring for OCI, DevOps, Platform Engineering, Kubernetes, Terraform, or MLOps work? My deepest production experience is on OCI, and I can apply the same secure, observable, automation-first standards across AWS, GCP, Azure, or other cloud environments.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <button
                 type="button"
                 onClick={copyEmail}
-                className="contact-action sm:col-span-2"
+                className="contact-action"
               >
                 <span className="contact-action-icon bg-redwood-500 text-white">
-                  {copied ? <Check size={17} /> : <Copy size={17} />}
+                  {copied ? <Check size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}
                 </span>
                 <span className="min-w-0 text-left">
                   <span className="block text-sm font-semibold">{copied ? "Email copied" : "Copy email"}</span>
@@ -81,13 +93,14 @@ export default function Contact() {
 
 function ContactAction({ action }) {
   const Icon = action.Icon;
+  const external = action.href.startsWith("http");
 
   return (
     <a
       href={action.href}
       className="contact-action"
-      target={action.download ? undefined : "_blank"}
-      rel={action.download ? undefined : "noreferrer"}
+      target={!action.download && external ? "_blank" : undefined}
+      rel={!action.download && external ? "noreferrer noopener" : undefined}
       download={action.download ? "" : undefined}
     >
       <span className="contact-action-icon">
@@ -98,13 +111,13 @@ function ContactAction({ action }) {
             className={`h-5 w-5 object-contain ${action.invertOnLight ? "contact-github-logo theme-github-logo" : ""}`}
           />
         ) : (
-          <Icon size={18} />
+          <Icon size={18} aria-hidden="true" />
         )}
       </span>
       <span className="min-w-0 text-left">
         <span className="flex items-center gap-1.5 text-sm font-semibold">
           {action.label}
-          {action.download ? null : <ArrowUpRight size={14} />}
+          {!action.download && external ? <ArrowUpRight size={14} aria-hidden="true" /> : null}
         </span>
         <span className="block truncate text-xs opacity-70">{action.detail}</span>
       </span>

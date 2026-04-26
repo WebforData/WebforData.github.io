@@ -181,6 +181,65 @@ a:focus-visible {
     0 22px 70px rgba(199, 70, 52, 0.22);
 }
 
+.reveal-card {
+  isolation: isolate;
+  overflow: hidden;
+  position: relative;
+}
+
+.reveal-card::after {
+  background: linear-gradient(180deg, transparent, rgba(7, 6, 5, 0.58));
+  bottom: 0;
+  content: "";
+  height: 42%;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  transition: opacity 180ms ease;
+  z-index: 1;
+}
+
+.reveal-panel {
+  background: var(--surface-bg);
+  background: color-mix(in srgb, var(--surface-bg) 94%, var(--redwood-accent-strong) 6%);
+  border: 1px solid rgba(227, 99, 79, 0.26);
+  border-radius: 0.5rem;
+  bottom: 0.5rem;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+  left: 0.5rem;
+  max-height: calc(100% - 1rem);
+  opacity: 0;
+  overflow: hidden;
+  padding: 0.65rem;
+  pointer-events: none;
+  position: absolute;
+  right: 0.5rem;
+  transform: translateY(0.6rem);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  z-index: 2;
+}
+
+.reveal-card:hover::after,
+.reveal-card:focus-visible::after,
+.reveal-card:focus-within::after {
+  opacity: 1;
+}
+
+.reveal-card:hover .reveal-panel,
+.reveal-card:focus-visible .reveal-panel,
+.reveal-card:focus-within .reveal-panel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.theme-light .reveal-card::after {
+  background: linear-gradient(180deg, transparent, rgba(255, 252, 246, 0.72));
+}
+
 .proof-tile {
   transition: border-color 160ms ease, transform 160ms ease, background-color 160ms ease;
 }
@@ -263,6 +322,40 @@ a:focus-visible {
 .contact-action:hover {
   border-color: var(--redwood-accent-strong);
   color: var(--redwood-accent);
+}
+
+.case-back-link {
+  align-items: center;
+  border: 1px solid var(--surface-border);
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  display: inline-flex;
+  gap: 0.45rem;
+  padding: 0.75rem 0.9rem;
+  text-decoration: none;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.case-back-link:hover {
+  background: rgba(199, 70, 52, 0.1);
+  border-color: rgba(227, 99, 79, 0.52);
+  color: var(--redwood-accent);
+  transform: translateY(-1px);
+}
+
+.artifact-block {
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.artifact-block:hover {
+  border-color: rgba(227, 99, 79, 0.38);
+  background-color: rgba(227, 99, 79, 0.07);
 }
 
 .contact-action-icon {
@@ -488,7 +581,11 @@ section > div::-webkit-scrollbar {
   .story-segment-fill,
   .interactive-card,
   .contact-action,
+  .case-back-link,
+  .artifact-block,
   .timeline-item,
+  .reveal-card::after,
+  .reveal-panel,
   .theme-toggle,
   .theme-toggle svg,
   .proof-tile {

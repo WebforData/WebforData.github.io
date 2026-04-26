@@ -2,14 +2,24 @@ import { ChevronLeft, ChevronRight, Moon, Sun } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Hero from "./components/Hero.jsx";
 import MetricStrip from "./components/MetricStrip.jsx";
-import About from "./components/About.jsx";
 import CaseStudies from "./components/CaseStudies.jsx";
-import Skills from "./components/Skills.jsx";
+import CaseStudyDetail from "./components/CaseStudyDetail.jsx";
 import Experience from "./components/Experience.jsx";
+import Certifications from "./components/Certifications.jsx";
 import Contact from "./components/Contact.jsx";
-import { canonicalUrl, defaultSeo, storySections as sections } from "./data/seo.js";
+import { caseStudies } from "./data/portfolio.js";
+import { canonicalUrl, defaultSeo, portfolioSections, storySections } from "./data/seo.js";
 
 const themeStorageKey = "aouroui-portfolio-theme";
+const wheelIntentTimeoutMs = 560;
+const verticalPageThreshold = 320;
+const verticalEdgePageThreshold = 360;
+const horizontalPageThreshold = 180;
+const verticalEdgeHoldMs = 120;
+const scrollLockMs = 760;
+const verticalScrollStep = 320;
+const verticalScrollableOverflow = 96;
+const verticalEdgeBuffer = 4;
 
 function getInitialTheme() {
   if (typeof window === "undefined") return "dark";
@@ -23,7 +33,7 @@ function normalizePath(pathname = "/") {
 
 function getSectionIndexFromPath(pathname = "/") {
   const path = normalizePath(pathname);
-  const index = sections.findIndex((section) => normalizePath(section.path) === path);
+  const index = portfolioSections.findIndex((section) => normalizePath(section.path) === path);
   return index >= 0 ? index : 0;
 }
 
@@ -38,25 +48,41 @@ function setMetaContent(selector, content) {
   if (element) element.setAttribute("content", content);
 }
 
+function getActiveSection(root) {
+  if (!root) return null;
+  const currentIndex = Math.round(root.scrollLeft / root.clientWidth);
+  return root.firstElementChild?.children?.[currentIndex] ?? null;
+}
+
+function isScrollableY(element) {
+  if (!element) return false;
+  const style = window.getComputedStyle(element);
+  const canOverflowY = /(auto|scroll)/.test(style.overflowY);
+  return canOverflowY && element.scrollHeight - element.clientHeight > verticalScrollableOverflow;
+}
+
 function getScrollableY(target, root) {
+  const activeSection = getActiveSection(root);
   let element = target instanceof Element ? target : null;
-  const section = element?.closest("section");
+  let section = element?.closest("section");
+
+  if (!section || !root?.contains(section)) {
+    section = activeSection;
+  }
 
   while (element && element !== root) {
-    const style = window.getComputedStyle(element);
-    const canOverflowY = /(auto|scroll)/.test(style.overflowY);
-    if (canOverflowY && element.scrollHeight > element.clientHeight + 1) {
+    if (section?.contains(element) && isScrollableY(element)) {
       return element;
     }
     element = element.parentElement;
   }
 
   if (section && section !== root) {
-    const candidates = section.querySelectorAll("*");
+    if (isScrollableY(section)) return section;
+
+    const candidates = section.querySelectorAll('[class*="overflow-y-auto"], [class*="overflow-y-scroll"]');
     for (const candidate of candidates) {
-      const style = window.getComputedStyle(candidate);
-      const canOverflowY = /(auto|scroll)/.test(style.overflowY);
-      if (canOverflowY && candidate.scrollHeight > candidate.clientHeight + 1) {
+      if (isScrollableY(candidate)) {
         return candidate;
       }
     }
@@ -67,8 +93,8 @@ function getScrollableY(target, root) {
 
 function canScrollY(element, deltaY) {
   if (!element) return false;
-  if (deltaY > 0) return element.scrollTop + element.clientHeight < element.scrollHeight - 1;
-  if (deltaY < 0) return element.scrollTop > 1;
+  if (deltaY > 0) return element.scrollTop + element.clientHeight < element.scrollHeight - verticalEdgeBuffer;
+  if (deltaY < 0) return element.scrollTop > verticalEdgeBuffer;
   return false;
 }
 
@@ -76,14 +102,20 @@ export default function App({ initialPath }) {
   const scrollerRef = useRef(null);
   const touchRef = useRef(null);
   const wheelLockRef = useRef(false);
+  const wheelIntentRef = useRef({ delta: 0, lastTime: 0, edgeStartedAt: 0, sign: 0 });
   const initialIndexRef = useRef(getInitialSectionIndex(initialPath));
   const [activeIndex, setActiveIndex] = useState(initialIndexRef.current);
   const [highlightedSignal, setHighlightedSignal] = useState(null);
   const [theme, setTheme] = useState(getInitialTheme);
+  const routePath =
+    initialPath ?? (typeof window === "undefined" ? "/" : window.location.pathname);
+  const routeSeo =
+    storySections.find((section) => normalizePath(section.path) === normalizePath(routePath)) ?? null;
+  const selectedStudy = caseStudies.find((study) => normalizePath(study.path) === normalizePath(routePath));
 
   const updateLocation = useCallback((index, method = "pushState") => {
     if (typeof window === "undefined") return;
-    const section = sections[index] ?? sections[0];
+    const section = portfolioSections[index] ?? portfolioSections[0];
     const nextPath = section.path;
     if (normalizePath(window.location.pathname) === normalizePath(nextPath)) return;
     window.history[method]({ section: section.id }, "", nextPath);
@@ -94,7 +126,7 @@ export default function App({ initialPath }) {
     if (!scroller) return;
 
     const { updateUrl = true, historyMethod = "pushState" } = options;
-    const nextIndex = Math.max(0, Math.min(sections.length - 1, index));
+    const nextIndex = Math.max(0, Math.min(portfolioSections.length - 1, index));
     setHighlightedSignal(signal);
     setActiveIndex(nextIndex);
     if (updateUrl) updateLocation(nextIndex, historyMethod);
@@ -111,7 +143,7 @@ export default function App({ initialPath }) {
   }, [theme]);
 
   useEffect(() => {
-    const section = sections[activeIndex] ?? sections[0];
+    const section = selectedStudy && routeSeo ? routeSeo : portfolioSections[activeIndex] ?? portfolioSections[0];
     const title = section.title || defaultSeo.title;
     const description = section.description || defaultSeo.description;
     const url = canonicalUrl(section.path);
@@ -143,7 +175,7 @@ export default function App({ initialPath }) {
       frame = 0;
       const nextIndex = Math.max(
         0,
-        Math.min(sections.length - 1, Math.round(scroller.scrollLeft / scroller.clientWidth))
+        Math.min(portfolioSections.length - 1, Math.round(scroller.scrollLeft / scroller.clientWidth))
       );
       setActiveIndex(nextIndex);
     };
@@ -152,23 +184,33 @@ export default function App({ initialPath }) {
       if (!frame) frame = requestAnimationFrame(syncProgress);
     };
 
-    const handleWheel = (event) => {
-      const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
-      if (Math.abs(delta) < 8) return;
+    const resetWheelIntent = () => {
+      wheelIntentRef.current = { delta: 0, lastTime: 0, edgeStartedAt: 0, sign: 0 };
+    };
 
-      const verticalIntent = Math.abs(event.deltaY) >= Math.abs(event.deltaX);
-      const scrollableY = verticalIntent ? getScrollableY(event.target, scroller) : null;
-      if (canScrollY(scrollableY, event.deltaY)) {
-        event.preventDefault();
-        scrollableY.scrollTop += event.deltaY;
-        return;
+    const consumeIntent = (delta, threshold, minEdgeMs = 0) => {
+      const now = performance.now();
+      const sign = Math.sign(delta);
+      const intent = wheelIntentRef.current;
+      if (!sign || now - intent.lastTime > wheelIntentTimeoutMs || intent.sign !== sign) {
+        intent.delta = 0;
+        intent.edgeStartedAt = now;
       }
 
-      event.preventDefault();
-      if (wheelLockRef.current) return;
+      intent.delta += delta;
+      intent.sign = sign;
+      intent.lastTime = now;
 
+      if (Math.abs(intent.delta) < threshold || now - intent.edgeStartedAt < minEdgeMs) return 0;
+      const direction = sign;
+      resetWheelIntent();
+      return direction;
+    };
+
+    const goByDirection = (direction) => {
+      if (!direction || wheelLockRef.current) return;
       const currentIndex = Math.round(scroller.scrollLeft / scroller.clientWidth);
-      const nextIndex = Math.max(0, Math.min(sections.length - 1, currentIndex + (delta > 0 ? 1 : -1)));
+      const nextIndex = Math.max(0, Math.min(portfolioSections.length - 1, currentIndex + direction));
       if (nextIndex === currentIndex) return;
 
       wheelLockRef.current = true;
@@ -182,7 +224,34 @@ export default function App({ initialPath }) {
       window.setTimeout(() => {
         wheelLockRef.current = false;
         requestSync();
-      }, 520);
+      }, scrollLockMs);
+    };
+
+    const handleWheel = (event) => {
+      const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+      if (Math.abs(delta) < 8) return;
+
+      const verticalIntent = Math.abs(event.deltaY) >= Math.abs(event.deltaX);
+      const scrollableY = verticalIntent ? getScrollableY(event.target, scroller) : null;
+      if (canScrollY(scrollableY, event.deltaY)) {
+        event.preventDefault();
+        const previousTop = scrollableY.scrollTop;
+        const nextDelta = Math.max(-verticalScrollStep, Math.min(verticalScrollStep, event.deltaY));
+        scrollableY.scrollTop += nextDelta;
+        if (Math.abs(scrollableY.scrollTop - previousTop) > 0.5) {
+          resetWheelIntent();
+          return;
+        }
+      }
+
+      event.preventDefault();
+      const threshold = verticalIntent
+        ? scrollableY
+          ? verticalEdgePageThreshold
+          : verticalPageThreshold
+        : horizontalPageThreshold;
+      const minEdgeMs = verticalIntent && scrollableY ? verticalEdgeHoldMs : 0;
+      goByDirection(consumeIntent(delta, threshold, minEdgeMs));
     };
 
     const handleTouchStart = (event) => {
@@ -191,7 +260,8 @@ export default function App({ initialPath }) {
         x: touch.clientX,
         y: touch.clientY,
         scrollLeft: scroller.scrollLeft,
-        scrollableY: getScrollableY(event.target, scroller)
+        scrollableY: getScrollableY(event.target, scroller),
+        edgeDelta: 0
       };
     };
 
@@ -207,14 +277,12 @@ export default function App({ initialPath }) {
         event.preventDefault();
         start.scrollableY.scrollTop += deltaY;
         start.y = touch.clientY;
+        start.edgeDelta = 0;
         return;
       }
 
-      const dominantDelta = Math.abs(deltaY) > Math.abs(deltaX) ? deltaY : deltaX;
-
       event.preventDefault();
-      scroller.scrollLeft = start.scrollLeft + dominantDelta;
-      requestSync();
+      start.edgeDelta = Math.abs(deltaY) > Math.abs(deltaX) ? deltaY : deltaX;
     };
 
     const handleTouchEnd = (event) => {
@@ -227,8 +295,8 @@ export default function App({ initialPath }) {
       const dominantDelta = Math.abs(deltaY) > Math.abs(deltaX) ? deltaY : deltaX;
       const currentIndex = Math.round(start.scrollLeft / scroller.clientWidth);
       const nextIndex =
-        Math.abs(dominantDelta) > 45
-          ? Math.max(0, Math.min(sections.length - 1, currentIndex + (dominantDelta > 0 ? 1 : -1)))
+        Math.abs(dominantDelta) > 95
+          ? Math.max(0, Math.min(portfolioSections.length - 1, currentIndex + (dominantDelta > 0 ? 1 : -1)))
           : currentIndex;
 
       scroller.scrollTo({
@@ -242,7 +310,7 @@ export default function App({ initialPath }) {
 
     syncProgress();
     scroller.addEventListener("scroll", requestSync, { passive: true });
-    scroller.addEventListener("wheel", handleWheel, { passive: false, capture: true });
+    window.addEventListener("wheel", handleWheel, { passive: false, capture: true });
     scroller.addEventListener("touchstart", handleTouchStart, { passive: true });
     scroller.addEventListener("touchmove", handleTouchMove, { passive: false });
     scroller.addEventListener("touchend", handleTouchEnd, { passive: true });
@@ -251,7 +319,7 @@ export default function App({ initialPath }) {
     return () => {
       if (frame) cancelAnimationFrame(frame);
       scroller.removeEventListener("scroll", requestSync);
-      scroller.removeEventListener("wheel", handleWheel, true);
+      window.removeEventListener("wheel", handleWheel, true);
       scroller.removeEventListener("touchstart", handleTouchStart);
       scroller.removeEventListener("touchmove", handleTouchMove);
       scroller.removeEventListener("touchend", handleTouchEnd);
@@ -295,7 +363,7 @@ export default function App({ initialPath }) {
 
       if (event.key === "End") {
         event.preventDefault();
-        scrollToSection(sections.length - 1);
+        scrollToSection(portfolioSections.length - 1);
       }
     };
 
@@ -305,12 +373,41 @@ export default function App({ initialPath }) {
 
   const nextTheme = theme === "dark" ? "light" : "dark";
   const ThemeIcon = theme === "dark" ? Sun : Moon;
-  const activeSection = sections[activeIndex];
+  const activeSection = portfolioSections[activeIndex];
+
+  if (selectedStudy) {
+    return (
+      <div className={`theme-${theme} h-screen overflow-hidden bg-ink-950 text-warm-50`}>
+        <nav className="sr-only" aria-label="Portfolio sections">
+          {storySections.map((section) => (
+            <a key={section.id} href={section.path}>
+              {section.label}
+            </a>
+          ))}
+          <a href="/abderrahmane-ouroui-cv.html">Abderrahmane Ouroui CV</a>
+        </nav>
+
+        <button
+          type="button"
+          className="theme-toggle fixed bottom-4 right-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full transition sm:bottom-6 sm:right-6"
+          aria-label={`Switch to ${nextTheme} theme`}
+          title={`Switch to ${nextTheme} theme`}
+          onClick={() => setTheme(nextTheme)}
+        >
+          <ThemeIcon size={18} aria-hidden="true" />
+        </button>
+
+        <main className="redwood-shell h-screen overflow-hidden">
+          <CaseStudyDetail study={selectedStudy} />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className={`theme-${theme} h-screen overflow-hidden bg-ink-950 text-warm-50`}>
       <nav className="sr-only" aria-label="Portfolio sections">
-        {sections.map((section) => (
+        {storySections.map((section) => (
           <a key={section.id} href={section.path}>
             {section.label}
           </a>
@@ -324,7 +421,7 @@ export default function App({ initialPath }) {
             <p className="story-label min-w-0 truncate rounded-full px-2.5 py-1 font-mono text-[0.58rem] uppercase tracking-[0.16em] sm:text-[0.66rem]" aria-live="polite">
               <span>{String(activeIndex + 1).padStart(2, "0")}</span>
               <span className="mx-1 text-warm-500">/</span>
-              <span>{String(sections.length).padStart(2, "0")}</span>
+              <span>{String(portfolioSections.length).padStart(2, "0")}</span>
               <span className="mx-2 text-redwood-300">·</span>
               <span>{activeSection.label}</span>
             </p>
@@ -337,22 +434,22 @@ export default function App({ initialPath }) {
                 disabled={activeIndex === 0}
                 onClick={() => scrollToSection(activeIndex - 1)}
               >
-                <ChevronLeft size={16} />
+                <ChevronLeft size={16} aria-hidden="true" />
               </button>
               <button
                 type="button"
                 className="story-control"
                 aria-label="Next portfolio page"
-                disabled={activeIndex === sections.length - 1}
+                disabled={activeIndex === portfolioSections.length - 1}
                 onClick={() => scrollToSection(activeIndex + 1)}
               >
-                <ChevronRight size={16} />
+                <ChevronRight size={16} aria-hidden="true" />
               </button>
             </div>
           </div>
 
           <div className="flex gap-1.5">
-            {sections.map((section, index) => {
+            {portfolioSections.map((section, index) => {
               const fill = index <= activeIndex ? 100 : 0;
 
               return (
@@ -384,17 +481,16 @@ export default function App({ initialPath }) {
         title={`Switch to ${nextTheme} theme`}
         onClick={() => setTheme(nextTheme)}
       >
-        <ThemeIcon size={18} />
+        <ThemeIcon size={18} aria-hidden="true" />
       </button>
 
       <main ref={scrollerRef} className="horizontal-scroll redwood-shell h-screen overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory">
         <div className="flex min-h-full w-max">
           <Hero onNavigate={scrollToSection} />
           <MetricStrip highlightedSignal={highlightedSignal} />
-          <About />
           <CaseStudies />
-          <Skills />
           <Experience />
+          <Certifications />
           <Contact />
         </div>
       </main>

@@ -87,8 +87,7 @@ function buildJsonLdScript() {
       },
       sameAs: [
         "https://github.com/webfordata",
-        "https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/",
-        "https://leetcode.com/webfordata/"
+        "https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/"
       ],
       knowsAbout: [
         "Oracle Cloud Infrastructure",
@@ -99,7 +98,8 @@ function buildJsonLdScript() {
         "Secure Cloud Networking",
         "Observability",
         "Autonomous Database",
-        "MLOps"
+        "MLOps",
+        "Cloud-portable platform standards"
       ],
       hasCredential: [
         {

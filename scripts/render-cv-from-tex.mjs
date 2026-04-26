@@ -69,7 +69,7 @@ function escapeHtml(value) {
     .replace(/"/g, "&quot;");
 }
 
-function cleanLatex(value) {
+function cleanLatex(value = "") {
   let output = value
     .replace(/%.*$/gm, "")
     .replace(/\$\\rightarrow\$/g, "->")
@@ -238,7 +238,6 @@ function renderSection(section) {
 
 const [firstName, lastName] = firstCommand("name", 2);
 const [location] = firstCommand("address", 3);
-const [phone] = firstCommand("phone[mobile]", 1);
 const [email] = firstCommand("email", 1);
 const center = tex.match(/\\begin\{center\}([\s\S]*?)\\end\{center\}/)?.[1] ?? "";
 const role = cleanLatex(center.match(/\\textbf\{([^{}]+)\}/)?.[1] ?? "DevOps Engineer II | Platform Engineer");
@@ -257,7 +256,6 @@ const quickSignals = [
 ];
 
 const cleanEmail = cleanLatex(email);
-const cleanPhone = cleanLatex(phone);
 
 function socialProfile(href, label) {
   const value = `${href} ${label}`.toLowerCase();
@@ -285,23 +283,12 @@ const contactItems = [
         </button>
       </li>`
     : "",
-  cleanPhone
-    ? `<li>
-        <button type="button" class="copy-contact" data-copy="${escapeAttr(cleanPhone)}" aria-label="Copy phone number">
-          <span class="copy-main">
-            <span class="copy-label">Phone</span>
-            <span class="copy-value">${cleanPhone}</span>
-          </span>
-          <span class="copy-state" aria-hidden="true">Copy</span>
-        </button>
-      </li>`
-    : "",
   links.length
     ? `<li class="social-contact-row">
         ${links
           .map(([href, label]) => {
             const profile = socialProfile(href, label);
-            return `<a class="social-contact ${profile.className}" href="${escapeAttr(href)}" target="_blank" rel="noreferrer" aria-label="${profile.name}">
+            return `<a class="social-contact ${profile.className}" href="${escapeAttr(href)}" target="_blank" rel="noreferrer noopener" aria-label="${profile.name}">
               ${profile.icon ? `<img src="${profile.icon}" alt="" />` : ""}
               <span>${profile.name}</span>
             </a>`;

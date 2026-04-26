@@ -1,24 +1,23 @@
 export const profile = {
   name: "Abderrahmane Ouroui",
-  role: "DevOps Engineer / Platform Engineer",
+  role: "OCI Platform Engineer building reliable production runways",
+  positionTitle: "DevOps Engineer / Platform Engineer",
   location: "Casablanca, Morocco",
   email: "abdououroui123@gmail.com",
   github: "https://github.com/webfordata",
   linkedin: "https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/",
-  leetcode: "https://leetcode.com/webfordata/",
   cvHtml: "/abderrahmane-ouroui-cv.html",
   cv: "/abderrahmane-ouroui-cv.pdf",
   headline:
-    "I build OCI, Kubernetes, Terraform, and MLOps-ready production platforms where architecture, delivery, and reliability have to work together.",
+    "I build secure, observable, production-ready cloud platforms with Terraform, OKE/Kubernetes, CI/CD, and MLOps foundations - proven on OCI and adaptable across AWS, GCP, Azure, and beyond.",
   summary:
-    "Based in Casablanca, I work at Oracle on multi-tenant OCI platforms across Terraform, CI/CD, secure networking, observability, data pipelines, release management, cost optimization, and AI/MLOps enablement."
+    "OCI is my strongest production platform. My operating model is portable: Infrastructure as Code, secure networking, IAM, Kubernetes, CI/CD, observability, cost awareness, and MLOps foundations."
 };
 
 export const targetRoles = [
-  "Platform Engineer",
-  "DevOps Engineer",
-  "OCI Cloud Engineer",
-  "Kubernetes / MLOps Platform Engineer"
+  "DevOps / Platform",
+  "OCI production",
+  "Cloud-portable standards"
 ];
 
 export const heroHighlights = [
@@ -26,6 +25,17 @@ export const heroHighlights = [
   "Terraform, CI/CD, and secure networking",
   "Observability, data platforms, and MLOps"
 ];
+
+export const cloudPortability = {
+  title: "Cloud standards, not cloud lock-in",
+  text:
+    "OCI is my deepest production environment. The standards are portable: Terraform, Kubernetes, secure networking, IAM, CI/CD, observability, cost awareness, and MLOps foundations can be adapted across AWS, GCP, Azure, and other clouds.",
+  proofPoints: [
+    "Proven production depth on OCI",
+    "Provider-agnostic engineering standards",
+    "Same standards, different cloud primitives"
+  ]
+};
 
 export const certifications = [
   {
@@ -161,9 +171,6 @@ export const capabilitySignals = [
 
 export const capabilityLogoRail = [
   { label: "OCI", image: "/assets/oracle-logo.svg", tone: "border-redwood-300/30 bg-redwood-500/10" },
-  { label: "Autonomous DB", image: "/assets/oracle-logo.svg", tone: "border-redwood-300/30 bg-redwood-500/10" },
-  { label: "Data Science", image: "/assets/oracle-logo.svg", tone: "border-redwood-300/30 bg-redwood-500/10" },
-  { label: "Data Flow", image: "/assets/oracle-logo.svg", tone: "border-redwood-300/30 bg-redwood-500/10" },
   { label: "Terraform", image: "/assets/tools/terraform.svg", tone: "border-[#7b42bc]/35 bg-[#7b42bc]/15" },
   { label: "Kubernetes", image: "/assets/tools/kubernetes.svg", tone: "border-[#3970e4]/35 bg-[#3970e4]/15" },
   { label: "Docker", image: "/assets/tools/docker.svg", tone: "border-[#2496ed]/35 bg-[#2496ed]/15" },
@@ -192,24 +199,92 @@ export const capabilityProofPoints = [
 
 export const caseStudies = [
   {
-    title: "Enterprise OCI Landing Zone Runway",
+    slug: "terraform-safe-oci-landing-zone-runway",
+    path: "/case-studies/terraform-safe-oci-landing-zone-runway/",
+    title: "Terraform-Safe OCI Landing Zone Runway",
     eyebrow: "Platform architecture",
+    summary:
+      "Designed a safer delivery runway for OCI environments using Terraform boundaries, IAM guardrails, promotion gates, and reviewable release paths.",
     problem: "Cloud environments needed repeatable change without drift, resource recreation, or unclear ownership.",
+    context:
+      "OCI was the primary platform. The work focused on keeping infrastructure changes reviewable, state-aware, and safe across dev, test, stage, and production environments.",
+    ownership:
+      "Owned Terraform boundary design, IAM guardrails, environment promotion checks, release review structure, and operational validation.",
+    approach:
+      "Separated infrastructure concerns into reviewable units, protected state-sensitive resources, documented promotion expectations, and made release paths explicit before production execution.",
+    keyDecisions: [
+      "Treat Terraform state as a production asset, not an implementation detail.",
+      "Keep IAM, networking, and runtime boundaries visible during review.",
+      "Use environment promotion gates to reduce drift and surprise recreation."
+    ],
+    outcome:
+      "Protected 500+ OCI resources per environment and made platform changes safer to review, promote, and operate.",
+    artifacts: [
+      {
+        title: "Environment promotion flow",
+        type: "flow",
+        description: "How platform changes become reviewable before production.",
+        steps: ["Plan", "Review", "Dev", "Test", "Stage", "Prod"],
+        alt: "Environment promotion flow from plan and review through dev, test, stage, and prod."
+      },
+      {
+        title: "Release checklist",
+        type: "checklist",
+        description: "A release checklist for Terraform-safe platform changes.",
+        items: ["State impact reviewed", "IAM boundary checked", "Network blast radius understood", "Rollback path documented"]
+      }
+    ],
+    portability:
+      "The cloud primitives change by provider, but the standard is portable: state boundaries, least privilege, review gates, and controlled promotion.",
     solution:
       "Owned Terraform boundaries, IAM guardrails, environment promotion gates, and reviewable release paths.",
     impact: "Protected 500+ OCI resources per environment and made platform changes safer to review, promote, and operate.",
     technologies: ["OCI", "Terraform", "IAM", "VCN", "Release Management"],
     proof: {
-      role: "Architect + operator",
+      role: "Architecture + delivery",
       stack: "OCI / Terraform",
-      outcome: "Safer changes"
+      outcome: "500+ resources protected"
     },
     signal: "Cloud runway"
   },
   {
-    title: "Secure Network And Identity Edge",
+    slug: "secure-network-and-identity-edge",
+    path: "/case-studies/secure-network-and-identity-edge/",
+    title: "Secure Network and Identity Edge",
     eyebrow: "Cloud security",
+    summary:
+      "Built secure access patterns across OCI networking, IAM, ingress, and environment boundaries to support production workloads.",
     problem: "Applications, APIs, databases, functions, and third-party identity paths needed predictable private connectivity.",
+    context:
+      "Production platform paths needed secure-by-default networking and identity boundaries that stayed understandable during delivery and operations.",
+    ownership:
+      "Owned OCI networking patterns, IAM alignment, private ingress behavior, load balancer and gateway paths, Traefik routing, and authN/authZ coordination.",
+    approach:
+      "Mapped traffic flows by trust boundary, aligned IAM and network controls, reviewed ingress and service exposure patterns, and kept environment boundaries explicit.",
+    keyDecisions: [
+      "Use private-first paths where production workloads did not need public exposure.",
+      "Keep identity and network controls aligned rather than treating them as separate reviews.",
+      "Prefer clear ingress ownership and observable routing behavior."
+    ],
+    outcome:
+      "Improved routing clarity, security posture, and release confidence for private application paths.",
+    artifacts: [
+      {
+        title: "Private access pattern",
+        type: "flow",
+        description: "A representative pattern for reasoning about trust boundaries and service exposure.",
+        steps: ["Identity", "Gateway", "Ingress", "Service", "Data"],
+        alt: "Private access pattern from identity through gateway, ingress, service, and data."
+      },
+      {
+        title: "Security review checklist",
+        type: "checklist",
+        description: "Review prompts for OCI networking and identity work.",
+        items: ["Least privilege checked", "Network rules reviewed", "TLS path understood", "Ingress owner identified"]
+      }
+    ],
+    portability:
+      "The same secure edge standard can be translated to AWS, GCP, Azure, or another cloud by mapping equivalent IAM, networking, ingress, and policy primitives.",
     solution:
       "Owned controlled OCI traffic paths with load balancing, API gateways, NSGs, TLS, Traefik, functions, and authN/authZ.",
     impact: "Improved routing clarity, security posture, and release confidence for private application paths.",
@@ -222,39 +297,43 @@ export const caseStudies = [
     signal: "Private edge"
   },
   {
-    title: "Tenancy And Data Migration",
-    eyebrow: "Cloud migration",
-    problem: "Platform workloads and data needed to move between cloud tenancies without breaking access, security, or continuity.",
-    solution:
-      "Owned target OCI landing-zone planning, Terraform state-safe migration, IAM and networking dependency mapping, data movement, validation, and cutover checks.",
-    impact: "Reduced migration risk by making ownership, access, data continuity, rollback, and post-migration validation explicit.",
-    technologies: ["OCI", "IAM", "Networking", "Object Storage", "Autonomous Database", "Terraform"],
-    proof: {
-      role: "Migration lead",
-      stack: "OCI / ADB",
-      outcome: "Controlled cutover"
-    },
-    signal: "Safe cutover"
-  },
-  {
-    title: "Observability And Reliability Fabric",
-    eyebrow: "Production reliability",
-    problem: "Production services needed clearer signals for incidents, capacity, data freshness, and service health.",
-    solution:
-      "Owned logging, metrics, event rules, alarms, dashboards, and runbooks as repeatable platform patterns.",
-    impact: "Improved incident detection, triage speed, and operational visibility across production environments.",
-    technologies: ["OCI Logging", "OCI Monitoring", "Grafana", "Events", "Alarms"],
-    proof: {
-      role: "Reliability owner",
-      stack: "Logs / Grafana",
-      outcome: "Faster triage"
-    },
-    signal: "Signals as code"
-  },
-  {
-    title: "MLOps And Data Platform Foundation",
+    slug: "mlops-data-platform-foundation-oci",
+    path: "/case-studies/mlops-data-platform-foundation-oci/",
+    title: "MLOps and Data Platform Foundation on OCI",
     eyebrow: "Data and AI platform",
+    summary:
+      "Created foundations for MLflow, OCI Object Storage, Data Flow/Spark, artifact tracking, and reproducible data/ML workflows.",
     problem: "Data and ML workloads needed repeatable training, model tracking, private execution, and artifact flow.",
+    context:
+      "The platform needed AI/MLOps foundations that could support controlled execution, reproducible artifacts, and reliable data movement on OCI.",
+    ownership:
+      "Owned platform foundations across OCI Data Science, MLflow, Object Storage, Data Flow/Spark, image/artifact flow, logging, and delivery governance.",
+    approach:
+      "Connected dataset storage, compute/runtime execution, model tracking, artifact handling, and operational checks into a repeatable foundation for ML and data workloads.",
+    keyDecisions: [
+      "Separate datasets, runtime images, experiments, and model artifacts as first-class platform concerns.",
+      "Keep execution private and observable before scaling adoption.",
+      "Use repeatable delivery patterns instead of one-off notebook or job setup."
+    ],
+    outcome:
+      "Enabled AI-ready workflows with controlled execution, artifact flow, logging, and delivery governance.",
+    artifacts: [
+      {
+        title: "Experiment and artifact lifecycle",
+        type: "flow",
+        description: "Lifecycle for reproducible data and ML work.",
+        steps: ["Dataset", "Job", "Track", "Artifact", "Validate", "Promote"],
+        alt: "MLOps lifecycle from dataset to job, tracking, artifact, validation, and promotion."
+      },
+      {
+        title: "MLOps readiness checklist",
+        type: "checklist",
+        description: "Checks before treating a data or ML path as platform-ready.",
+        items: ["Dataset location defined", "Run metadata captured", "Artifacts versioned", "Operational signals reviewed"]
+      }
+    ],
+    portability:
+      "OCI is the proven reference platform here; the MLOps operating model can be adapted by mapping storage, compute, experiment tracking, and CI/CD primitives in another provider.",
     solution:
       "Owned private foundations with OCI Data Science, MLflow, OCIR, Object Storage, MySQL, Data Flow, and Spark.",
     impact: "Enabled AI-ready workflows with controlled execution, artifact flow, logging, and delivery governance.",
@@ -265,6 +344,23 @@ export const caseStudies = [
       outcome: "AI-ready base"
     },
     signal: "AI-ready"
+  }
+];
+
+export const additionalDeliveryPatterns = [
+  {
+    title: "Tenancy and data migration",
+    summary:
+      "Controlled migration planning across landing-zone readiness, IAM and networking dependencies, data movement, validation, rollback, and post-migration checks.",
+    signal: "Migration runway",
+    technologies: ["OCI", "IAM", "Networking", "Object Storage", "Autonomous Database", "Terraform"]
+  },
+  {
+    title: "Observability and reliability fabric",
+    summary:
+      "Repeatable logging, metrics, Grafana dashboards, alarms, and runbook patterns for incident detection, data freshness, capacity, and production health.",
+    signal: "Signals as code",
+    technologies: ["OCI Logging", "OCI Monitoring", "Grafana", "Events", "Alarms"]
   }
 ];
 
@@ -360,5 +456,28 @@ export const proofOfWork = [
 export const workingStyle = {
   title: "Where I work best",
   text:
-    "Ambiguous platform problems where cloud architecture, delivery automation, production ownership, and incident learning need to become one repeatable operating model."
+    "Ambiguous platform problems where cloud architecture, delivery automation, production ownership, and incident learning need to become one repeatable operating model. OCI is my strongest production environment; the standards are intentionally portable."
 };
+
+export const publicProofRepos = [
+  {
+    name: "oci-terraform-landing-zone-blueprint",
+    status: "planned example",
+    focus: "Terraform boundaries, IAM guardrails, VCN shape, and promotion checklist"
+  },
+  {
+    name: "oke-release-runway",
+    status: "planned example",
+    focus: "Kubernetes/OKE deployment gates, image promotion, rollback, and validation"
+  },
+  {
+    name: "mlops-on-oci-foundation",
+    status: "planned example",
+    focus: "MLflow, Object Storage, Data Flow/Spark, artifacts, and observability checks"
+  },
+  {
+    name: "cloud-platform-standards-playbook",
+    status: "planned example",
+    focus: "Provider-agnostic standards for IAM, networking, CI/CD, observability, and cost awareness"
+  }
+];

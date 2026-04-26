@@ -6,8 +6,8 @@ export default function Skills() {
     <Section
       id="stack"
       eyebrow="stack"
-      title="A practical stack for secure cloud-native systems."
-      intro="Grouped by the work it supports: cloud foundations, delivery, operations, and AI readiness."
+      title="Delivery patterns and platform stack."
+      intro="Grouped by the work it supports: Infrastructure as Code, Kubernetes/OKE runtime, secure networking and IAM, CI/CD promotion, observability and triage, MLOps/data foundations, and cost-aware architecture."
     >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {skillGroups.map((group) => (

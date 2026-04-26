@@ -1,26 +1,27 @@
-import { ArrowUpRight, Award, MapPin } from "lucide-react";
-import { certifications, profile, proofOfWork, timeline } from "../data/portfolio.js";
+import { MapPin } from "lucide-react";
+import { profile, proofOfWork, timeline } from "../data/portfolio.js";
 import Section from "./Section.jsx";
+
+const visibleProof = proofOfWork.slice(0, 4);
 
 export default function Experience() {
   return (
     <Section
       id="experience"
       eyebrow="experience"
-      title="Experience and proof of work."
-      intro="A compact view of where I have worked and the platform patterns I can own."
+      title="Experience and delivery patterns."
+      intro="Roles, operating model, and platform work owned from architecture through production."
       wide
       start
     >
       <div className="grid gap-3 lg:grid-cols-[0.72fr_1.28fr] xl:grid-cols-[0.68fr_0.9fr_1.52fr]">
         <aside className="surface rounded-lg p-4 sm:p-5">
-          <MapPin className="text-redwood-300" />
+          <MapPin className="text-redwood-300" aria-hidden="true" />
           <h3 className="mt-4 text-xl font-semibold text-warm-50 sm:text-2xl">{profile.name}</h3>
           <p className="mt-2 text-warm-300">{profile.location}</p>
-          <div className="mt-5 space-y-2.5">
-            {certifications.map((certification) => (
-              <Credential key={certification.name} certification={certification} />
-            ))}
+          <div className="mt-5 rounded-lg border border-redwood-300/20 bg-redwood-500/[0.06] p-3">
+            <p className="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-redwood-300">operating model</p>
+            <p className="mt-2 text-sm leading-6 text-warm-300">{profile.summary}</p>
           </div>
         </aside>
 
@@ -37,15 +38,13 @@ export default function Experience() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="font-mono text-xs uppercase text-redwood-300">proof of work</p>
-              <h3 className="mt-2 text-lg font-semibold text-warm-50 sm:text-xl">Public-safe delivery patterns I can own.</h3>
+              <h3 className="mt-2 text-lg font-semibold text-warm-50 sm:text-xl">Delivery patterns I can own.</h3>
             </div>
-            <p className="max-w-sm text-xs leading-5 text-warm-400">
-              Compact signals across architecture, migration, delivery, reliability, and MLOps.
-            </p>
+            <p className="max-w-sm text-xs leading-5 text-warm-400">Architecture, automation, runtime, and reliability patterns shaped by production work.</p>
           </div>
 
-          <div className="mt-4 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
-            {proofOfWork.map((item) => (
+          <div className="mt-4 grid gap-2 md:grid-cols-2">
+            {visibleProof.map((item) => (
               <ProofTile key={item.title} item={item} />
             ))}
           </div>
@@ -57,25 +56,36 @@ export default function Experience() {
 
 function TimelineItem({ item }) {
   return (
-    <article className="timeline-item relative rounded-lg border border-warm-50/10 bg-warm-50/[0.035] p-3 pl-4 xl:p-2.5 xl:pl-4">
+    <article
+      className="reveal-card timeline-item relative rounded-lg border border-warm-50/10 bg-warm-50/[0.035] p-3 pl-4 xl:p-2.5 xl:pl-4"
+      tabIndex={0}
+      aria-label={`${item.period}: ${item.title}. ${item.detail || item.achievement}`}
+    >
       <span className="absolute left-0 top-4 h-2 w-2 -translate-x-1/2 rounded-full bg-redwood-400 shadow-[0_0_16px_rgba(227,99,79,0.55)] xl:top-3.5" />
       <p className="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-redwood-300">{item.period}</p>
       <h3 className="mt-1 text-sm font-semibold leading-5 text-warm-50 xl:text-[0.82rem] xl:leading-5">{item.title}</h3>
-      <p className="mt-1 line-clamp-2 text-xs leading-5 text-warm-300 xl:line-clamp-1 xl:leading-4">{item.achievement}</p>
+      <p className="mt-1 line-clamp-1 text-xs leading-5 text-warm-300 xl:leading-4">{item.achievement}</p>
+      <div className="reveal-panel">
+        <p className="text-xs leading-5 text-warm-200 xl:text-[0.7rem] xl:leading-4">{item.detail || item.achievement}</p>
+      </div>
     </article>
   );
 }
 
 function ProofTile({ item }) {
   return (
-    <article className="proof-tile interactive-card min-w-0 rounded-lg border border-warm-50/10 bg-warm-50/[0.035] p-3 xl:p-2.5">
+    <article
+      className="reveal-card proof-tile interactive-card min-w-0 rounded-lg border border-warm-50/10 bg-warm-50/[0.035] p-3 xl:p-2.5"
+      tabIndex={0}
+      aria-label={`${item.title}: ${item.handle}`}
+    >
       <div className="flex items-start gap-3 xl:gap-2.5">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-redwood-300/20 bg-redwood-500/10 text-base xl:h-7 xl:w-7 xl:text-sm">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-redwood-300/20 bg-redwood-500/10 text-base xl:h-7 xl:w-7 xl:text-sm" aria-hidden="true">
           {item.emoji}
         </span>
         <div className="min-w-0">
           <h4 className="text-sm font-semibold leading-5 text-warm-50 xl:text-[0.82rem]">{item.title}</h4>
-          <p className="mt-1 line-clamp-2 text-xs leading-5 text-warm-300 xl:line-clamp-1 xl:leading-4">{item.handle}</p>
+          <p className="mt-1 line-clamp-1 text-xs leading-5 text-warm-300 xl:leading-4">{item.handle}</p>
         </div>
       </div>
       <div className="mt-3 flex flex-wrap gap-1.5 xl:mt-2">
@@ -85,29 +95,9 @@ function ProofTile({ item }) {
           </span>
         ))}
       </div>
+      <div className="reveal-panel">
+        <p className="text-xs leading-5 text-warm-200 xl:text-[0.7rem] xl:leading-4">{item.handle}</p>
+      </div>
     </article>
-  );
-}
-
-function Credential({ certification }) {
-  return (
-    <a
-      href={certification.href}
-      target="_blank"
-      rel="noreferrer"
-      className="group flex gap-3 border-t border-warm-50/10 pt-3"
-      aria-label={`View certificate: ${certification.name}`}
-    >
-      <Award className="mt-1 flex-none text-signal-amber" size={18} />
-      <span className="min-w-0 flex-1">
-        <span className="line-clamp-2 text-xs leading-5 text-warm-200 transition group-hover:text-redwood-300 sm:text-sm sm:leading-6">
-          {certification.name}
-        </span>
-        <span className="mt-1 inline-flex items-center gap-1 font-mono text-[0.58rem] uppercase tracking-[0.12em] text-warm-500 transition group-hover:text-redwood-300">
-          {certification.issuer}
-          <ArrowUpRight size={12} />
-        </span>
-      </span>
-    </a>
   );
 }
