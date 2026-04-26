@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vite build && node scripts/prerender.mjs",
+    "build": "node scripts/render-cv-from-tex.mjs && vite build && node scripts/prerender.mjs",
     "cv:html": "node scripts/render-cv-from-tex.mjs",
     "preview": "vite preview --host 127.0.0.1"
   },
