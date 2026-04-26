@@ -256,10 +256,59 @@ const quickSignals = [
   ["Reliability", "Observability, Grafana, incident response, production operations"]
 ];
 
-const contactLinks = [
-  cleanLatex(email) ? `<a href="mailto:${escapeAttr(cleanLatex(email))}">${cleanLatex(email)}</a>` : "",
-  cleanLatex(phone) ? `<a href="tel:${escapeAttr(cleanLatex(phone).replace(/\s+/g, ""))}">${cleanLatex(phone)}</a>` : "",
-  ...links.map(([href, label]) => `<a href="${escapeAttr(href)}" target="_blank" rel="noreferrer">${cleanLatex(label)}</a>`)
+const cleanEmail = cleanLatex(email);
+const cleanPhone = cleanLatex(phone);
+
+function socialProfile(href, label) {
+  const value = `${href} ${label}`.toLowerCase();
+  if (value.includes("linkedin")) {
+    return { name: "LinkedIn", icon: "/assets/social/linkedin.svg", className: "linkedin" };
+  }
+  if (value.includes("github")) {
+    return { name: "GitHub", icon: "/assets/social/github.svg", className: "github" };
+  }
+  if (value.includes("leetcode")) {
+    return { name: "LeetCode", icon: "/assets/social/leetcode.svg", className: "leetcode" };
+  }
+  return { name: cleanLatex(label), icon: "", className: "link" };
+}
+
+const contactItems = [
+  cleanEmail
+    ? `<li>
+        <button type="button" class="copy-contact" data-copy="${escapeAttr(cleanEmail)}" aria-label="Copy email address">
+          <span class="copy-main">
+            <span class="copy-label">Email</span>
+            <span class="copy-value">${cleanEmail}</span>
+          </span>
+          <span class="copy-state" aria-hidden="true">Copy</span>
+        </button>
+      </li>`
+    : "",
+  cleanPhone
+    ? `<li>
+        <button type="button" class="copy-contact" data-copy="${escapeAttr(cleanPhone)}" aria-label="Copy phone number">
+          <span class="copy-main">
+            <span class="copy-label">Phone</span>
+            <span class="copy-value">${cleanPhone}</span>
+          </span>
+          <span class="copy-state" aria-hidden="true">Copy</span>
+        </button>
+      </li>`
+    : "",
+  links.length
+    ? `<li class="social-contact-row">
+        ${links
+          .map(([href, label]) => {
+            const profile = socialProfile(href, label);
+            return `<a class="social-contact ${profile.className}" href="${escapeAttr(href)}" target="_blank" rel="noreferrer" aria-label="${profile.name}">
+              ${profile.icon ? `<img src="${profile.icon}" alt="" />` : ""}
+              <span>${profile.name}</span>
+            </a>`;
+          })
+          .join("")}
+      </li>`
+    : ""
 ].filter(Boolean);
 
 const html = `<!doctype html>
@@ -431,7 +480,7 @@ const html = `<!doctype html>
 
       .contact-list {
         display: grid;
-        gap: 8px;
+        gap: 10px;
         justify-items: end;
         list-style: none;
         margin: 0;
@@ -439,15 +488,119 @@ const html = `<!doctype html>
         text-align: right;
       }
 
-      .contact-list a,
-      .contact-list span {
+      .copy-contact {
+        appearance: none;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-sizing: border-box;
         color: var(--muted);
-        font-size: 0.9rem;
+        cursor: copy;
+        display: flex;
+        font: inherit;
+        gap: 10px;
+        justify-content: space-between;
+        margin: 0;
+        max-width: 100%;
+        min-width: 0;
         overflow-wrap: anywhere;
+        padding: 8px 10px;
+        text-align: left;
+        transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+        width: 292px;
       }
 
-      .contact-list a:hover {
+      .copy-contact:hover {
+        background: var(--accent-soft);
+        border-color: rgba(182, 67, 52, 0.28);
+        color: var(--ink);
+      }
+
+      .copy-main {
+        display: grid;
+        flex: 1 1 auto;
+        gap: 2px;
+        min-width: 0;
+      }
+
+      .copy-label {
         color: var(--accent-dark);
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .copy-value {
+        color: var(--ink);
+        font-size: 0.9rem;
+        line-height: 1.25;
+        text-decoration: none;
+      }
+
+      .copy-state {
+        background: rgba(182, 67, 52, 0.1);
+        border-radius: 999px;
+        color: var(--accent-dark);
+        flex: 0 0 auto;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        opacity: 0.8;
+        padding: 4px 7px;
+        text-transform: uppercase;
+        transition: background 160ms ease, opacity 160ms ease;
+      }
+
+      .copy-contact:hover .copy-state,
+      .copy-contact.is-copied .copy-state {
+        background: rgba(182, 67, 52, 0.16);
+        opacity: 1;
+      }
+
+      .social-contact-row {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+        padding-top: 2px;
+      }
+
+      .social-contact {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.58);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--ink);
+        display: inline-flex;
+        gap: 7px;
+        min-height: 34px;
+        padding: 7px 10px;
+        text-decoration: none;
+        transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+      }
+
+      .social-contact:hover {
+        background: var(--accent-soft);
+        border-color: rgba(182, 67, 52, 0.34);
+        color: var(--accent-dark);
+      }
+
+      .social-contact img {
+        display: block;
+        height: 17px;
+        width: 17px;
+      }
+
+      .social-contact.github img {
+        filter: brightness(0) saturate(1) invert(11%) sepia(12%) saturate(906%) hue-rotate(337deg) brightness(92%) contrast(91%);
+      }
+
+      .social-contact span {
+        font-size: 0.78rem;
+        font-weight: 700;
       }
 
       .signal-strip {
@@ -660,6 +813,14 @@ const html = `<!doctype html>
           text-align: left;
         }
 
+        .copy-contact {
+          width: min(100%, 320px);
+        }
+
+        .social-contact-row {
+          justify-content: flex-start;
+        }
+
         .signal-strip {
           grid-template-columns: 1fr;
         }
@@ -752,11 +913,43 @@ const html = `<!doctype html>
           content: " | ";
         }
 
-        .contact-list a,
-        .contact-list span {
+        .copy-contact,
+        .copy-value,
+        .social-contact {
           color: #222222;
           font-size: 8.8pt;
           text-decoration: none;
+        }
+
+        .copy-contact {
+          background: transparent;
+          border: 0;
+          display: inline;
+          min-width: 0;
+          padding: 0;
+          width: auto;
+        }
+
+        .copy-main {
+          display: inline;
+        }
+
+        .copy-label,
+        .copy-state,
+        .social-contact img {
+          display: none;
+        }
+
+        .social-contact {
+          background: transparent;
+          border: 0;
+          display: inline;
+          padding: 0;
+        }
+
+        .social-contact span {
+          font-size: 8.8pt;
+          font-weight: 400;
         }
 
         .signal-strip {
@@ -890,7 +1083,7 @@ const html = `<!doctype html>
                 <p class="location">${cleanLatex(location)}</p>
               </div>
               <ul class="contact-list">
-                ${contactLinks.map((link) => `<li>${link}</li>`).join("")}
+                ${contactItems.join("")}
               </ul>
             </div>
             <div class="signal-strip" aria-label="Profile highlights">
@@ -905,6 +1098,36 @@ const html = `<!doctype html>
         </div>
       </article>
     </main>
+    <script>
+      document.addEventListener("click", async (event) => {
+        const button = event.target.closest("[data-copy]");
+        if (!button) return;
+
+        const value = button.getAttribute("data-copy");
+        try {
+          await navigator.clipboard.writeText(value);
+        } catch {
+          const input = document.createElement("textarea");
+          input.value = value;
+          input.setAttribute("readonly", "");
+          input.style.position = "fixed";
+          input.style.left = "-9999px";
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand("copy");
+          input.remove();
+        }
+
+        const state = button.querySelector(".copy-state");
+        if (!state) return;
+        state.textContent = "Copied";
+        button.classList.add("is-copied");
+        window.setTimeout(() => {
+          state.textContent = "Copy";
+          button.classList.remove("is-copied");
+        }, 1400);
+      });
+    </script>
   </body>
 </html>`;
 

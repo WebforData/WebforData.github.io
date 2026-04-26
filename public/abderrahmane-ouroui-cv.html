@@ -167,7 +167,7 @@
 
       .contact-list {
         display: grid;
-        gap: 8px;
+        gap: 10px;
         justify-items: end;
         list-style: none;
         margin: 0;
@@ -175,15 +175,119 @@
         text-align: right;
       }
 
-      .contact-list a,
-      .contact-list span {
+      .copy-contact {
+        appearance: none;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-sizing: border-box;
         color: var(--muted);
-        font-size: 0.9rem;
+        cursor: copy;
+        display: flex;
+        font: inherit;
+        gap: 10px;
+        justify-content: space-between;
+        margin: 0;
+        max-width: 100%;
+        min-width: 0;
         overflow-wrap: anywhere;
+        padding: 8px 10px;
+        text-align: left;
+        transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+        width: 292px;
       }
 
-      .contact-list a:hover {
+      .copy-contact:hover {
+        background: var(--accent-soft);
+        border-color: rgba(182, 67, 52, 0.28);
+        color: var(--ink);
+      }
+
+      .copy-main {
+        display: grid;
+        flex: 1 1 auto;
+        gap: 2px;
+        min-width: 0;
+      }
+
+      .copy-label {
         color: var(--accent-dark);
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .copy-value {
+        color: var(--ink);
+        font-size: 0.9rem;
+        line-height: 1.25;
+        text-decoration: none;
+      }
+
+      .copy-state {
+        background: rgba(182, 67, 52, 0.1);
+        border-radius: 999px;
+        color: var(--accent-dark);
+        flex: 0 0 auto;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        opacity: 0.8;
+        padding: 4px 7px;
+        text-transform: uppercase;
+        transition: background 160ms ease, opacity 160ms ease;
+      }
+
+      .copy-contact:hover .copy-state,
+      .copy-contact.is-copied .copy-state {
+        background: rgba(182, 67, 52, 0.16);
+        opacity: 1;
+      }
+
+      .social-contact-row {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+        padding-top: 2px;
+      }
+
+      .social-contact {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.58);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--ink);
+        display: inline-flex;
+        gap: 7px;
+        min-height: 34px;
+        padding: 7px 10px;
+        text-decoration: none;
+        transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+      }
+
+      .social-contact:hover {
+        background: var(--accent-soft);
+        border-color: rgba(182, 67, 52, 0.34);
+        color: var(--accent-dark);
+      }
+
+      .social-contact img {
+        display: block;
+        height: 17px;
+        width: 17px;
+      }
+
+      .social-contact.github img {
+        filter: brightness(0) saturate(1) invert(11%) sepia(12%) saturate(906%) hue-rotate(337deg) brightness(92%) contrast(91%);
+      }
+
+      .social-contact span {
+        font-size: 0.78rem;
+        font-weight: 700;
       }
 
       .signal-strip {
@@ -396,6 +500,14 @@
           text-align: left;
         }
 
+        .copy-contact {
+          width: min(100%, 320px);
+        }
+
+        .social-contact-row {
+          justify-content: flex-start;
+        }
+
         .signal-strip {
           grid-template-columns: 1fr;
         }
@@ -488,11 +600,43 @@
           content: " | ";
         }
 
-        .contact-list a,
-        .contact-list span {
+        .copy-contact,
+        .copy-value,
+        .social-contact {
           color: #222222;
           font-size: 8.8pt;
           text-decoration: none;
+        }
+
+        .copy-contact {
+          background: transparent;
+          border: 0;
+          display: inline;
+          min-width: 0;
+          padding: 0;
+          width: auto;
+        }
+
+        .copy-main {
+          display: inline;
+        }
+
+        .copy-label,
+        .copy-state,
+        .social-contact img {
+          display: none;
+        }
+
+        .social-contact {
+          background: transparent;
+          border: 0;
+          display: inline;
+          padding: 0;
+        }
+
+        .social-contact span {
+          font-size: 8.8pt;
+          font-weight: 400;
         }
 
         .signal-strip {
@@ -626,7 +770,34 @@
                 <p class="location">Casablanca, Morocco</p>
               </div>
               <ul class="contact-list">
-                <li><a href="mailto:abdououroui123@gmail.com">abdououroui123@gmail.com</a></li><li><a href="tel:+212708301679">+212 708301679</a></li><li><a href="https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/" target="_blank" rel="noreferrer">linkedin.com/in/abderrahmane-ouroui-5b73b1216</a></li><li><a href="https://github.com/webfordata" target="_blank" rel="noreferrer">github.com/webfordata</a></li><li><a href="https://leetcode.com/webfordata/" target="_blank" rel="noreferrer">leetcode.com/webfordata</a></li>
+                <li>
+        <button type="button" class="copy-contact" data-copy="abdououroui123@gmail.com" aria-label="Copy email address">
+          <span class="copy-main">
+            <span class="copy-label">Email</span>
+            <span class="copy-value">abdououroui123@gmail.com</span>
+          </span>
+          <span class="copy-state" aria-hidden="true">Copy</span>
+        </button>
+      </li><li>
+        <button type="button" class="copy-contact" data-copy="+212 708301679" aria-label="Copy phone number">
+          <span class="copy-main">
+            <span class="copy-label">Phone</span>
+            <span class="copy-value">+212 708301679</span>
+          </span>
+          <span class="copy-state" aria-hidden="true">Copy</span>
+        </button>
+      </li><li class="social-contact-row">
+        <a class="social-contact linkedin" href="https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/" target="_blank" rel="noreferrer" aria-label="LinkedIn">
+              <img src="/assets/social/linkedin.svg" alt="" />
+              <span>LinkedIn</span>
+            </a><a class="social-contact github" href="https://github.com/webfordata" target="_blank" rel="noreferrer" aria-label="GitHub">
+              <img src="/assets/social/github.svg" alt="" />
+              <span>GitHub</span>
+            </a><a class="social-contact leetcode" href="https://leetcode.com/webfordata/" target="_blank" rel="noreferrer" aria-label="LeetCode">
+              <img src="/assets/social/leetcode.svg" alt="" />
+              <span>LeetCode</span>
+            </a>
+      </li>
               </ul>
             </div>
             <div class="signal-strip" aria-label="Profile highlights">
@@ -729,5 +900,35 @@
         </div>
       </article>
     </main>
+    <script>
+      document.addEventListener("click", async (event) => {
+        const button = event.target.closest("[data-copy]");
+        if (!button) return;
+
+        const value = button.getAttribute("data-copy");
+        try {
+          await navigator.clipboard.writeText(value);
+        } catch {
+          const input = document.createElement("textarea");
+          input.value = value;
+          input.setAttribute("readonly", "");
+          input.style.position = "fixed";
+          input.style.left = "-9999px";
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand("copy");
+          input.remove();
+        }
+
+        const state = button.querySelector(".copy-state");
+        if (!state) return;
+        state.textContent = "Copied";
+        button.classList.add("is-copied");
+        window.setTimeout(() => {
+          state.textContent = "Copy";
+          button.classList.remove("is-copied");
+        }, 1400);
+      });
+    </script>
   </body>
 </html>
