@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">Abderrahmane Ouroui portfolio logo</title>
+  <desc id="logo-desc">AO monogram in a dark Redwood-inspired technical frame.</desc>
+  <defs>
+    <linearGradient id="mark-bg" x1="28" y1="20" x2="228" y2="236" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#19130F" />
+      <stop offset="0.55" stop-color="#090807" />
+      <stop offset="1" stop-color="#140D0B" />
+    </linearGradient>
+    <linearGradient id="redwood-stroke" x1="38" y1="32" x2="218" y2="224" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF9B82" />
+      <stop offset="0.48" stop-color="#C74634" />
+      <stop offset="1" stop-color="#7D2C22" />
+    </linearGradient>
+    <filter id="soft-shadow" x="-18%" y="-18%" width="136%" height="136%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity="0.38" />
+    </filter>
+  </defs>
+
+  <rect width="256" height="256" rx="54" fill="#070605" />
+  <rect x="10" y="10" width="236" height="236" rx="48" fill="url(#mark-bg)" />
+  <rect x="18" y="18" width="220" height="220" rx="42" fill="none" stroke="url(#redwood-stroke)" stroke-width="5" />
+
+  <g filter="url(#soft-shadow)">
+    <path
+      d="M45 181.5 96.2 74.5c1.8-3.8 7.2-3.8 9 0l51.2 107h-22.2l-9.4-20.2H76.4L67 181.5H45Zm40-39.3h31.2l-15.6-34.1L85 142.2Z"
+      fill="#F8F3EA"
+    />
+    <circle cx="163" cy="128" r="47.5" fill="none" stroke="#FF8A72" stroke-width="20" />
+    <circle cx="163" cy="128" r="24" fill="#070605" stroke="#241A15" stroke-width="4" />
+  </g>
+
+  <path d="M49 203h158" stroke="#F8F3EA" stroke-width="5" stroke-linecap="round" opacity="0.72" />
+  <path d="M61 216h54M141 216h54" stroke="#C74634" stroke-width="5" stroke-linecap="round" opacity="0.9" />
+</svg>
