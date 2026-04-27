@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { ArrowUpRight, Check, Copy, Download, FileText } from "lucide-react";
+import { ArrowUpRight, Download, FileText, Mail } from "lucide-react";
 import { profile } from "../data/portfolio.js";
 
 const recruiterActions = [
@@ -32,25 +31,7 @@ const recruiterActions = [
 ];
 
 export default function Contact() {
-  const [copied, setCopied] = useState(false);
-
-  const copyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText(profile.email);
-    } catch {
-      const input = document.createElement("textarea");
-      input.value = profile.email;
-      input.setAttribute("readonly", "");
-      input.style.position = "fixed";
-      input.style.left = "-9999px";
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand("copy");
-      input.remove();
-    }
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
-  };
+  const emailHref = `mailto:${profile.email}?subject=${encodeURIComponent("Portfolio inquiry")}`;
 
   return (
     <section id="contact" className="box-border h-screen w-screen min-w-0 shrink-0 snap-start overflow-hidden px-4 pb-8 pt-20 sm:px-6 lg:px-8">
@@ -67,19 +48,19 @@ export default function Contact() {
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={copyEmail}
+              <a
+                href={emailHref}
                 className="contact-action"
+                aria-label={`Email ${profile.name}`}
               >
                 <span className="contact-action-icon bg-redwood-500 text-white">
-                  {copied ? <Check size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}
+                  <Mail size={17} aria-hidden="true" />
                 </span>
                 <span className="min-w-0 text-left">
-                  <span className="block text-sm font-semibold">{copied ? "Email copied" : "Copy email"}</span>
+                  <span className="block text-sm font-semibold">Email me</span>
                   <span className="block truncate text-xs opacity-70">{profile.email}</span>
                 </span>
-              </button>
+              </a>
               {recruiterActions.map((action) => (
                 <ContactAction key={action.label} action={action} />
               ))}

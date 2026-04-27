@@ -11,15 +11,16 @@ import { caseStudies } from "./data/portfolio.js";
 import { canonicalUrl, defaultSeo, portfolioSections, storySections } from "./data/seo.js";
 
 const themeStorageKey = "aouroui-portfolio-theme";
-const wheelIntentTimeoutMs = 560;
-const verticalPageThreshold = 320;
-const verticalEdgePageThreshold = 360;
-const horizontalPageThreshold = 180;
-const verticalEdgeHoldMs = 120;
-const scrollLockMs = 760;
-const verticalScrollStep = 320;
-const verticalScrollableOverflow = 96;
-const verticalEdgeBuffer = 4;
+const wheelIntentTimeoutMs = 420;
+const wheelPageThreshold = 160;
+const wheelEdgePageThreshold = 180;
+const wheelHorizontalPageThreshold = 90;
+const wheelEdgeHoldMs = 180;
+const scrollLockMs = 680;
+const touchAxisThreshold = 10;
+const touchPageThreshold = 76;
+const verticalScrollableOverflow = 8;
+const verticalEdgeBuffer = 6;
 
 function getInitialTheme() {
   if (typeof window === "undefined") return "dark";
@@ -50,8 +51,8 @@ function setMetaContent(selector, content) {
 
 function getActiveSection(root) {
   if (!root) return null;
-  const currentIndex = Math.round(root.scrollLeft / root.clientWidth);
-  return root.firstElementChild?.children?.[currentIndex] ?? null;
+  const currentIndex = Number(root.dataset.activeIndex || 0);
+  return root.querySelector(".story-track")?.children?.[currentIndex] ?? null;
 }
 
 function isScrollableY(element) {
@@ -91,6 +92,34 @@ function getScrollableY(target, root) {
   return null;
 }
 
+function getSectionByIndex(root, index) {
+  return root?.querySelector(".story-track")?.children?.[clampSectionIndex(index)] ?? null;
+}
+
+function getPrimaryScrollableY(section) {
+  if (!section) return null;
+  if (isScrollableY(section)) return section;
+
+  const candidates = section.querySelectorAll('[class*="overflow-y-auto"], [class*="overflow-y-scroll"]');
+  for (const candidate of candidates) {
+    if (isScrollableY(candidate)) return candidate;
+  }
+
+  return null;
+}
+
+function setSectionScrollPosition(root, index, placement = "start") {
+  const panel = getPrimaryScrollableY(getSectionByIndex(root, index));
+  if (!panel) return;
+
+  if (placement === "end") {
+    panel.scrollTop = Math.max(0, panel.scrollHeight - panel.clientHeight);
+    return;
+  }
+
+  panel.scrollTop = 0;
+}
+
 function canScrollY(element, deltaY) {
   if (!element) return false;
   if (deltaY > 0) return element.scrollTop + element.clientHeight < element.scrollHeight - verticalEdgeBuffer;
@@ -98,13 +127,36 @@ function canScrollY(element, deltaY) {
   return false;
 }
 
+function clampSectionIndex(index) {
+  return Math.max(0, Math.min(portfolioSections.length - 1, index));
+}
+
+function normalizeWheelDelta(event) {
+  const scale =
+    event.deltaMode === WheelEvent.DOM_DELTA_LINE
+      ? 16
+      : event.deltaMode === WheelEvent.DOM_DELTA_PAGE
+        ? window.innerHeight
+        : 1;
+
+  return {
+    x: event.deltaX * scale,
+    y: event.deltaY * scale
+  };
+}
+
+function preventDefault(event) {
+  if (event.cancelable) event.preventDefault();
+}
+
 export default function App({ initialPath }) {
   const scrollerRef = useRef(null);
   const touchRef = useRef(null);
-  const wheelLockRef = useRef(false);
+  const pageLockUntilRef = useRef(0);
   const wheelIntentRef = useRef({ delta: 0, lastTime: 0, edgeStartedAt: 0, sign: 0 });
   const initialIndexRef = useRef(getInitialSectionIndex(initialPath));
-  const [activeIndex, setActiveIndex] = useState(initialIndexRef.current);
+  const activeIndexRef = useRef(initialIndexRef.current);
+  const [activeIndex, setActiveIndexState] = useState(initialIndexRef.current);
   const [highlightedSignal, setHighlightedSignal] = useState(null);
   const [theme, setTheme] = useState(getInitialTheme);
   const routePath =
@@ -121,20 +173,25 @@ export default function App({ initialPath }) {
     window.history[method]({ section: section.id }, "", nextPath);
   }, []);
 
+  const setActiveIndex = useCallback((index) => {
+    const nextIndex = clampSectionIndex(index);
+    activeIndexRef.current = nextIndex;
+    setActiveIndexState(nextIndex);
+  }, []);
+
   const scrollToSection = useCallback((index, signal = null, options = {}) => {
     const scroller = scrollerRef.current;
-    if (!scroller) return;
 
-    const { updateUrl = true, historyMethod = "pushState" } = options;
-    const nextIndex = Math.max(0, Math.min(portfolioSections.length - 1, index));
+    const { updateUrl = true, historyMethod = "pushState", scrollPlacement = "start" } = options;
+    const nextIndex = clampSectionIndex(index);
     setHighlightedSignal(signal);
+    if (scroller) {
+      scroller.dataset.activeIndex = String(nextIndex);
+      setSectionScrollPosition(scroller, nextIndex, scrollPlacement);
+    }
     setActiveIndex(nextIndex);
     if (updateUrl) updateLocation(nextIndex, historyMethod);
-    scroller.scrollTo({
-      left: nextIndex * scroller.clientWidth,
-      behavior: "smooth"
-    });
-  }, [updateLocation]);
+  }, [setActiveIndex, updateLocation]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -163,27 +220,6 @@ export default function App({ initialPath }) {
     const scroller = scrollerRef.current;
     if (!scroller) return undefined;
 
-    let frame = 0;
-    if (initialIndexRef.current > 0) {
-      scroller.scrollTo({
-        left: initialIndexRef.current * scroller.clientWidth,
-        behavior: "auto"
-      });
-    }
-
-    const syncProgress = () => {
-      frame = 0;
-      const nextIndex = Math.max(
-        0,
-        Math.min(portfolioSections.length - 1, Math.round(scroller.scrollLeft / scroller.clientWidth))
-      );
-      setActiveIndex(nextIndex);
-    };
-
-    const requestSync = () => {
-      if (!frame) frame = requestAnimationFrame(syncProgress);
-    };
-
     const resetWheelIntent = () => {
       wheelIntentRef.current = { delta: 0, lastTime: 0, edgeStartedAt: 0, sign: 0 };
     };
@@ -201,67 +237,63 @@ export default function App({ initialPath }) {
       intent.sign = sign;
       intent.lastTime = now;
 
-      if (Math.abs(intent.delta) < threshold || now - intent.edgeStartedAt < minEdgeMs) return 0;
+      const strongGesture = Math.abs(delta) >= threshold;
+      if (Math.abs(intent.delta) < threshold || (!strongGesture && now - intent.edgeStartedAt < minEdgeMs)) return 0;
       const direction = sign;
       resetWheelIntent();
       return direction;
     };
 
     const goByDirection = (direction) => {
-      if (!direction || wheelLockRef.current) return;
-      const currentIndex = Math.round(scroller.scrollLeft / scroller.clientWidth);
-      const nextIndex = Math.max(0, Math.min(portfolioSections.length - 1, currentIndex + direction));
+      const now = performance.now();
+      if (!direction || now < pageLockUntilRef.current) return;
+      const currentIndex = activeIndexRef.current;
+      const nextIndex = clampSectionIndex(currentIndex + direction);
       if (nextIndex === currentIndex) return;
 
-      wheelLockRef.current = true;
-      setActiveIndex(nextIndex);
-      updateLocation(nextIndex);
-      scroller.scrollTo({
-        left: nextIndex * scroller.clientWidth,
-        behavior: "smooth"
+      pageLockUntilRef.current = now + scrollLockMs;
+      scrollToSection(nextIndex, null, {
+        scrollPlacement: direction > 0 ? "start" : "end"
       });
-
-      window.setTimeout(() => {
-        wheelLockRef.current = false;
-        requestSync();
-      }, scrollLockMs);
     };
 
     const handleWheel = (event) => {
-      const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+      if (event.ctrlKey) return;
+      const normalized = normalizeWheelDelta(event);
+      const verticalIntent = Math.abs(normalized.y) >= Math.abs(normalized.x);
+      const delta = verticalIntent ? normalized.y : normalized.x;
       if (Math.abs(delta) < 8) return;
 
-      const verticalIntent = Math.abs(event.deltaY) >= Math.abs(event.deltaX);
       const scrollableY = verticalIntent ? getScrollableY(event.target, scroller) : null;
-      if (canScrollY(scrollableY, event.deltaY)) {
-        event.preventDefault();
-        const previousTop = scrollableY.scrollTop;
-        const nextDelta = Math.max(-verticalScrollStep, Math.min(verticalScrollStep, event.deltaY));
-        scrollableY.scrollTop += nextDelta;
-        if (Math.abs(scrollableY.scrollTop - previousTop) > 0.5) {
-          resetWheelIntent();
-          return;
-        }
+      if (verticalIntent && canScrollY(scrollableY, normalized.y)) {
+        preventDefault(event);
+        scrollableY.scrollTop += normalized.y;
+        resetWheelIntent();
+        return;
       }
 
-      event.preventDefault();
+      preventDefault(event);
       const threshold = verticalIntent
         ? scrollableY
-          ? verticalEdgePageThreshold
-          : verticalPageThreshold
-        : horizontalPageThreshold;
-      const minEdgeMs = verticalIntent && scrollableY ? verticalEdgeHoldMs : 0;
+          ? wheelEdgePageThreshold
+          : wheelPageThreshold
+        : wheelHorizontalPageThreshold;
+      const minEdgeMs = verticalIntent && scrollableY ? wheelEdgeHoldMs : 0;
       goByDirection(consumeIntent(delta, threshold, minEdgeMs));
     };
 
     const handleTouchStart = (event) => {
+      if (event.touches.length !== 1) return;
       const touch = event.touches[0];
+      const scrollableY = getScrollableY(event.target, scroller);
+      const scrollMax = scrollableY ? Math.max(0, scrollableY.scrollHeight - scrollableY.clientHeight) : 0;
+
       touchRef.current = {
-        x: touch.clientX,
-        y: touch.clientY,
-        scrollLeft: scroller.scrollLeft,
-        scrollableY: getScrollableY(event.target, scroller),
-        edgeDelta: 0
+        startX: touch.clientX,
+        startY: touch.clientY,
+        scrollableY,
+        scrollTop: scrollableY?.scrollTop ?? 0,
+        scrollMax
       };
     };
 
@@ -270,62 +302,59 @@ export default function App({ initialPath }) {
       const touch = event.touches[0];
       if (!start || !touch) return;
 
-      const deltaX = start.x - touch.clientX;
-      const deltaY = start.y - touch.clientY;
-      const verticalIntent = Math.abs(deltaY) > Math.abs(deltaX);
-      if (verticalIntent && canScrollY(start.scrollableY, deltaY)) {
-        event.preventDefault();
-        start.scrollableY.scrollTop += deltaY;
-        start.y = touch.clientY;
-        start.edgeDelta = 0;
-        return;
-      }
+      const totalX = start.startX - touch.clientX;
+      const totalY = start.startY - touch.clientY;
+      const absX = Math.abs(totalX);
+      const absY = Math.abs(totalY);
 
-      event.preventDefault();
-      start.edgeDelta = Math.abs(deltaY) > Math.abs(deltaX) ? deltaY : deltaX;
+      if (absX > absY + touchAxisThreshold) {
+        preventDefault(event);
+      }
     };
 
     const handleTouchEnd = (event) => {
       const start = touchRef.current;
+      if (!start) return;
       const touch = event.changedTouches[0];
-      if (!start || !touch) return;
-
-      const deltaX = start.x - touch.clientX;
-      const deltaY = start.y - touch.clientY;
-      const dominantDelta = Math.abs(deltaY) > Math.abs(deltaX) ? deltaY : deltaX;
-      const currentIndex = Math.round(start.scrollLeft / scroller.clientWidth);
-      const nextIndex =
-        Math.abs(dominantDelta) > 95
-          ? Math.max(0, Math.min(portfolioSections.length - 1, currentIndex + (dominantDelta > 0 ? 1 : -1)))
-          : currentIndex;
-
-      scroller.scrollTo({
-        left: nextIndex * scroller.clientWidth,
-        behavior: "smooth"
-      });
-      setActiveIndex(nextIndex);
-      updateLocation(nextIndex);
       touchRef.current = null;
+      if (!touch) return;
+
+      const deltaX = start.startX - touch.clientX;
+      const deltaY = start.startY - touch.clientY;
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+      if (Math.max(absX, absY) < touchPageThreshold) return;
+
+      const verticalIntent = absY >= absX;
+      const delta = verticalIntent ? deltaY : deltaX;
+      const direction = Math.sign(delta);
+      if (!direction) return;
+
+      if (verticalIntent && start.scrollableY) {
+        const startedAwayFromEdge =
+          direction > 0
+            ? start.scrollTop < start.scrollMax - verticalEdgeBuffer
+            : start.scrollTop > verticalEdgeBuffer;
+        const movedInsideScrollable = Math.abs(start.scrollableY.scrollTop - start.scrollTop) > 2;
+
+        if (startedAwayFromEdge || movedInsideScrollable) return;
+      }
+
+      goByDirection(direction);
     };
 
-    syncProgress();
-    scroller.addEventListener("scroll", requestSync, { passive: true });
-    window.addEventListener("wheel", handleWheel, { passive: false, capture: true });
+    scroller.addEventListener("wheel", handleWheel, { passive: false, capture: true });
     scroller.addEventListener("touchstart", handleTouchStart, { passive: true });
     scroller.addEventListener("touchmove", handleTouchMove, { passive: false });
     scroller.addEventListener("touchend", handleTouchEnd, { passive: true });
-    window.addEventListener("resize", requestSync);
 
     return () => {
-      if (frame) cancelAnimationFrame(frame);
-      scroller.removeEventListener("scroll", requestSync);
-      window.removeEventListener("wheel", handleWheel, true);
+      scroller.removeEventListener("wheel", handleWheel, true);
       scroller.removeEventListener("touchstart", handleTouchStart);
       scroller.removeEventListener("touchmove", handleTouchMove);
       scroller.removeEventListener("touchend", handleTouchEnd);
-      window.removeEventListener("resize", requestSync);
     };
-  }, [updateLocation]);
+  }, [scrollToSection]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -484,8 +513,12 @@ export default function App({ initialPath }) {
         <ThemeIcon size={18} aria-hidden="true" />
       </button>
 
-      <main ref={scrollerRef} className="horizontal-scroll redwood-shell h-screen overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory">
-        <div className="flex min-h-full w-max">
+      <main
+        ref={scrollerRef}
+        data-active-index={activeIndex}
+        className="horizontal-scroll redwood-shell h-screen overflow-hidden"
+      >
+        <div className="story-track flex min-h-full w-max" style={{ "--story-index": activeIndex }}>
           <Hero onNavigate={scrollToSection} />
           <MetricStrip highlightedSignal={highlightedSignal} />
           <CaseStudies />

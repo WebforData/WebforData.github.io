@@ -472,13 +472,23 @@ a:focus-visible {
 }
 
 .horizontal-scroll {
-  scrollbar-width: none;
   overscroll-behavior: contain;
-  touch-action: pan-y;
+  scroll-padding-inline: 0;
+  touch-action: pan-y pinch-zoom;
 }
 
-.horizontal-scroll::-webkit-scrollbar {
-  display: none;
+.story-track {
+  transform: translate3d(calc(var(--story-index, 0) * -100vw), 0, 0);
+  transition: transform 620ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.horizontal-scroll section,
+.horizontal-scroll section [class*="overflow-y-auto"],
+.horizontal-scroll section [class*="overflow-y-scroll"] {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y pinch-zoom;
 }
 
 .story-progress {
@@ -567,8 +577,9 @@ section > div::-webkit-scrollbar {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+  html,
+  .horizontal-scroll {
+    scroll-behavior: auto !important;
   }
 
   .signal-line::after,
@@ -579,6 +590,7 @@ section > div::-webkit-scrollbar {
   }
 
   .story-segment-fill,
+  .story-track,
   .interactive-card,
   .contact-action,
   .case-back-link,
