@@ -89,10 +89,10 @@ export const capabilitySignals = [
   },
   {
     label: "Runtime platforms",
-    value: "Containers + compute",
+    value: "PaaS + containers",
     emoji: "🚀",
-    brief: "Run platform workloads and package Kubernetes platform components with Helm.",
-    detail: "Build runtime paths for Kubernetes platform packaging with Helm, compute, container images, private services, scaling, validation, and high availability.",
+    brief: "Start PaaS work from scratch and package Kubernetes platform components with Helm.",
+    detail: "Started a Platform-as-a-Service project from scratch while building runtime paths for Kubernetes platform packaging with Helm, compute, container images, private services, scaling, validation, and high availability.",
     stack: ["OKE", "K8s", "Helm", "Docker", "Linux"]
   },
   {
@@ -402,9 +402,9 @@ export const timeline = [
   {
     period: "2023 - Present",
     title: "DevOps Engineer II / Platform Engineer, Oracle",
-    achievement: "Architected OCI guardrails, Terraform migration paths, OKE releases, observability, and data/ML workflows.",
+    achievement: "Started a PaaS project from scratch alongside OCI guardrails, Terraform migrations, OKE releases, and observability.",
     detail:
-      "Build and operate OCI-native capabilities across IaC, secure networking, CI/CD, data services, observability, release execution, and reproducible ML workflows."
+      "Build and operate OCI-native capabilities across PaaS foundations, IaC, secure networking, CI/CD, data services, observability, release execution, and reproducible ML workflows."
   },
   {
     period: "2023",
@@ -430,6 +430,12 @@ export const timeline = [
 ];
 
 export const proofOfWork = [
+  {
+    emoji: "🧩",
+    title: "PaaS from scratch",
+    handle: "0 to 1 platform service -> architecture, Kubernetes packaging, delivery path, guardrails.",
+    signals: ["0 to 1", "PaaS"]
+  },
   {
     emoji: "🏗️",
     title: "OCI guardrails",
@@ -872,10 +878,10 @@ const frCapabilitySignals = [
   },
   {
     label: "Plateformes runtime",
-    value: "conteneurs + compute",
+    value: "PaaS + conteneurs",
     emoji: "🚀",
-    brief: "Exécuter les workloads et packager les composants plateforme Kubernetes avec Helm.",
-    detail: "Construire des chemins runtime pour le packaging de plateforme Kubernetes avec Helm, compute, images conteneur, services privés, scaling, validation et haute disponibilité.",
+    brief: "Démarrer un PaaS depuis zéro et packager les composants Kubernetes avec Helm.",
+    detail: "Démarrer un projet Platform-as-a-Service depuis zéro tout en construisant les chemins runtime pour le packaging Kubernetes avec Helm, compute, images conteneur, services privés, scaling, validation et haute disponibilité.",
     stack: ["OKE", "K8s", "Helm", "Docker", "Linux"]
   },
   {
@@ -1079,9 +1085,9 @@ const frTimeline = [
   {
     period: "2023 - Présent",
     title: "Ingénieur DevOps II / Ingénieur Plateforme, Oracle",
-    achievement: "Architecture de garde-fous OCI, migrations Terraform, releases OKE, observabilité et workflows data/ML.",
+    achievement: "Démarrage d'un projet PaaS depuis zéro avec garde-fous OCI, migrations Terraform, releases OKE et observabilité.",
     detail:
-      "Construire et opérer des capacités OCI-native : IaC, réseau sécurisé, CI/CD, services data, observabilité, release et workflows ML reproductibles."
+      "Construire et opérer des capacités OCI-native : fondations PaaS, IaC, réseau sécurisé, CI/CD, services data, observabilité, release et workflows ML reproductibles."
   },
   {
     period: "2023",
@@ -1107,6 +1113,12 @@ const frTimeline = [
 ];
 
 const frProofOfWork = [
+  {
+    emoji: "🧩",
+    title: "PaaS depuis zéro",
+    handle: "Plateforme 0 à 1 -> architecture, packaging Kubernetes, livraison, garde-fous.",
+    signals: ["0 à 1", "PaaS"]
+  },
   {
     emoji: "🏗️",
     title: "Garde-fous OCI",

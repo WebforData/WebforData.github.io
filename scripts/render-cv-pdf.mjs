@@ -369,7 +369,7 @@ async function runChrome(chromePath) {
   }
 }
 
-const pdfEngine = process.env.CV_PDF_ENGINE ?? "browser";
+const pdfEngine = process.env.CV_PDF_ENGINE ?? "latex";
 
 if (!["browser", "latex"].includes(pdfEngine)) {
   throw new Error(`Unsupported CV_PDF_ENGINE "${pdfEngine}". Expected "browser" or "latex".`);
