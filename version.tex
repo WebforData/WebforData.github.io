@@ -1,109 +1,208 @@
-\documentclass[10pt,a4paper,sans]{moderncv}
+%-------------------------
+% Resume in LaTeX
+% Public-safe portfolio CV for Abderrahmane Ouroui
+% Structure inspired by Jake Gutierrez's compact resume template.
+%-------------------------
 
-\moderncvstyle{classic}
-\moderncvcolor{black}
-\nopagenumbers{}
+\documentclass[a4paper,10pt]{article}
 
-\usepackage[scale=0.9]{geometry}
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage[usenames,dvipsnames]{color}
 \usepackage{enumitem}
-\usepackage{microtype}
-\usepackage[unicode,hidelinks]{hyperref}
+\usepackage[hidelinks,unicode]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\usepackage[T1]{fontenc}
+\usepackage{iftex}
+\ifPDFTeX
+  \input{glyphtounicode}
+  \pdfgentounicode=1
+\fi
 
-\setlist[itemize]{leftmargin=*, itemsep=0.1em}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
 
-\name{Abderrahmane}{Ouroui}
-\address{Casablanca, Morocco}{}{}
-\email{abdououroui123@gmail.com}
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-0.55in}
+\addtolength{\textheight}{1.12in}
 
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Site/PDF renderer metadata.
+\newcommand{\cvName}{Abderrahmane Ouroui}
+\newcommand{\cvLocation}{Casablanca, Morocco}
+\newcommand{\cvEmail}{abdououroui123@gmail.com}
+\newcommand{\cvRole}{OCI Platform Engineer | DevOps Engineer}
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+  \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSkill}[2]{
+  \item\small{\textbf{#1}{: #2 \vspace{-2pt}}}
+}
+
+\newcommand{\resumeCertification}[2]{
+  \item\small{\textbf{#1}{: #2 \vspace{-2pt}}}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+\newcommand{\resumeSkillListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSkillListEnd}{\end{itemize}}
+
+%-------------------------------------------
 \begin{document}
-\makecvtitle
 
-\vspace{-8mm}
+%----------HEADING----------
 \begin{center}
-\textbf{DevOps Engineer II | Platform Engineer} \\
-\href{https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/}{linkedin.com/in/abderrahmane-ouroui-5b73b1216} |
-\href{https://github.com/webfordata}{github.com/webfordata} |
-\href{https://leetcode.com/webfordata/}{leetcode.com/webfordata}
+    \textbf{\Huge \scshape Abderrahmane Ouroui} \\ \vspace{1pt}
+    \small OCI Platform Engineer $|$ DevOps Engineer $|$ Casablanca, Morocco \\ \vspace{1pt}
+    \small
+    \href{mailto:abdououroui123@gmail.com}{\underline{abdououroui123@gmail.com}} $|$
+    \href{https://aouroui.dev/}{\underline{aouroui.dev}} $|$
+    \href{https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/}{\underline{LinkedIn}} $|$
+    \href{https://github.com/webfordata}{\underline{GitHub}} $|$
+    \href{https://leetcode.com/webfordata/}{\underline{LeetCode}}
 \end{center}
 
-% =====================
+%-----------SUMMARY-----------
 \section{Professional Summary}
+\small{OCI-focused Platform / DevOps Engineer building secure, observable production runways with Terraform, OKE/Kubernetes, IAM, networking, CI/CD, and MLOps/data foundations. OCI is my deepest production environment; the standards I apply are cloud-portable: Infrastructure as Code, least-privilege access, release promotion, observability, cost-aware governance, and Kubernetes operating patterns adaptable across AWS, GCP, Azure, or other cloud primitives.}
 
-DevOps Engineer II / Platform Engineer building reliable production runways on OCI with Terraform, Kubernetes (OKE), secure networking, observability, CI/CD, and MLOps-ready foundations. OCI is my strongest production platform; the engineering standards I apply are cloud-portable across provider primitives, including Infrastructure as Code, least-privilege IAM, Kubernetes runtime patterns, CI/CD promotion, observability, cost awareness, and production governance. Target roles include OCI Platform Engineer, DevOps Engineer, Platform Engineer, and Kubernetes / MLOps Platform Engineer.
-
-% =====================
+%-----------EXPERIENCE-----------
 \section{Experience}
+\resumeSubHeadingListStart
 
-\cventry{2023--Present}{DevOps Engineer II / Platform Engineer}{Oracle}{Casablanca, Morocco}{}{
-\begin{itemize}
-\item Own OCI-native platform architecture across development, test, stage, and production environments.
-\item Refactored and migrated Terraform infrastructure while protecting \textbf{500+ OCI resources per environment} from unnecessary recreation.
-\item Built reviewable release paths using Terraform boundaries, IAM guardrails, environment promotion checks, and production validation.
-\item Designed secure networking paths across load balancers, API gateways, reverse proxies, Kubernetes services, application platforms, and third-party authN/authZ flows.
-\item Deployed and operated Kubernetes clusters on OKE, improving scalability, resilience, and high availability for containerized workloads.
-\item Managed release lifecycle from development to production, including deployment validation, rollback planning, and post-release monitoring.
-\item Improved incident detection and triage using OCI Logging, OCI Monitoring, Grafana dashboards, alarms, and operational runbooks.
-\item Improved platform scalability, performance, and cost efficiency through architecture, configuration, and resource optimization.
-\item Automated provisioning, orchestration, deployment, scaling, and management of containerized workloads.
-\item Supported Beta programs, technical workshops, and POCs while contributing to delivery of the team’s \textbf{first GA product}.
-\item Owned production operations, troubleshooting platform issues, and improving reliability across environments.
-\item Mentored team members and supported onboarding, knowledge sharing, troubleshooting, and platform adoption by other teams.
-\item Enabled AI-ready data foundations using OCI Data Science, MLflow, Object Storage, Data Flow, Spark, and model artifact workflows.
-\end{itemize}
-}
+  \resumeSubheading
+    {DevOps Engineer II / Platform Engineer}{2023--Present}
+    {Oracle}{Casablanca, Morocco}
+    \resumeItemListStart
+      \resumeItem{Architect and operate OCI platform foundations across dev, test, stage, and production: IAM, VCN/networking, compute, storage, OKE, Autonomous Database, Logging, and Monitoring.}
+      \resumeItem{Refactored and migrated Terraform-managed OCI infrastructure while protecting \textbf{500+ OCI resources per environment} from unnecessary recreation.}
+      \resumeItem{Designed secure runtime and edge patterns across OKE/Kubernetes, load balancers, API gateways, Traefik/reverse proxies, CI/CD delivery, and third-party authN/authZ.}
+      \resumeItem{Strengthened reliability and cost-aware operations through Grafana dashboards, alarms, runbooks, incident triage, MLflow, Object Storage, and Data Flow/Spark foundations.}
+    \resumeItemListEnd
 
-\cventry{2023}{Research Assistant}{Oracle}{Casablanca, Morocco}{}{
-Delivered backend services and CI/CD workflows using Java, Groovy, Gradle, Jenkins, GitLab, JUnit, and Mockito.
-}
+  \resumeSubheading
+    {Research Assistant}{2023}
+    {Oracle}{Casablanca, Morocco}
+    \resumeItemListStart
+      \resumeItem{Delivered Java/Groovy backend services and CI/CD workflows with Gradle, Jenkins, GitLab, JUnit, and Mockito.}
+    \resumeItemListEnd
 
-\cventry{2022}{Full Stack Developer}{diaaland}{}{}{
-Built product workflows and third-party integrations across NestJS, MongoDB, React, Strava, and Garmin.
-}
+  \resumeSubheading
+    {Full Stack / Web Developer}{2021--2022}
+    {diaaland, INTELLCAP SARL}{}
+    \resumeItemListStart
+      \resumeItem{Built customer-facing web apps and third-party integrations with React, GraphQL, PHP/WooCommerce, NestJS, MongoDB, Strava, and Garmin.}
+    \resumeItemListEnd
 
-\cventry{2021}{Web Developer}{INTELLCAP SARL}{}{}{
-Delivered marketplace-style web functionality using React, GraphQL, PHP, and WooCommerce.
-}
+\resumeSubHeadingListEnd
 
-% =====================
+%-----------PROJECTS-----------
+\section{Projects}
+\resumeSubHeadingListStart
+
+  \resumeProjectHeading
+    {\textbf{OCI Platform Foundation} $|$ \emph{Terraform, IAM, VCN, OKE, Autonomous Database}}{}
+    \resumeItemListStart
+      \resumeItem{Repeatable dev/test/stage/prod foundation for secure cloud workloads.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{Terraform-Safe Migration} $|$ \emph{Terraform state, OCI resources, data transition}}{}
+    \resumeItemListStart
+      \resumeItem{State-aware infrastructure and data migration work with reduced recreation risk.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{Secure Network Edge} $|$ \emph{API Gateway, Load Balancer, Traefik, AuthN/AuthZ}}{}
+    \resumeItemListStart
+      \resumeItem{Private ingress and identity-aware access patterns for production services.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{OKE Release Runway} $|$ \emph{Kubernetes, CI/CD, promotion checks, rollback}}{}
+    \resumeItemListStart
+      \resumeItem{Kubernetes delivery flow with validation, environment promotion, and rollback readiness.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{Observability} $|$ \emph{Grafana, OCI Logging, OCI Monitoring, alarms, runbooks}}{}
+    \resumeItemListStart
+      \resumeItem{Operational visibility for incident triage, reliability checks, and platform health.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{MLOps / Data Foundation} $|$ \emph{MLflow, Object Storage, Data Flow, Spark/PySpark}}{}
+    \resumeItemListStart
+      \resumeItem{Reproducible artifact flow for data and ML workflows on OCI.}
+    \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%-----------TECHNICAL SKILLS-----------
 \section{Technical Skills}
+\resumeSkillListStart
+  \resumeSkill{Cloud Platform}{OCI, IAM, VCN, Load Balancer, API Gateway, Compute, Object/Block Storage, Autonomous Database, OKE, Logging, Monitoring}
+  \resumeSkill{Delivery / Runtime}{Terraform, Infrastructure as Code, Kubernetes, Docker, GitLab/Jenkins CI/CD, Traefik, release promotion, rollback planning}
+  \resumeSkill{Security / Reliability}{least-privilege IAM, NSGs, private service paths, authN/authZ, Linux, Grafana, alarms, runbooks, incident triage, cost optimization}
+  \resumeSkill{Data / Engineering}{MLflow, OCI Data Science, Data Flow, Spark, PySpark, Object Storage, Java, Groovy, Python, React, GraphQL, NestJS, MongoDB, MySQL}
+\resumeSkillListEnd
 
-\cvitem{Cloud}{Oracle Cloud Infrastructure, OKE, Compute, VCN, Load Balancer, API Gateway, IAM, Object Storage, Block Volume, Autonomous Database, OCI Logging, OCI Monitoring}
-\cvitem{DevOps}{Terraform, Infrastructure as Code, Kubernetes, Docker, CI/CD, GitLab, Jenkins, artifact delivery, release management, rollback planning}
-\cvitem{Operations}{Linux, secure networking, NSGs, Traefik, observability, Grafana, incident response, production operations, high availability, cost optimization}
-\cvitem{Cloud-Portable Standards}{Infrastructure as Code, least-privilege IAM, Kubernetes runtime patterns, CI/CD promotion gates, observability, cost awareness, production governance}
-\cvitem{Databases}{Oracle Database, Autonomous Database, MySQL, MongoDB}
-\cvitem{AI/MLOps}{OCI Data Science, OCI Data Flow, Spark, PySpark, MLflow, OCI AI Services, model artifacts, MLOps foundations, AI integration}
-
-% =====================
+%-----------CERTIFICATIONS-----------
 \section{Certifications}
+\resumeSkillListStart
+  \resumeCertification{Oracle Cloud}{\href{https://catalog-education.oracle.com/ords/certview/sharebadge?id=5DCB8BDEE987AB0D33F444C6F0144AEC8E9596EF9BA9A3528575CBDC6F3F67AE}{OCI 2025 Certified Architect Associate}; \href{https://catalog-education.oracle.com/ords/certview/sharebadge?id=703518BB3025293CEBF2E2E2207E532FEF6B4989E515803FA6B2A07A3956C00F}{OCI 2024 Certified Foundations Associate}}
+  \resumeCertification{Cloud Engineering}{\href{https://www.coursera.org/account/accomplishments/certificate/SD425CFMRN48}{Building Scalable Java Microservices with Spring Boot and Spring Cloud -- Google / Coursera}}
+\resumeSkillListEnd
 
-\cvitem{}{
-\href{https://catalog-education.oracle.com/ords/certview/sharebadge?id=5DCB8BDEE987AB0D33F444C6F0144AEC8E9596EF9BA9A3528575CBDC6F3F67AE}
-{Oracle Cloud Infrastructure 2025 Certified Architect Associate}
-}
+%-----------EDUCATION & LANGUAGES-----------
+\section{Education \& Languages}
+\resumeSkillListStart
+  \resumeSkill{Education}{Engineering Degree in Computer Science, ENSIAS; CPGE Mathematics}
+  \resumeSkill{Languages}{Arabic, English, French}
+\resumeSkillListEnd
 
-\cvitem{}{
-\href{https://catalog-education.oracle.com/ords/certview/sharebadge?id=703518BB3025293CEBF2E2E2207E532FEF6B4989E515803FA6B2A07A3956C00F}
-{Oracle Cloud Infrastructure 2024 Certified Foundations Associate}
-}
-
-\cvitem{}{
-\href{https://www.coursera.org/account/accomplishments/certificate/SD425CFMRN48}
-{Building Scalable Java Microservices with Spring Boot and Spring Cloud -- Google}
-}
-
-% =====================
-\section{Education}
-
-\cventry{2020--2023}{Engineering Degree in Computer Science}{ENSIAS}{Morocco}{}{
-National School of Computer Science and Systems Analysis.
-}
-
-\cventry{2017--2019}{Preparatory Classes in Mathematics}{CPGE}{Morocco}{}{}
-
-% =====================
-\section{Languages}
-
-\cvitem{}{Arabic, English, French}
-
+%-------------------------------------------
 \end{document}

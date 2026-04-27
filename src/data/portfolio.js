@@ -41,17 +41,23 @@ export const certifications = [
   {
     name: "Oracle Cloud Infrastructure 2025 Certified Architect Associate",
     issuer: "Oracle",
-    href: "https://catalog-education.oracle.com/ords/certview/sharebadge?id=5DCB8BDEE987AB0D33F444C6F0144AEC8E9596EF9BA9A3528575CBDC6F3F67AE"
+    href: "https://catalog-education.oracle.com/ords/certview/sharebadge?id=5DCB8BDEE987AB0D33F444C6F0144AEC8E9596EF9BA9A3528575CBDC6F3F67AE",
+    focus: "Architecture-level OCI validation across identity, networking, compute, storage, database, and resilient platform design.",
+    scope: ["OCI architecture", "IAM", "networking"]
   },
   {
     name: "Oracle Cloud Infrastructure 2024 Certified Foundations Associate",
     issuer: "Oracle",
-    href: "https://catalog-education.oracle.com/ords/certview/sharebadge?id=703518BB3025293CEBF2E2E2207E532FEF6B4989E515803FA6B2A07A3956C00F"
+    href: "https://catalog-education.oracle.com/ords/certview/sharebadge?id=703518BB3025293CEBF2E2E2207E532FEF6B4989E515803FA6B2A07A3956C00F",
+    focus: "Core OCI service fundamentals covering cloud concepts, security basics, platform services, and operational vocabulary.",
+    scope: ["OCI foundations", "security", "services"]
   },
   {
     name: "Building Scalable Java Microservices with Spring Boot and Spring Cloud",
     issuer: "Google / Coursera",
-    href: "https://www.coursera.org/account/accomplishments/certificate/SD425CFMRN48"
+    href: "https://www.coursera.org/account/accomplishments/certificate/SD425CFMRN48",
+    focus: "Backend engineering signal for service design, Java microservices, scalability patterns, and delivery-ready application foundations.",
+    scope: ["microservices", "Java", "scalability"]
   }
 ];
 
@@ -199,9 +205,9 @@ export const capabilityProofPoints = [
 
 export const caseStudies = [
   {
-    slug: "terraform-safe-oci-landing-zone-runway",
-    path: "/case-studies/terraform-safe-oci-landing-zone-runway/",
-    title: "Terraform-Safe OCI Landing Zone Runway",
+    slug: "terraform-safe-oci-platform-foundation",
+    path: "/case-studies/terraform-safe-oci-platform-foundation/",
+    title: "Terraform-Safe OCI Platform Foundation",
     eyebrow: "Platform architecture",
     summary:
       "Designed a safer delivery runway for OCI environments using Terraform boundaries, IAM guardrails, promotion gates, and reviewable release paths.",
@@ -351,7 +357,7 @@ export const additionalDeliveryPatterns = [
   {
     title: "Tenancy and data migration",
     summary:
-      "Controlled migration planning across landing-zone readiness, IAM and networking dependencies, data movement, validation, rollback, and post-migration checks.",
+      "Controlled migration planning across platform-foundation readiness, IAM and networking dependencies, data movement, validation, rollback, and post-migration checks.",
     signal: "Migration runway",
     technologies: ["OCI", "IAM", "Networking", "Object Storage", "Autonomous Database", "Terraform"]
   },
@@ -417,8 +423,8 @@ export const timeline = [
 export const proofOfWork = [
   {
     emoji: "🏗️",
-    title: "OCI landing zones",
-    handle: "Owned OCI landing zones -> IAM, VCN, compute, storage, Autonomous Database -> repeatable guardrails.",
+    title: "OCI platform foundations",
+    handle: "Owned OCI platform foundations -> IAM, VCN, compute, storage, Autonomous Database -> repeatable guardrails.",
     signals: ["OCI + IAM", "ADB"]
   },
   {
@@ -461,7 +467,7 @@ export const workingStyle = {
 
 export const publicProofRepos = [
   {
-    name: "oci-terraform-landing-zone-blueprint",
+    name: "oci-platform-foundation-blueprint",
     status: "planned example",
     focus: "Terraform boundaries, IAM guardrails, VCN shape, and promotion checklist"
   },

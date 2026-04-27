@@ -102,7 +102,7 @@ Problem:
 Platform workloads and data needed to move between cloud tenancies without breaking access, security, or continuity.
 
 Solution:
-Planned the target landing zone, mapped IAM and networking dependencies, migrated data, and validated services before cutover.
+Planned the target platform foundation, mapped IAM and networking dependencies, migrated data, and validated services before cutover.
 
 Impact:
 Reduced migration risk by making ownership, access, data movement, rollback, and post-migration checks explicit.

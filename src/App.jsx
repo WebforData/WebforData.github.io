@@ -10,7 +10,7 @@ import Contact from "./components/Contact.jsx";
 import { caseStudies } from "./data/portfolio.js";
 import { canonicalUrl, defaultSeo, portfolioSections, storySections } from "./data/seo.js";
 
-const themeStorageKey = "aouroui-portfolio-theme";
+const themeStorageKey = "aouroui-portfolio-theme-v2";
 const wheelIntentTimeoutMs = 420;
 const wheelPageThreshold = 160;
 const wheelEdgePageThreshold = 180;
@@ -23,8 +23,8 @@ const verticalScrollableOverflow = 8;
 const verticalEdgeBuffer = 6;
 
 function getInitialTheme() {
-  if (typeof window === "undefined") return "dark";
-  return window.localStorage.getItem(themeStorageKey) === "light" ? "light" : "dark";
+  if (typeof window === "undefined") return "light";
+  return window.localStorage.getItem(themeStorageKey) === "dark" ? "dark" : "light";
 }
 
 function normalizePath(pathname = "/") {

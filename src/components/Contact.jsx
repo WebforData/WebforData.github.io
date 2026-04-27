@@ -31,7 +31,10 @@ const recruiterActions = [
 ];
 
 export default function Contact() {
-  const emailHref = `mailto:${profile.email}?subject=${encodeURIComponent("Portfolio inquiry")}`;
+  const emailSubject = "Portfolio inquiry";
+  const mailtoHref = `mailto:${profile.email}?subject=${encodeURIComponent(emailSubject)}`;
+  const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(profile.email)}&su=${encodeURIComponent(emailSubject)}`;
+  const outlookHref = `https://outlook.live.com/mail/0/deeplink/compose?to=${encodeURIComponent(profile.email)}&subject=${encodeURIComponent(emailSubject)}`;
 
   return (
     <section id="contact" className="box-border h-screen w-screen min-w-0 shrink-0 snap-start overflow-hidden px-4 pb-8 pt-20 sm:px-6 lg:px-8">
@@ -49,18 +52,27 @@ export default function Contact() {
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               <a
-                href={emailHref}
-                className="contact-action"
-                aria-label={`Email ${profile.name}`}
+                href={mailtoHref}
+                className="contact-action contact-action-primary sm:col-span-2"
+                aria-label={`Send email to ${profile.name}`}
               >
                 <span className="contact-action-icon bg-redwood-500 text-white">
                   <Mail size={17} aria-hidden="true" />
                 </span>
                 <span className="min-w-0 text-left">
-                  <span className="block text-sm font-semibold">Email me</span>
+                  <span className="block text-sm font-semibold">Send email</span>
                   <span className="block truncate text-xs opacity-70">{profile.email}</span>
                 </span>
               </a>
+              <div className="contact-email-options sm:col-span-2" aria-label="Alternative email options">
+                <a href={gmailHref} target="_blank" rel="noreferrer noopener">
+                  Gmail
+                </a>
+                <span aria-hidden="true">·</span>
+                <a href={outlookHref} target="_blank" rel="noreferrer noopener">
+                  Outlook
+                </a>
+              </div>
               {recruiterActions.map((action) => (
                 <ContactAction key={action.label} action={action} />
               ))}

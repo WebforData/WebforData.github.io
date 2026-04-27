@@ -7,7 +7,7 @@ These are manual actions outside the website codebase. Keep OCI as the proven pr
 3. Update GitHub bio to match the portfolio positioning: OCI Platform Engineer / DevOps Engineer building reliable production runways with Terraform, OKE/Kubernetes, secure networking, observability, CI/CD, and MLOps foundations.
 4. Pin platform-relevant repositories.
 5. Create public-safe example repositories:
-   - `oci-terraform-landing-zone-blueprint`
+   - `oci-platform-foundation-blueprint`
    - `oke-release-runway`
    - `mlops-on-oci-foundation`
    - `cloud-platform-standards-playbook`

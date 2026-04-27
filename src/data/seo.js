@@ -32,7 +32,7 @@ export const portfolioSections = [
     path: "/work/",
     title: "Platform Engineering Case Studies | Abderrahmane Ouroui",
     description:
-      "Platform engineering case studies covering Terraform-safe OCI landing zones, secure network and identity edge patterns, and MLOps/data platform foundations.",
+      "Platform engineering case studies covering Terraform-safe OCI platform foundations, secure network and identity edge patterns, and MLOps/data platform foundations.",
     priority: "0.95"
   },
   {
@@ -66,10 +66,10 @@ export const portfolioSections = [
 
 export const caseStudySections = [
   {
-    id: "case-terraform-safe-oci-landing-zone-runway",
-    label: "Landing Zone",
-    path: "/case-studies/terraform-safe-oci-landing-zone-runway/",
-    title: "Terraform-Safe OCI Landing Zone Runway | Abderrahmane Ouroui",
+    id: "case-terraform-safe-oci-platform-foundation",
+    label: "OCI Foundation",
+    path: "/case-studies/terraform-safe-oci-platform-foundation/",
+    title: "Terraform-Safe OCI Platform Foundation | Abderrahmane Ouroui",
     description:
       "Case study on safer OCI environment delivery with Terraform boundaries, IAM guardrails, promotion gates, and reviewable release paths.",
     priority: "0.85"

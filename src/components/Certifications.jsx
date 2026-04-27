@@ -8,7 +8,7 @@ export default function Certifications() {
       id="certifications"
       eyebrow="certifications"
       title="Verified credentials."
-      intro="Cloud and engineering certifications that reinforce my OCI platform focus and production delivery standards."
+      intro="Focused credentials that support OCI architecture, platform foundations, and scalable backend delivery."
       wide
     >
       <div className="grid gap-3 lg:grid-cols-3">
@@ -33,13 +33,22 @@ export default function Certifications() {
 
             <p className="mt-6 font-mono text-xs uppercase tracking-[0.14em] text-redwood-300">{certification.issuer}</p>
             <h3 className="mt-3 text-xl font-semibold leading-tight text-warm-50">{certification.name}</h3>
-            <p className="mt-4 line-clamp-2 text-sm leading-6 text-warm-300">
-              Credential aligned with cloud architecture, platform operations, backend delivery, and production-ready engineering.
-            </p>
+            <p className="mt-4 text-sm leading-6 text-warm-300">{certification.focus}</p>
+
+            <div className="mt-5 flex flex-wrap gap-1.5">
+              {certification.scope.map((item) => (
+                <span
+                  key={item}
+                  className="rounded border border-warm-50/10 bg-warm-50/[0.04] px-2 py-1 font-mono text-[0.56rem] uppercase tracking-[0.08em] text-warm-300"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
 
             <div className="reveal-panel">
               <p className="text-sm leading-6 text-warm-200">
-                View the official certificate record from {certification.issuer}.
+                Opens the public verification record from {certification.issuer}.
               </p>
             </div>
           </a>

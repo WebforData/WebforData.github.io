@@ -4,6 +4,7 @@ import path from "node:path";
 const root = process.cwd();
 const sourcePath = path.join(root, "version.tex");
 const outputPath = path.join(root, "public", "abderrahmane-ouroui-cv.html");
+const printSourcePath = path.join(root, "node_modules", ".cache", "aouroui-cv-source.html");
 
 const tex = await fs.readFile(sourcePath, "utf8");
 
@@ -38,23 +39,50 @@ function parseGroups(source, index, count) {
   return { groups, cursor };
 }
 
+function findCommandIndex(source, marker, cursor = 0) {
+  let searchFrom = cursor;
+
+  while (searchFrom < source.length) {
+    const index = source.indexOf(marker, searchFrom);
+    if (index < 0) return -1;
+
+    const next = source[index + marker.length];
+    if (!/[A-Za-z@]/.test(next ?? "")) return index;
+
+    searchFrom = index + marker.length;
+  }
+
+  return -1;
+}
+
 function firstCommand(name, count = 1) {
   const marker = `\\${name}`;
-  const index = tex.indexOf(marker);
+  const index = findCommandIndex(tex, marker);
   if (index < 0) return [];
   return parseGroups(tex, index + marker.length, count).groups;
 }
 
+function newCommandValue(name) {
+  const marker = `\\newcommand{\\${name}}`;
+  const index = tex.indexOf(marker);
+  if (index < 0) return "";
+  return parseGroups(tex, index + marker.length, 1).groups[0] ?? "";
+}
+
 function commandEntries(source, name, count) {
+  return commandEntriesWithMeta(source, name, count).map((entry) => entry.groups);
+}
+
+function commandEntriesWithMeta(source, name, count) {
   const entries = [];
   const marker = `\\${name}`;
   let cursor = 0;
 
   while (cursor < source.length) {
-    const index = source.indexOf(marker, cursor);
+    const index = findCommandIndex(source, marker, cursor);
     if (index < 0) break;
     const parsed = parseGroups(source, index + marker.length, count);
-    entries.push(parsed.groups);
+    entries.push({ groups: parsed.groups, index, cursor: parsed.cursor });
     cursor = parsed.cursor;
   }
 
@@ -72,7 +100,10 @@ function escapeHtml(value) {
 function cleanLatex(value = "") {
   let output = value
     .replace(/%.*$/gm, "")
+    .replace(/\\(?:begin|end)\{[^{}]+\}/g, "")
     .replace(/\$\\rightarrow\$/g, "->")
+    .replace(/\$\|\$/g, "|")
+    .replace(/\\vspace\{[^{}]*\}/g, "")
     .replace(/\\&/g, "&")
     .replace(/~/g, " ")
     .replace(/\\\\/g, "\n")
@@ -93,6 +124,9 @@ function escapeAttr(value) {
 }
 
 function itemizeToHtml(value) {
+  const resumeItems = resumeItemsToHtml(value);
+  if (resumeItems) return resumeItems;
+
   const match = value.match(/\\begin\{itemize\}([\s\S]*?)\\end\{itemize\}/);
   if (!match) return paragraphHtml(value);
 
@@ -107,6 +141,20 @@ function itemizeToHtml(value) {
 function paragraphHtml(value) {
   const cleaned = cleanLatex(value);
   return cleaned ? `<p>${cleaned}</p>` : "";
+}
+
+function resumeItemsToHtml(value) {
+  const items = commandEntries(value, "resumeItem", 1)
+    .map(([item]) => cleanLatex(item))
+    .filter(Boolean);
+
+  return items.length ? `<ul>${items.map((item) => `<li>${item}</li>`).join("")}</ul>` : "";
+}
+
+function detailBetweenEntries(body, entries, index) {
+  const current = entries[index];
+  const next = entries[index + 1];
+  return body.slice(current.cursor, next?.index ?? body.length);
 }
 
 function splitSections(source) {
@@ -133,16 +181,74 @@ function renderCventries(body, variant = "experience") {
       const cleanCompany = cleanLatex(company);
       const role = [cleanTitle, cleanCompany].filter(Boolean).join(", ");
       const place = cleanLatex(location);
+      const cleanPeriod = cleanLatex(period);
       return `<article class="cv-item cv-item-${variant}">
         <div class="item-head">
           <div>
             <h3>${role}</h3>
             ${place ? `<p class="item-meta">${place}</p>` : ""}
           </div>
-          <p class="period">${cleanLatex(period)}</p>
+          ${cleanPeriod ? `<p class="period">${cleanPeriod}</p>` : ""}
         </div>
         <div class="item-body">${itemizeToHtml(detail)}</div>
       </article>`;
+    })
+    .join("");
+}
+
+function renderResumeSubheadings(body, variant = "experience") {
+  const entries = commandEntriesWithMeta(body, "resumeSubheading", 4);
+
+  return entries
+    .map((entry, index) => {
+      const [title, period, company, location] = entry.groups;
+      const cleanTitle = cleanLatex(title);
+      const cleanCompany = cleanLatex(company);
+      const role = [cleanTitle, cleanCompany].filter(Boolean).join(", ");
+      const place = cleanLatex(location);
+      const cleanPeriod = cleanLatex(period);
+      const detail = detailBetweenEntries(body, entries, index);
+
+      return `<article class="cv-item cv-item-${variant}">
+        <div class="item-head">
+          <div>
+            <h3>${role}</h3>
+            ${place ? `<p class="item-meta">${place}</p>` : ""}
+          </div>
+          ${cleanPeriod ? `<p class="period">${cleanPeriod}</p>` : ""}
+        </div>
+        <div class="item-body">${itemizeToHtml(detail)}</div>
+      </article>`;
+    })
+    .join("");
+}
+
+function parseProjectHeading(heading) {
+  const name = heading.match(/\\textbf\{([^{}]+)\}/)?.[1] ?? heading.split(/\$\|\$/)[0] ?? heading;
+  const tech = heading.match(/\\emph\{([^{}]+)\}/)?.[1] ?? "";
+  return {
+    name: cleanLatex(name),
+    tech: cleanLatex(tech)
+  };
+}
+
+function renderResumeProjects(body) {
+  const entries = commandEntriesWithMeta(body, "resumeProjectHeading", 2);
+
+  return entries
+    .map((entry, index) => {
+      const [heading] = entry.groups;
+      const { name, tech } = parseProjectHeading(heading);
+      const detail = detailBetweenEntries(body, entries, index);
+      const summary = commandEntries(detail, "resumeItem", 1)
+        .map(([item]) => cleanLatex(item))
+        .filter(Boolean)
+        .join(" ");
+
+      return `<p class="cvitem-row project-row">
+        <strong>${name}:</strong> ${summary}
+        ${tech ? `<span class="project-tech">${tech}</span>` : ""}
+      </p>`;
     })
     .join("");
 }
@@ -151,7 +257,7 @@ function renderCvitems(body) {
   return commandEntries(body, "cvitem", 2)
     .map(([label, content]) => {
       const cleanedLabel = cleanLatex(label);
-      return `<p>${cleanedLabel ? `<strong>${cleanedLabel}:</strong> ` : ""}${cleanLatex(content)}</p>`;
+      return `<p class="cvitem-row">${cleanedLabel ? `<strong>${cleanedLabel}:</strong> ` : ""}${cleanLatex(content)}</p>`;
     })
     .join("");
 }
@@ -163,8 +269,20 @@ function splitSkillList(content) {
     .filter(Boolean);
 }
 
+function renderResumeSkillRows(body) {
+  return commandEntries(body, "resumeSkill", 2)
+    .map(([label, content]) => {
+      const cleanedLabel = cleanLatex(label);
+      return `<p class="cvitem-row">${cleanedLabel ? `<strong>${cleanedLabel}:</strong> ` : ""}${cleanLatex(content)}</p>`;
+    })
+    .join("");
+}
+
 function renderSkills(body) {
-  return commandEntries(body, "cvitem", 2)
+  const entries = commandEntries(body, "resumeSkill", 2);
+  const sourceEntries = entries.length ? entries : commandEntries(body, "cvitem", 2);
+
+  return sourceEntries
     .map(([label, content]) => {
       const cleanedLabel = cleanLatex(label);
       const skills = splitSkillList(content);
@@ -177,8 +295,14 @@ function renderSkills(body) {
 }
 
 function renderCertifications(body) {
-  return commandEntries(body, "cvitem", 2)
-    .map(([, content]) => `<li>${cleanLatex(content)}</li>`)
+  const entries = commandEntries(body, "resumeCertification", 2);
+  const sourceEntries = entries.length ? entries : commandEntries(body, "cvitem", 2);
+
+  return sourceEntries
+    .map(([label, content]) => {
+      const cleanedLabel = cleanLatex(label);
+      return `<li>${cleanedLabel ? `<strong>${cleanedLabel}:</strong> ` : ""}${cleanLatex(content)}</li>`;
+    })
     .join("");
 }
 
@@ -190,60 +314,93 @@ function renderLanguages(body) {
 
 function renderSection(section) {
   const id = section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const title = cleanLatex(section.title);
 
   if (section.title === "Professional Summary") {
     return `<section class="cv-section summary-section" id="${id}">
-      <h2>${section.title}</h2>
+      <h2>${title}</h2>
       ${paragraphHtml(section.body)}
     </section>`;
   }
 
   if (section.title === "Experience") {
     return `<section class="cv-section" id="${id}">
-      <h2>${section.title}</h2>
-      ${renderCventries(section.body, "experience")}
+      <h2>${title}</h2>
+      ${section.body.includes("\\resumeSubheading") ? renderResumeSubheadings(section.body, "experience") : renderCventries(section.body, "experience")}
+    </section>`;
+  }
+
+  if (section.title === "Projects" && section.body.includes("\\resumeProjectHeading")) {
+    return `<section class="cv-section" id="${id}">
+      <h2>${title}</h2>
+      <div class="cvitem-list project-list">${renderResumeProjects(section.body)}</div>
+    </section>`;
+  }
+
+  if (section.body.includes("\\cventry")) {
+    return `<section class="cv-section" id="${id}">
+      <h2>${title}</h2>
+      ${renderCventries(section.body, "project")}
     </section>`;
   }
 
   if (section.title === "Education") {
     return `<section class="cv-section" id="${id}">
-      <h2>${section.title}</h2>
+      <h2>${title}</h2>
       ${renderCventries(section.body, "education")}
     </section>`;
   }
 
   if (section.title === "Technical Skills") {
     return `<section class="cv-section" id="${id}">
-      <h2>${section.title}</h2>
+      <h2>${title}</h2>
       <div class="skills-grid">${renderSkills(section.body)}</div>
     </section>`;
   }
 
   if (section.title === "Certifications") {
     return `<section class="cv-section" id="${id}">
-      <h2>${section.title}</h2>
+      <h2>${title}</h2>
       <ul class="cert-list">${renderCertifications(section.body)}</ul>
+    </section>`;
+  }
+
+  if (section.body.includes("\\resumeSkill")) {
+    return `<section class="cv-section" id="${id}">
+      <h2>${title}</h2>
+      <div class="cvitem-list">${renderResumeSkillRows(section.body)}</div>
     </section>`;
   }
 
   if (section.title === "Languages") {
     return `<section class="cv-section" id="${id}">
-      <h2>${section.title}</h2>
+      <h2>${title}</h2>
       <div class="language-list">${renderLanguages(section.body)}</div>
     </section>`;
   }
 
-  return `<section class="cv-section" id="${id}"><h2>${section.title}</h2>${paragraphHtml(section.body)}</section>`;
+  if (section.body.includes("\\cvitem")) {
+    return `<section class="cv-section" id="${id}">
+      <h2>${title}</h2>
+      <div class="cvitem-list">${renderCvitems(section.body)}</div>
+    </section>`;
+  }
+
+  return `<section class="cv-section" id="${id}"><h2>${title}</h2>${paragraphHtml(section.body)}</section>`;
 }
 
 const [firstName, lastName] = firstCommand("name", 2);
 const [location] = firstCommand("address", 3);
 const [email] = firstCommand("email", 1);
+const metadataName = newCommandValue("cvName");
+const metadataLocation = newCommandValue("cvLocation");
+const metadataEmail = newCommandValue("cvEmail");
+const metadataRole = newCommandValue("cvRole");
 const center = tex.match(/\\begin\{center\}([\s\S]*?)\\end\{center\}/)?.[1] ?? "";
-const role = cleanLatex(center.match(/\\textbf\{([^{}]+)\}/)?.[1] ?? "DevOps Engineer II | Platform Engineer");
-const links = commandEntries(center, "href", 2);
+const role = cleanLatex(metadataRole || center.match(/\\textbf\{([^{}]+)\}/)?.[1] || "DevOps Engineer II | Platform Engineer");
+const links = commandEntries(center, "href", 2).filter(([href]) => !href.startsWith("mailto:"));
 const sections = splitSections(tex);
-const fullName = `${cleanLatex(firstName)} ${cleanLatex(lastName)}`;
+const fullName = cleanLatex(metadataName) || `${cleanLatex(firstName)} ${cleanLatex(lastName)}`.trim();
 const summaryText =
   cleanLatex(sections.find((section) => section.title === "Professional Summary")?.body ?? "")
     .replace(/<[^>]+>/g, "")
@@ -255,7 +412,12 @@ const quickSignals = [
   ["Reliability", "Observability, Grafana, incident response, production operations"]
 ];
 
-const cleanEmail = cleanLatex(email);
+const cleanLocation = cleanLatex(metadataLocation || location);
+const cleanEmail = cleanLatex(metadataEmail || email);
+const emailSubject = "Portfolio inquiry";
+const emailHref = cleanEmail
+  ? `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(cleanEmail)}&su=${encodeURIComponent(emailSubject)}`
+  : "";
 
 function socialProfile(href, label) {
   const value = `${href} ${label}`.toLowerCase();
@@ -274,13 +436,13 @@ function socialProfile(href, label) {
 const contactItems = [
   cleanEmail
     ? `<li>
-        <button type="button" class="copy-contact" data-copy="${escapeAttr(cleanEmail)}" aria-label="Copy email address">
+        <a class="copy-contact" href="${escapeAttr(emailHref)}" target="_blank" rel="noreferrer noopener" aria-label="Open Gmail compose to contact ${escapeAttr(fullName)}">
           <span class="copy-main">
             <span class="copy-label">Email</span>
             <span class="copy-value">${cleanEmail}</span>
           </span>
-          <span class="copy-state" aria-hidden="true">Copy</span>
-        </button>
+          <span class="copy-state" aria-hidden="true">Gmail</span>
+        </a>
       </li>`
     : "",
   links.length
@@ -297,6 +459,205 @@ const contactItems = [
       </li>`
     : ""
 ].filter(Boolean);
+
+function renderPdfViewerHtml() {
+  const cvPdfPath = "abderrahmane-ouroui-cv.pdf";
+  const description = summaryText || `${fullName} CV`;
+
+  return `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="${escapeAttr(description)}" />
+    <link rel="canonical" href="https://aouroui.dev/abderrahmane-ouroui-cv.html" />
+    <title>${fullName} CV</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #15100e;
+        --paper: #fffaf3;
+        --ink: #211814;
+        --muted: #76675d;
+        --line: rgba(255, 250, 243, 0.18);
+        --accent: #b64334;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        background:
+          radial-gradient(circle at 18% 0%, rgba(182, 67, 52, 0.22), transparent 28rem),
+          linear-gradient(135deg, #15100e 0%, #241915 52%, #15100e 100%);
+        color: var(--paper);
+        font-family: Arial, "Segoe UI", Helvetica, sans-serif;
+        margin: 0;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .viewer-shell {
+        display: grid;
+        gap: 14px;
+        grid-template-rows: auto minmax(0, 1fr);
+        min-height: 100%;
+        padding: 16px;
+      }
+
+      .viewer-toolbar {
+        align-items: center;
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+        margin: 0 auto;
+        max-width: 1120px;
+        width: 100%;
+      }
+
+      .viewer-title {
+        min-width: 0;
+      }
+
+      .viewer-title p {
+        color: rgba(255, 250, 243, 0.68);
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        margin: 0 0 3px;
+        text-transform: uppercase;
+      }
+
+      .viewer-title h1 {
+        font-size: clamp(1rem, 3vw, 1.25rem);
+        line-height: 1.2;
+        margin: 0;
+      }
+
+      .viewer-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .viewer-actions a {
+        background: rgba(255, 250, 243, 0.08);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: #fffaf3;
+        font-size: 0.86rem;
+        padding: 8px 12px;
+        text-decoration: none;
+      }
+
+      .viewer-actions a:hover,
+      .viewer-actions a:focus-visible {
+        background: rgba(182, 67, 52, 0.28);
+        border-color: rgba(255, 250, 243, 0.34);
+        outline: none;
+      }
+
+      .pdf-frame {
+        background: #2b2420;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.35);
+        display: block;
+        height: min(1120px, calc(100vh - 90px));
+        margin: 0 auto;
+        max-width: 1120px;
+        overflow: hidden;
+        width: 100%;
+      }
+
+      .pdf-frame object,
+      .pdf-frame iframe {
+        border: 0;
+        display: block;
+        height: 100%;
+        width: 100%;
+      }
+
+      .fallback {
+        align-items: center;
+        background: var(--paper);
+        color: var(--ink);
+        display: grid;
+        gap: 10px;
+        height: 100%;
+        justify-items: center;
+        padding: 28px;
+        text-align: center;
+      }
+
+      .fallback p {
+        color: var(--muted);
+        margin: 0;
+        max-width: 42rem;
+      }
+
+      .fallback a {
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      @media (max-width: 700px) {
+        .viewer-shell {
+          padding: 10px;
+        }
+
+        .viewer-toolbar {
+          align-items: flex-start;
+          display: grid;
+        }
+
+        .viewer-actions {
+          justify-content: flex-start;
+        }
+
+        .pdf-frame {
+          border-radius: 12px;
+          height: calc(100vh - 122px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="viewer-shell">
+      <header class="viewer-toolbar">
+        <div class="viewer-title">
+          <p>Online CV</p>
+          <h1>${fullName}</h1>
+        </div>
+        <nav class="viewer-actions" aria-label="CV actions">
+          <a href="/">Portfolio</a>
+          <a href="${cvPdfPath}" target="_blank" rel="noreferrer">Open PDF</a>
+          <a href="${cvPdfPath}" download>Download PDF</a>
+        </nav>
+      </header>
+
+      <section class="pdf-frame" aria-label="${escapeAttr(fullName)} CV PDF">
+        <object data="${cvPdfPath}#view=FitH" type="application/pdf">
+          <iframe src="${cvPdfPath}#view=FitH" title="${escapeAttr(fullName)} CV PDF">
+            <div class="fallback">
+              <p>Your browser cannot display the embedded CV PDF.</p>
+              <a href="${cvPdfPath}" download>Download the CV PDF</a>
+            </div>
+          </iframe>
+        </object>
+      </section>
+    </main>
+  </body>
+</html>`;
+}
 
 const html = `<!doctype html>
 <html lang="en">
@@ -322,7 +683,7 @@ const html = `<!doctype html>
       }
 
       @page {
-        margin: 14mm;
+        margin: 9mm;
         size: A4;
       }
 
@@ -483,7 +844,7 @@ const html = `<!doctype html>
         border-radius: 14px;
         box-sizing: border-box;
         color: var(--muted);
-        cursor: copy;
+        cursor: pointer;
         display: flex;
         font: inherit;
         gap: 10px;
@@ -494,6 +855,7 @@ const html = `<!doctype html>
         overflow-wrap: anywhere;
         padding: 8px 10px;
         text-align: left;
+        text-decoration: none;
         transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
         width: 292px;
       }
@@ -722,6 +1084,31 @@ const html = `<!doctype html>
         padding: 14px;
       }
 
+      .cvitem-list {
+        display: grid;
+        gap: 9px;
+      }
+
+      .cvitem-row {
+        background: rgba(255, 255, 255, 0.52);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        color: #3e3029;
+        margin: 0;
+        padding: 11px 13px;
+      }
+
+      .cvitem-row strong {
+        color: var(--ink);
+      }
+
+      .project-tech {
+        color: var(--muted);
+        display: block;
+        font-size: 0.82rem;
+        margin-top: 4px;
+      }
+
       .tag-list,
       .language-list {
         display: flex;
@@ -837,8 +1224,8 @@ const html = `<!doctype html>
 
         body {
           color: #111111;
-          font-size: 10pt;
-          line-height: 1.38;
+          font-size: 9.2pt;
+          line-height: 1.26;
         }
 
         .cv-shell {
@@ -863,7 +1250,7 @@ const html = `<!doctype html>
         }
 
         .cv-header {
-          padding-bottom: 11px;
+          padding-bottom: 8px;
         }
 
         .header-grid {
@@ -871,23 +1258,23 @@ const html = `<!doctype html>
         }
 
         h1 {
-          font-size: 22pt;
+          font-size: 20pt;
           letter-spacing: -0.02em;
           line-height: 1;
         }
 
         .role {
-          font-size: 11pt;
-          margin-top: 5px;
+          font-size: 10.2pt;
+          margin-top: 4px;
         }
 
         .location {
-          margin-top: 3px;
+          margin-top: 2px;
         }
 
         .contact-list {
           display: block;
-          margin-top: 7px;
+          margin-top: 5px;
           text-align: left;
         }
 
@@ -904,7 +1291,7 @@ const html = `<!doctype html>
         .copy-value,
         .social-contact {
           color: #222222;
-          font-size: 8.8pt;
+          font-size: 8.2pt;
           text-decoration: none;
         }
 
@@ -935,8 +1322,13 @@ const html = `<!doctype html>
         }
 
         .social-contact span {
-          font-size: 8.8pt;
+          font-size: 8.2pt;
           font-weight: 400;
+        }
+
+        .social-contact + .social-contact::before {
+          color: #777777;
+          content: " | ";
         }
 
         .signal-strip {
@@ -944,16 +1336,16 @@ const html = `<!doctype html>
         }
 
         .cv-section {
-          margin-top: 12px;
+          margin-top: 8px;
         }
 
         .cv-section h2 {
           border-bottom: 1px solid #bbbbbb;
           display: block;
-          font-size: 8.8pt;
+          font-size: 8.2pt;
           letter-spacing: 0.12em;
-          margin-bottom: 6px;
-          padding-bottom: 3px;
+          margin-bottom: 4px;
+          padding-bottom: 2px;
         }
 
         .cv-section h2::after {
@@ -961,17 +1353,17 @@ const html = `<!doctype html>
         }
 
         .summary-section p {
-          font-size: 9.5pt;
+          font-size: 8.9pt;
           max-width: none;
         }
 
         .cv-item {
           border-left: 1.5px solid #cccccc;
-          padding: 0 0 2px 9px;
+          padding: 0 0 1px 8px;
         }
 
         .cv-item + .cv-item {
-          margin-top: 8px;
+          margin-top: 5px;
         }
 
         .item-head {
@@ -981,25 +1373,26 @@ const html = `<!doctype html>
 
         .cv-item h3,
         .skill-row h3 {
-          font-size: 9.8pt;
+          font-size: 9pt;
         }
 
         .item-meta,
         .period {
           color: #555555;
-          font-size: 8.8pt;
+          font-size: 8.2pt;
         }
 
         .item-body {
-          margin-top: 4px;
+          margin-top: 2px;
         }
 
         .item-body ul {
-          gap: 1px;
-          padding-left: 0.95rem;
+          gap: 0;
+          padding-left: 0.85rem;
         }
 
         .skill-row,
+        .cvitem-row,
         .cert-list li {
           background: transparent;
           border: 0;
@@ -1007,8 +1400,28 @@ const html = `<!doctype html>
           padding: 0;
         }
 
+        .cvitem-list {
+          gap: 2px;
+        }
+
+        .cvitem-row {
+          font-size: 8.4pt;
+          line-height: 1.25;
+        }
+
+        .project-tech {
+          color: #555555;
+          display: inline;
+          font-size: 8pt;
+          margin-top: 0;
+        }
+
+        .project-tech::before {
+          content: " | ";
+        }
+
         .skill-row + .skill-row {
-          margin-top: 4px;
+          margin-top: 2px;
         }
 
         .tag-list,
@@ -1024,7 +1437,7 @@ const html = `<!doctype html>
           border-radius: 0;
           color: #222222;
           display: inline;
-          font-size: 9pt;
+          font-size: 8.4pt;
           padding: 0;
         }
 
@@ -1042,6 +1455,7 @@ const html = `<!doctype html>
         .cv-section,
         .cv-item,
         .skill-row,
+        .cvitem-row,
         .cert-list li {
           break-inside: avoid;
           page-break-inside: avoid;
@@ -1067,7 +1481,7 @@ const html = `<!doctype html>
                 <p class="eyebrow">DevOps / Platform / OCI</p>
                 <h1>${fullName}</h1>
                 <p class="role">${role}</p>
-                <p class="location">${cleanLatex(location)}</p>
+                <p class="location">${cleanLocation}</p>
               </div>
               <ul class="contact-list">
                 ${contactItems.join("")}
@@ -1085,39 +1499,11 @@ const html = `<!doctype html>
         </div>
       </article>
     </main>
-    <script>
-      document.addEventListener("click", async (event) => {
-        const button = event.target.closest("[data-copy]");
-        if (!button) return;
-
-        const value = button.getAttribute("data-copy");
-        try {
-          await navigator.clipboard.writeText(value);
-        } catch {
-          const input = document.createElement("textarea");
-          input.value = value;
-          input.setAttribute("readonly", "");
-          input.style.position = "fixed";
-          input.style.left = "-9999px";
-          document.body.appendChild(input);
-          input.select();
-          document.execCommand("copy");
-          input.remove();
-        }
-
-        const state = button.querySelector(".copy-state");
-        if (!state) return;
-        state.textContent = "Copied";
-        button.classList.add("is-copied");
-        window.setTimeout(() => {
-          state.textContent = "Copy";
-          button.classList.remove("is-copied");
-        }, 1400);
-      });
-    </script>
   </body>
 </html>`;
 
+await fs.mkdir(path.dirname(printSourcePath), { recursive: true });
 await fs.mkdir(path.dirname(outputPath), { recursive: true });
-await fs.writeFile(outputPath, html);
-console.log(`Rendered ${path.relative(root, outputPath)} from ${path.relative(root, sourcePath)}`);
+await fs.writeFile(printSourcePath, html);
+await fs.writeFile(outputPath, renderPdfViewerHtml());
+console.log(`Rendered ${path.relative(root, outputPath)} and ${path.relative(root, printSourcePath)} from ${path.relative(root, sourcePath)}`);

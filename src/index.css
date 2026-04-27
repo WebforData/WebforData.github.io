@@ -324,6 +324,44 @@ a:focus-visible {
   color: var(--redwood-accent);
 }
 
+.contact-action-primary {
+  background: rgba(199, 70, 52, 0.12);
+  border-color: rgba(199, 70, 52, 0.38);
+}
+
+.contact-action-primary:hover {
+  background: rgba(199, 70, 52, 0.18);
+}
+
+.contact-email-options {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  margin-top: -0.35rem;
+}
+
+.contact-email-options span {
+  color: color-mix(in srgb, var(--contact-fg) 48%, transparent);
+  font-size: 0.78rem;
+}
+
+.contact-email-options a {
+  color: var(--contact-fg);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition:
+    color 160ms ease;
+}
+
+.contact-email-options a:hover {
+  color: var(--redwood-accent);
+}
+
 .case-back-link {
   align-items: center;
   border: 1px solid var(--surface-border);
