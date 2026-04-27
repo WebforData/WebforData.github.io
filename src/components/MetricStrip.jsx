@@ -5,7 +5,7 @@ export default function MetricStrip({ highlightedSignal, content }) {
 
   return (
     <section id="capabilities" className="box-border h-screen w-screen min-w-0 shrink-0 snap-start overflow-hidden px-3 pb-4 pt-20 sm:px-6 sm:pb-8 lg:px-8">
-      <div className="mx-auto flex h-full w-full max-w-7xl flex-col justify-start overflow-y-auto overflow-x-hidden py-1 lg:py-0">
+      <div className="story-scroll-y mx-auto flex h-full w-full max-w-7xl flex-col justify-start overflow-y-auto overflow-x-hidden py-1 lg:py-0">
         <div className="grid gap-3 sm:gap-4 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
           <div className="min-w-0">
             <p className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-redwood-300 sm:text-xs">{ui.capabilities.eyebrow}</p>
@@ -31,20 +31,21 @@ export default function MetricStrip({ highlightedSignal, content }) {
           <p className="mt-1 text-xs leading-5 text-warm-300 sm:text-sm sm:leading-6">{cloudPortability.text}</p>
         </article>
 
-        <div className="mt-2 grid grid-cols-7 gap-1 sm:mt-4 sm:grid-cols-[repeat(14,minmax(0,1fr))] sm:gap-2">
+        <div className="mt-2 grid grid-cols-7 gap-1 sm:mt-4 sm:grid-cols-[repeat(14,minmax(0,1fr))] sm:gap-2" role="list" aria-label="Platform and tool logos">
           {visibleLogos.map((logo) => (
-            <div key={logo.label} className={`flex min-h-9 items-center justify-center rounded-lg border px-1 py-1 sm:min-h-14 sm:px-1.5 sm:py-2 ${logo.tone}`}>
+            <div key={logo.label} className={`flex min-h-9 items-center justify-center rounded-lg border px-1 py-1 sm:min-h-14 sm:px-1.5 sm:py-2 ${logo.tone}`} role="listitem" aria-label={logo.label}>
               <div className="text-center">
                 {logo.image ? (
                   <img
                     src={logo.image}
-                    alt={logo.label}
+                    alt=""
+                    aria-hidden="true"
                     className={`mx-auto h-5 w-7 object-contain sm:h-5 sm:w-12 ${logo.invert ? "theme-invert-on-dark" : ""}`}
                   />
                 ) : (
-                  <p className="font-display text-lg font-semibold text-warm-50">{logo.mark}</p>
+                  <p className="font-display text-lg font-semibold text-warm-50" aria-hidden="true">{logo.mark}</p>
                 )}
-                <p className="mt-1 hidden truncate font-mono text-[0.45rem] uppercase tracking-[0.06em] text-warm-300 sm:block">{logo.label}</p>
+                <p className="mt-1 hidden truncate font-mono text-[0.45rem] uppercase tracking-[0.06em] text-warm-300 sm:block" aria-hidden="true">{logo.label}</p>
               </div>
             </div>
           ))}
@@ -54,6 +55,7 @@ export default function MetricStrip({ highlightedSignal, content }) {
           {visibleCapabilities.map((item) => (
             <article
               key={item.label}
+              role="group"
               tabIndex={0}
               aria-label={`${item.label}: ${item.detail}`}
               className={`reveal-card surface-soft min-h-[4.7rem] rounded-lg p-2 transition sm:min-h-[6.15rem] sm:p-3 lg:min-h-[7.15rem] ${

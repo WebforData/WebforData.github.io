@@ -1,7 +1,7 @@
 const networkLayers = [
   {
     label: "Design",
-    title: "VCN foundations",
+    title: "VCN shape",
     text: "VCNs, subnets, CIDR planning, route tables, and gateways.",
     chips: ["VCN", "Subnets", "Routes"]
   },
@@ -62,7 +62,7 @@ export default function Networking() {
                   <p className="truncate font-mono text-[0.56rem] uppercase tracking-[0.1em] text-redwood-300 sm:text-[0.62rem]">{layer.label}</p>
                   <h3 className="mt-1 text-base font-semibold leading-tight text-warm-50 sm:text-lg">{layer.title}</h3>
                 </div>
-                <span className="text-base leading-none">🛰️</span>
+                <span className="text-base leading-none" aria-hidden="true">🛰️</span>
               </div>
               <p className="mt-2 line-clamp-2 text-[0.68rem] leading-4 text-warm-400 sm:text-xs sm:leading-5">{layer.text}</p>
               <div className="mt-3 flex flex-wrap gap-1">

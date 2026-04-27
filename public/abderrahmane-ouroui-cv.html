@@ -9,186 +9,930 @@
     <style>
       :root {
         color-scheme: light;
-        --bg: #15100e;
-        --paper: #fffaf3;
+        --page: #fffaf3;
+        --paper: #ffffff;
         --ink: #211814;
-        --muted: #76675d;
-        --line: rgba(255, 250, 243, 0.18);
+        --muted: #6f6258;
+        --line: #e7dcd0;
+        --line-strong: #d7c6b6;
         --accent: #b64334;
+        --accent-dark: #863024;
+        --accent-soft: #fff0ea;
+        --shell: #15100e;
+      }
+
+      @page {
+        margin: 9mm;
+        size: A4;
       }
 
       * {
         box-sizing: border-box;
       }
 
-      html,
-      body {
-        height: 100%;
+      html {
+        background: var(--shell);
       }
 
       body {
         background:
-          radial-gradient(circle at 18% 0%, rgba(182, 67, 52, 0.22), transparent 28rem),
-          linear-gradient(135deg, #15100e 0%, #241915 52%, #15100e 100%);
-        color: var(--paper);
+          radial-gradient(circle at 15% 0%, rgba(182, 67, 52, 0.22), transparent 28rem),
+          linear-gradient(135deg, #15100e 0%, #221915 48%, #15100e 100%);
+        color: var(--ink);
         font-family: Arial, "Segoe UI", Helvetica, sans-serif;
+        font-size: 16px;
+        line-height: 1.55;
         margin: 0;
+        min-height: 100vh;
       }
 
       a {
         color: inherit;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.16em;
       }
 
-      .viewer-shell {
-        display: grid;
-        gap: 14px;
-        grid-template-rows: auto minmax(0, 1fr);
-        min-height: 100%;
-        padding: 16px;
+      .cv-shell {
+        overflow-x: hidden;
+        padding: 28px 16px 48px;
       }
 
-      .viewer-toolbar {
+      .cv-toolbar {
         align-items: center;
+        color: #f6efe7;
         display: flex;
         gap: 12px;
         justify-content: space-between;
-        margin: 0 auto;
-        max-width: 1120px;
-        width: 100%;
+        margin: 0 auto 18px;
+        max-width: 960px;
       }
 
-      .viewer-title {
-        min-width: 0;
-      }
-
-      .viewer-title p {
-        color: rgba(255, 250, 243, 0.68);
-        font-size: 0.72rem;
-        letter-spacing: 0.14em;
-        margin: 0 0 3px;
+      .toolbar-title {
+        color: rgba(246, 239, 231, 0.76);
+        font-size: 0.76rem;
+        letter-spacing: 0.16em;
+        margin: 0;
         text-transform: uppercase;
       }
 
-      .viewer-title h1 {
-        font-size: clamp(1rem, 3vw, 1.25rem);
-        line-height: 1.2;
-        margin: 0;
-      }
-
-      .viewer-actions {
+      .toolbar-actions {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
         justify-content: flex-end;
       }
 
-      .viewer-actions a {
+      .toolbar-actions a,
+      .toolbar-actions button {
+        appearance: none;
         background: rgba(255, 250, 243, 0.08);
-        border: 1px solid var(--line);
+        border: 1px solid rgba(255, 250, 243, 0.16);
         border-radius: 999px;
         color: #fffaf3;
-        font-size: 0.86rem;
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.82rem;
         padding: 8px 12px;
         text-decoration: none;
       }
 
-      .viewer-actions a:hover,
-      .viewer-actions a:focus-visible {
-        background: rgba(182, 67, 52, 0.28);
-        border-color: rgba(255, 250, 243, 0.34);
-        outline: none;
+      .toolbar-actions a:hover,
+      .toolbar-actions button:hover {
+        background: rgba(182, 67, 52, 0.34);
+        border-color: rgba(255, 250, 243, 0.28);
       }
 
-      .pdf-frame {
-        background: #2b2420;
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.35);
-        display: block;
-        height: min(1120px, calc(100vh - 90px));
+      .cv-page {
+        background: var(--page);
+        border: 1px solid rgba(255, 250, 243, 0.28);
+        border-radius: 22px;
+        box-shadow: 0 32px 90px rgba(0, 0, 0, 0.38);
         margin: 0 auto;
-        max-width: 1120px;
+        max-width: 960px;
         overflow: hidden;
         width: 100%;
       }
 
-      .pdf-frame object,
-      .pdf-frame iframe {
-        border: 0;
-        display: block;
-        height: 100%;
-        width: 100%;
+      .cv-inner {
+        background:
+          linear-gradient(180deg, rgba(182, 67, 52, 0.08), transparent 210px),
+          var(--page);
+        padding: clamp(28px, 5vw, 56px);
       }
 
-      .fallback {
-        align-items: center;
-        background: var(--paper);
+      .cv-header {
+        border-bottom: 1px solid var(--line-strong);
+        padding-bottom: 24px;
+      }
+
+      .header-grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: minmax(0, 1fr) minmax(220px, 0.42fr);
+      }
+
+      .header-grid > * {
+        min-width: 0;
+      }
+
+      .eyebrow {
+        color: var(--accent);
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        margin: 0 0 10px;
+        text-transform: uppercase;
+      }
+
+      h1 {
         color: var(--ink);
+        font-size: clamp(2.35rem, 6vw, 4.25rem);
+        letter-spacing: -0.045em;
+        line-height: 0.94;
+        margin: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .role {
+        color: var(--accent-dark);
+        font-size: clamp(1rem, 2.8vw, 1.25rem);
+        font-weight: 700;
+        margin: 14px 0 0;
+      }
+
+      .location {
+        color: var(--muted);
+        margin: 6px 0 0;
+      }
+
+      .contact-list {
         display: grid;
         gap: 10px;
-        height: 100%;
-        justify-items: center;
-        padding: 28px;
-        text-align: center;
-      }
-
-      .fallback p {
-        color: var(--muted);
+        justify-items: end;
+        list-style: none;
         margin: 0;
-        max-width: 42rem;
+        padding: 0;
+        text-align: right;
       }
 
-      .fallback a {
-        color: var(--accent);
+      .copy-contact {
+        appearance: none;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-sizing: border-box;
+        color: var(--muted);
+        cursor: pointer;
+        display: flex;
+        font: inherit;
+        gap: 10px;
+        justify-content: space-between;
+        margin: 0;
+        max-width: 100%;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        padding: 8px 10px;
+        text-align: left;
+        text-decoration: none;
+        transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+        width: 292px;
+      }
+
+      .copy-contact:hover {
+        background: var(--accent-soft);
+        border-color: rgba(182, 67, 52, 0.28);
+        color: var(--ink);
+      }
+
+      .copy-main {
+        display: grid;
+        flex: 1 1 auto;
+        gap: 2px;
+        min-width: 0;
+      }
+
+      .copy-label {
+        color: var(--accent-dark);
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .copy-value {
+        color: var(--ink);
+        font-size: 0.9rem;
+        line-height: 1.25;
+        text-decoration: none;
+      }
+
+      .copy-state {
+        background: rgba(182, 67, 52, 0.1);
+        border-radius: 999px;
+        color: var(--accent-dark);
+        flex: 0 0 auto;
+        font-size: 0.62rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        opacity: 0.8;
+        padding: 4px 7px;
+        text-transform: uppercase;
+        transition: background 160ms ease, opacity 160ms ease;
+      }
+
+      .copy-contact:hover .copy-state,
+      .copy-contact.is-copied .copy-state {
+        background: rgba(182, 67, 52, 0.16);
+        opacity: 1;
+      }
+
+      .social-contact-row {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+        padding-top: 2px;
+      }
+
+      .social-contact {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.58);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--ink);
+        display: inline-flex;
+        gap: 7px;
+        min-height: 34px;
+        padding: 7px 10px;
+        text-decoration: none;
+        transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+      }
+
+      .social-contact:hover {
+        background: var(--accent-soft);
+        border-color: rgba(182, 67, 52, 0.34);
+        color: var(--accent-dark);
+      }
+
+      .social-contact img {
+        display: block;
+        height: 17px;
+        width: 17px;
+      }
+
+      .social-contact.github img {
+        filter: brightness(0) saturate(1) invert(11%) sepia(12%) saturate(906%) hue-rotate(337deg) brightness(92%) contrast(91%);
+      }
+
+      .social-contact span {
+        font-size: 0.78rem;
         font-weight: 700;
       }
 
-      @media (max-width: 700px) {
-        .viewer-shell {
-          padding: 10px;
+      .signal-strip {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 22px;
+      }
+
+      .signal {
+        background: rgba(255, 255, 255, 0.58);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        padding: 14px;
+      }
+
+      .signal strong {
+        color: var(--accent-dark);
+        display: block;
+        font-size: 0.78rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .signal span {
+        color: var(--muted);
+        display: block;
+        font-size: 0.9rem;
+        margin-top: 6px;
+      }
+
+      .cv-section {
+        margin-top: 30px;
+      }
+
+      .cv-section h2 {
+        align-items: center;
+        color: var(--accent-dark);
+        display: flex;
+        font-size: 0.78rem;
+        font-weight: 800;
+        gap: 12px;
+        letter-spacing: 0.18em;
+        margin: 0 0 13px;
+        text-transform: uppercase;
+      }
+
+      .cv-section h2::after {
+        background: var(--line-strong);
+        content: "";
+        flex: 1;
+        height: 1px;
+      }
+
+      .summary-section p {
+        color: #372a24;
+        font-size: 1.02rem;
+        margin: 0;
+        max-width: 74ch;
+        overflow-wrap: anywhere;
+      }
+
+      .cv-item {
+        border-left: 3px solid var(--line-strong);
+        padding: 0 0 4px 18px;
+      }
+
+      .cv-item + .cv-item {
+        margin-top: 18px;
+      }
+
+      .item-head {
+        align-items: baseline;
+        display: flex;
+        gap: 16px;
+        justify-content: space-between;
+      }
+
+      .cv-item h3,
+      .skill-row h3 {
+        color: var(--ink);
+        font-size: 1rem;
+        line-height: 1.35;
+        margin: 0;
+      }
+
+      .item-meta,
+      .period {
+        color: var(--muted);
+        font-size: 0.9rem;
+        margin: 3px 0 0;
+      }
+
+      .period {
+        flex: none;
+        font-weight: 700;
+        text-align: right;
+      }
+
+      .item-body {
+        color: #3e3029;
+        margin-top: 8px;
+        overflow-wrap: anywhere;
+      }
+
+      .item-body p {
+        margin: 0;
+      }
+
+      .item-body ul {
+        display: grid;
+        gap: 5px;
+        margin: 0;
+        padding-left: 1.1rem;
+      }
+
+      .item-body li {
+        padding-left: 0.12rem;
+      }
+
+      .skills-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      .skill-row {
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px;
+      }
+
+      .cvitem-list {
+        display: grid;
+        gap: 9px;
+      }
+
+      .cvitem-row {
+        background: rgba(255, 255, 255, 0.52);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        color: #3e3029;
+        margin: 0;
+        padding: 11px 13px;
+      }
+
+      .cvitem-row strong {
+        color: var(--ink);
+      }
+
+      .project-tech {
+        color: var(--muted);
+        display: block;
+        font-size: 0.82rem;
+        margin-top: 4px;
+      }
+
+      .tag-list,
+      .language-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 10px;
+      }
+
+      .tag-list span,
+      .language-list span {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: #4c3c34;
+        font-size: 0.82rem;
+        line-height: 1.1;
+        padding: 7px 10px;
+      }
+
+      .cert-list {
+        display: grid;
+        gap: 9px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .cert-list li {
+        background: rgba(255, 255, 255, 0.58);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 14px;
+      }
+
+      .cert-list a {
+        color: var(--ink);
+        font-weight: 700;
+      }
+
+      .cert-list a:hover {
+        color: var(--accent-dark);
+      }
+
+      @media (max-width: 760px) {
+        .cv-shell {
+          padding: 18px 10px 32px;
         }
 
-        .viewer-toolbar {
-          align-items: flex-start;
-          display: grid;
+        .cv-toolbar,
+        .header-grid,
+        .item-head {
+          display: block;
         }
 
-        .viewer-actions {
+        .toolbar-actions {
+          justify-content: flex-start;
+          margin-top: 10px;
+        }
+
+        .cv-page {
+          border-radius: 16px;
+          margin-left: 0;
+          margin-right: 0;
+          max-width: 370px;
+        }
+
+        h1 {
+          font-size: clamp(1.82rem, 7.4vw, 2.18rem);
+          letter-spacing: -0.028em;
+          line-height: 1.04;
+        }
+
+        .contact-list {
+          justify-items: start;
+          margin-top: 18px;
+          text-align: left;
+        }
+
+        .copy-contact {
+          width: min(100%, 320px);
+        }
+
+        .social-contact-row {
           justify-content: flex-start;
         }
 
-        .pdf-frame {
-          border-radius: 12px;
-          height: calc(100vh - 122px);
+        .signal-strip {
+          grid-template-columns: 1fr;
+        }
+
+        .period {
+          text-align: left;
+        }
+      }
+
+      @media (min-width: 520px) and (max-width: 760px) {
+        .cv-page,
+        .cv-toolbar {
+          max-width: min(680px, calc(100vw - 36px));
+        }
+
+        .cv-page {
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+
+      @media print {
+        html,
+        body {
+          background: #ffffff;
+        }
+
+        body {
+          color: #111111;
+          font-size: 9.2pt;
+          line-height: 1.26;
+        }
+
+        .cv-shell {
+          padding: 0;
+        }
+
+        .cv-toolbar {
+          display: none;
+        }
+
+        .cv-page {
+          background: #ffffff;
+          border: 0;
+          border-radius: 0;
+          box-shadow: none;
+          max-width: none;
+        }
+
+        .cv-inner {
+          background: #ffffff;
+          padding: 0;
+        }
+
+        .cv-header {
+          padding-bottom: 8px;
+        }
+
+        .header-grid {
+          display: block;
+        }
+
+        h1 {
+          font-size: 20pt;
+          letter-spacing: -0.02em;
+          line-height: 1;
+        }
+
+        .role {
+          font-size: 10.2pt;
+          margin-top: 4px;
+        }
+
+        .location {
+          margin-top: 2px;
+        }
+
+        .contact-list {
+          display: block;
+          margin-top: 5px;
+          text-align: left;
+        }
+
+        .contact-list li {
+          display: inline;
+        }
+
+        .contact-list li + li::before {
+          color: #777777;
+          content: " | ";
+        }
+
+        .copy-contact,
+        .copy-value,
+        .social-contact {
+          color: #222222;
+          font-size: 8.2pt;
+          text-decoration: none;
+        }
+
+        .copy-contact {
+          background: transparent;
+          border: 0;
+          display: inline;
+          min-width: 0;
+          padding: 0;
+          width: auto;
+        }
+
+        .copy-main {
+          display: inline;
+        }
+
+        .copy-label,
+        .copy-state,
+        .social-contact img {
+          display: none;
+        }
+
+        .social-contact {
+          background: transparent;
+          border: 0;
+          display: inline;
+          padding: 0;
+        }
+
+        .social-contact span {
+          font-size: 8.2pt;
+          font-weight: 400;
+        }
+
+        .social-contact + .social-contact::before {
+          color: #777777;
+          content: " | ";
+        }
+
+        .signal-strip {
+          display: none;
+        }
+
+        .cv-section {
+          margin-top: 8px;
+        }
+
+        .cv-section h2 {
+          border-bottom: 1px solid #bbbbbb;
+          display: block;
+          font-size: 8.2pt;
+          letter-spacing: 0.12em;
+          margin-bottom: 4px;
+          padding-bottom: 2px;
+        }
+
+        .cv-section h2::after {
+          display: none;
+        }
+
+        .summary-section p {
+          font-size: 8.9pt;
+          max-width: none;
+        }
+
+        .cv-item {
+          border-left: 1.5px solid #cccccc;
+          padding: 0 0 1px 8px;
+        }
+
+        .cv-item + .cv-item {
+          margin-top: 5px;
+        }
+
+        .item-head {
+          display: flex;
+          gap: 10px;
+        }
+
+        .cv-item h3,
+        .skill-row h3 {
+          font-size: 9pt;
+        }
+
+        .item-meta,
+        .period {
+          color: #555555;
+          font-size: 8.2pt;
+        }
+
+        .item-body {
+          margin-top: 2px;
+        }
+
+        .item-body ul {
+          gap: 0;
+          padding-left: 0.85rem;
+        }
+
+        .skill-row,
+        .cvitem-row,
+        .cert-list li {
+          background: transparent;
+          border: 0;
+          border-radius: 0;
+          padding: 0;
+        }
+
+        .cvitem-list {
+          gap: 2px;
+        }
+
+        .cvitem-row {
+          font-size: 8.4pt;
+          line-height: 1.25;
+        }
+
+        .project-tech {
+          color: #555555;
+          display: inline;
+          font-size: 8pt;
+          margin-top: 0;
+        }
+
+        .project-tech::before {
+          content: " | ";
+        }
+
+        .skill-row + .skill-row {
+          margin-top: 2px;
+        }
+
+        .tag-list,
+        .language-list {
+          display: block;
+          margin-top: 1px;
+        }
+
+        .tag-list span,
+        .language-list span {
+          background: transparent;
+          border: 0;
+          border-radius: 0;
+          color: #222222;
+          display: inline;
+          font-size: 8.4pt;
+          padding: 0;
+        }
+
+        .tag-list span:not(:last-child)::after,
+        .language-list span:not(:last-child)::after {
+          content: ", ";
+        }
+
+        .cert-list {
+          gap: 2px;
+          list-style: disc;
+          padding-left: 1rem;
+        }
+
+        .cv-section,
+        .cv-item,
+        .skill-row,
+        .cvitem-row,
+        .cert-list li {
+          break-inside: avoid;
+          page-break-inside: avoid;
         }
       }
     </style>
   </head>
   <body>
-    <main class="viewer-shell">
-      <header class="viewer-toolbar">
-        <div class="viewer-title">
-          <p>Online CV</p>
-          <h1>Abderrahmane Ouroui</h1>
-        </div>
-        <nav class="viewer-actions" aria-label="CV actions">
+    <main class="cv-shell">
+      <div class="cv-toolbar" aria-label="CV actions">
+        <p class="toolbar-title">Online CV</p>
+        <div class="toolbar-actions">
           <a href="/">Portfolio</a>
-          <a href="abderrahmane-ouroui-cv-fr.html">Français</a>
-          <a href="abderrahmane-ouroui-cv.pdf" target="_blank" rel="noreferrer">Open PDF</a>
-          <a href="abderrahmane-ouroui-cv.pdf" download>Download PDF</a>
-        </nav>
-      </header>
+          <a href="/abderrahmane-ouroui-cv-fr.html">Français</a>
+          <a href="/abderrahmane-ouroui-cv.pdf" download>Download PDF</a>
+          <button type="button" onclick="window.print()">Print</button>
+        </div>
+      </div>
+      <article class="cv-page" aria-label="Abderrahmane Ouroui CV">
+        <div class="cv-inner">
+          <header class="cv-header">
+            <div class="header-grid">
+              <div>
+                <p class="eyebrow">DevOps / Platform / OCI</p>
+                <h1>Abderrahmane Ouroui</h1>
+                <p class="role">OCI Platform Engineer | DevOps Engineer</p>
+                <p class="location">Casablanca, Morocco</p>
+              </div>
+              <ul class="contact-list">
+                <li>
+        <a class="copy-contact" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=abdououroui123%40gmail.com&amp;su=Portfolio%20inquiry" target="_blank" rel="noopener noreferrer" aria-label="Open Gmail compose to contact Abderrahmane Ouroui">
+          <span class="copy-main">
+            <span class="copy-label">Email</span>
+            <span class="copy-value">abdououroui123@gmail.com</span>
+          </span>
+          <span class="copy-state" aria-hidden="true">Gmail</span>
+        </a>
+      </li><li class="social-contact-row">
+        <a class="social-contact link" href="https://aouroui.dev/" target="_blank" rel="noopener noreferrer" aria-label="aouroui.dev">
 
-      <section class="pdf-frame" aria-label="Abderrahmane Ouroui CV PDF">
-        <object data="abderrahmane-ouroui-cv.pdf#view=FitH" type="application/pdf">
-          <iframe src="abderrahmane-ouroui-cv.pdf#view=FitH" title="Abderrahmane Ouroui CV PDF">
-            <div class="fallback">
-              <p>Your browser cannot display the embedded CV PDF.</p>
-              <a href="abderrahmane-ouroui-cv.pdf" download>Download the CV PDF</a>
+              <span>aouroui.dev</span>
+            </a><a class="social-contact linkedin" href="https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <img src="/assets/social/linkedin.svg" alt="" />
+              <span>LinkedIn</span>
+            </a><a class="social-contact github" href="https://github.com/webfordata" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <img src="/assets/social/github.svg" alt="" />
+              <span>GitHub</span>
+            </a>
+      </li>
+              </ul>
             </div>
-          </iframe>
-        </object>
-      </section>
+            <div class="signal-strip" aria-label="Profile highlights">
+              <div class="signal"><strong>Cloud Platform</strong><span>OCI, IAM, networking, compute, storage, Autonomous Database</span></div><div class="signal"><strong>Delivery</strong><span>Terraform, Kubernetes/OKE, CI/CD, release validation</span></div><div class="signal"><strong>Reliability</strong><span>Observability, Grafana, incident response, production operations</span></div>
+            </div>
+          </header>
+          <section class="cv-section summary-section" id="professional-summary">
+      <h2>Professional Summary</h2>
+      <p>OCI-focused Platform / DevOps Engineer building secure, observable production runways with Terraform, OKE/Kubernetes, IAM, networking, CI/CD, and MLOps/data foundations. OCI is my deepest production environment; the standards I apply are cloud-portable: Infrastructure as Code, least-privilege access, release promotion, observability, cost-aware governance, and Kubernetes operating patterns adaptable across AWS, GCP, Azure, or other cloud primitives.</p>
+    </section>
+<section class="cv-section" id="experience">
+      <h2>Experience</h2>
+      <article class="cv-item cv-item-experience">
+        <div class="item-head">
+          <div>
+            <h3>DevOps Engineer II / Platform Engineer, Oracle</h3>
+            <p class="item-meta">Casablanca, Morocco</p>
+          </div>
+          <p class="period">2023–Present</p>
+        </div>
+        <div class="item-body"><ul><li>Refactored and migrated Terraform-managed OCI infrastructure while protecting 500+ resources per environment from unnecessary recreation.</li><li>Designed controlled OCI network and identity paths across load balancers, API gateways, Traefik, Kubernetes services, and third-party authN/authZ flows.</li><li>Operated OKE/Kubernetes workloads with release validation, rollback planning, post-release monitoring, and production troubleshooting.</li><li>Built observability patterns using OCI Logging, OCI Monitoring, Grafana dashboards, alarms, and runbooks to improve incident detection and triage.</li><li>Enabled AI/MLOps-ready foundations with OCI Data Science, MLflow, Object Storage, Data Flow, Spark, and model artifact workflows.</li><li>Supported beta programs, workshops, POCs, and GA readiness while mentoring teammates and improving platform adoption.</li></ul></div>
+      </article><article class="cv-item cv-item-experience">
+        <div class="item-head">
+          <div>
+            <h3>Research Assistant, Oracle</h3>
+            <p class="item-meta">Casablanca, Morocco</p>
+          </div>
+          <p class="period">2023</p>
+        </div>
+        <div class="item-body"><ul><li>Delivered Java/Groovy backend services and CI/CD workflows with Gradle, Jenkins, GitLab, JUnit, and Mockito.</li></ul></div>
+      </article><article class="cv-item cv-item-experience">
+        <div class="item-head">
+          <div>
+            <h3>Full Stack / Web Developer, diaaland, INTELLCAP SARL</h3>
+
+          </div>
+          <p class="period">2021&ndash;2022</p>
+        </div>
+        <div class="item-body"><ul><li>Built customer-facing web apps and third-party integrations with React, GraphQL, PHP/WooCommerce, NestJS, MongoDB, Strava, and Garmin.</li></ul></div>
+      </article>
+    </section>
+<section class="cv-section" id="projects">
+      <h2>Projects</h2>
+      <div class="cvitem-list project-list"><p class="cvitem-row project-row">
+        <strong>OCI Platform Foundation:</strong> Repeatable dev/test/stage/prod foundation for secure cloud workloads.
+        <span class="project-tech">Terraform, IAM, VCN, OKE, Autonomous Database</span>
+      </p><p class="cvitem-row project-row">
+        <strong>Terraform-Safe Migration:</strong> State-aware infrastructure and data migration work with reduced recreation risk.
+        <span class="project-tech">Terraform state, OCI resources, data transition</span>
+      </p><p class="cvitem-row project-row">
+        <strong>Secure Network Edge:</strong> Private ingress and identity-aware access patterns for production services.
+        <span class="project-tech">API Gateway, Load Balancer, Traefik, AuthN/AuthZ</span>
+      </p><p class="cvitem-row project-row">
+        <strong>OKE Release Runway:</strong> Kubernetes delivery flow with validation, environment promotion, and rollback readiness.
+        <span class="project-tech">Kubernetes, CI/CD, promotion checks, rollback</span>
+      </p><p class="cvitem-row project-row">
+        <strong>Observability:</strong> Operational visibility for incident triage, reliability checks, and platform health.
+        <span class="project-tech">Grafana, OCI Logging, OCI Monitoring, alarms, runbooks</span>
+      </p><p class="cvitem-row project-row">
+        <strong>MLOps / Data Foundation:</strong> Reproducible artifact flow for data and ML workflows on OCI.
+        <span class="project-tech">MLflow, Object Storage, Data Flow, Spark/PySpark</span>
+      </p></div>
+    </section>
+<section class="cv-section" id="technical-skills">
+      <h2>Technical Skills</h2>
+      <div class="skills-grid"><div class="skill-row">
+        <h3>Cloud Platform</h3>
+        <div class="tag-list"><span>OCI</span><span>IAM</span><span>VCN</span><span>Load Balancer</span><span>API Gateway</span><span>Compute</span><span>Object/Block Storage</span><span>Autonomous Database</span><span>OKE</span><span>Logging</span><span>Monitoring</span></div>
+      </div><div class="skill-row">
+        <h3>Delivery / Runtime</h3>
+        <div class="tag-list"><span>Terraform</span><span>Infrastructure as Code</span><span>Kubernetes</span><span>Helm</span><span>Kubernetes platform packaging</span><span>Docker</span><span>GitLab/Jenkins CI/CD</span><span>Traefik</span><span>release promotion</span><span>rollback planning</span></div>
+      </div><div class="skill-row">
+        <h3>Security / Reliability</h3>
+        <div class="tag-list"><span>least-privilege IAM</span><span>NSGs</span><span>private service paths</span><span>authN/authZ</span><span>Linux</span><span>Grafana</span><span>alarms</span><span>runbooks</span><span>incident triage</span><span>cost optimization</span></div>
+      </div><div class="skill-row">
+        <h3>Data / Engineering</h3>
+        <div class="tag-list"><span>MLflow</span><span>OCI Data Science</span><span>Data Flow</span><span>Spark</span><span>PySpark</span><span>Object Storage</span><span>Java</span><span>Groovy</span><span>Python</span><span>React</span><span>GraphQL</span><span>NestJS</span><span>MongoDB</span><span>MySQL</span></div>
+      </div></div>
+    </section>
+<section class="cv-section" id="certifications">
+      <h2>Certifications</h2>
+      <ul class="cert-list"><li><strong>Oracle Cloud:</strong> <a href="https://catalog-education.oracle.com/ords/certview/sharebadge?id=5DCB8BDEE987AB0D33F444C6F0144AEC8E9596EF9BA9A3528575CBDC6F3F67AE">OCI 2025 Certified Architect Associate (expires May 2, 2027)</a>; <a href="https://catalog-education.oracle.com/ords/certview/sharebadge?id=703518BB3025293CEBF2E2E2207E532FEF6B4989E515803FA6B2A07A3956C00F">OCI 2024 Certified Foundations Associate (expires October 7, 2026)</a></li><li><strong>Cloud Engineering:</strong> <a href="https://www.coursera.org/account/accomplishments/certificate/SD425CFMRN48">Building Scalable Java Microservices with Spring Boot and Spring Cloud &ndash; Google / Coursera</a></li></ul>
+    </section>
+<section class="cv-section" id="education-languages">
+      <h2>Education &amp; Languages</h2>
+      <div class="cvitem-list"><p class="cvitem-row"><strong>Education:</strong> Engineering Degree in Computer Science, ENSIAS; CPGE Mathematics</p><p class="cvitem-row"><strong>Languages:</strong> Arabic, English, French</p></div>
+    </section>
+        </div>
+      </article>
     </main>
   </body>
 </html>

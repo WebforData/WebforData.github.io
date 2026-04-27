@@ -2,13 +2,17 @@ import { ArrowLeft, Home } from "lucide-react";
 
 export default function CaseStudyDetail({ study, ui }) {
   const sectionTitles = ui.sections;
+  const evidenceText =
+    study.evidence ??
+    study.artifacts.map((artifact) => `${artifact.title}: ${artifact.description}`).join(" ");
+
   return (
     <section
       id={`case-${study.slug}`}
       className="box-border h-screen w-screen min-w-0 shrink-0 snap-start overflow-hidden px-4 pb-8 pt-20 sm:px-6 lg:px-8"
       aria-labelledby={`${study.slug}-title`}
     >
-      <div className="mx-auto flex h-full w-full max-w-[88rem] flex-col justify-start overflow-y-auto py-2 lg:py-0">
+      <div className="story-scroll-y mx-auto flex h-full w-full max-w-[88rem] flex-col justify-start overflow-y-auto py-2 lg:py-0">
         <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-4xl">
             <p className="font-mono text-xs uppercase text-redwood-300">{study.eyebrow}</p>
@@ -19,7 +23,7 @@ export default function CaseStudyDetail({ study, ui }) {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <a href="/work/" className="case-back-link">
+            <a href="/#work" className="case-back-link">
               <ArrowLeft size={16} aria-hidden="true" />
               {ui.index}
             </a>
@@ -40,10 +44,9 @@ export default function CaseStudyDetail({ study, ui }) {
 
             <div className="mt-6 grid gap-5">
               <StudySection idPrefix={study.slug} title={sectionTitles[0]} text={study.problem} />
-              <StudySection idPrefix={study.slug} title={sectionTitles[1]} text={study.context} />
-              <StudySection idPrefix={study.slug} title={sectionTitles[2]} text={study.ownership} />
-              <StudySection idPrefix={study.slug} title={sectionTitles[3]} text={study.approach} />
-              <StudySection idPrefix={study.slug} title={sectionTitles[4]} text={study.outcome} highlight />
+              <StudySection idPrefix={study.slug} title={sectionTitles[1]} text={study.action ?? study.approach} />
+              <StudySection idPrefix={study.slug} title={sectionTitles[2]} text={study.result ?? study.outcome} highlight />
+              <StudySection idPrefix={study.slug} title={sectionTitles[3]} text={evidenceText} />
             </div>
           </article>
 

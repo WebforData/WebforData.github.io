@@ -1,10 +1,7 @@
 # Portfolio Assets
 
-Drop generated image files here using these filenames:
+Static image files used by the portfolio:
 
-- `hero-control-panel.png`
-- `mlops-pipeline.png`
-- `network-observability.png`
 - `aouroui-logo.svg`
 - `aouroui-apple-touch.png`
 - `aouroui-og.png`

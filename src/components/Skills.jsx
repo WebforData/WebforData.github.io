@@ -6,8 +6,8 @@ export default function Skills() {
     <Section
       id="stack"
       eyebrow="stack"
-      title="Delivery patterns and platform stack."
-      intro="Grouped by the work it supports: Infrastructure as Code, Kubernetes/OKE runtime, secure networking and IAM, CI/CD promotion, observability and triage, MLOps/data foundations, and cost-aware architecture."
+      title="Operating patterns and cloud stack."
+      intro="Grouped by the work it supports: Infrastructure as Code, Kubernetes/OKE runtime, secure networking and IAM, CI/CD promotion, observability and triage, reproducible data/ML workflows, and cost-aware architecture."
     >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {skillGroups.map((group) => (

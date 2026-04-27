@@ -1,9 +1,10 @@
 import fs from "node:fs/promises";
+import crypto from "node:crypto";
 import path from "node:path";
 import React from "react";
 import { renderToString } from "react-dom/server";
 import { createServer } from "vite";
-import { canonicalUrl, defaultSeo, extraSitemapUrls, storySections } from "../src/data/seo.js";
+import { canonicalUrl, defaultSeo, extraSitemapUrls, prerenderRoutes, sitemapSections } from "../src/data/seo.js";
 
 const rootDir = process.cwd();
 const distDir = path.join(rootDir, "dist");
@@ -42,6 +43,7 @@ function applyRouteSeo(html, route) {
     .replace(/<script\s+type="application\/ld\+json">.*?<\/script>/s, buildJsonLdScript());
 
   next = replaceMeta(next, "description", description);
+  next = replaceMeta(next, "og:type", "profile");
   next = replaceMeta(next, "og:title", title);
   next = replaceMeta(next, "og:description", description);
   next = replaceMeta(next, "og:url", url);
@@ -51,97 +53,115 @@ function applyRouteSeo(html, route) {
   return next;
 }
 
-function buildJsonLdScript() {
-  const json = {
+function buildJsonLd() {
+  return {
     "@context": "https://schema.org",
-    "@type": "ProfilePage",
-    "@id": `${canonicalUrl("/")}#profile`,
+    "@type": "Person",
+    "@id": `${canonicalUrl("/")}#person`,
+    name: "Abderrahmane Ouroui",
+    alternateName: "webfordata",
+    jobTitle: "DevOps Engineer II / Platform Engineer",
     url: canonicalUrl("/"),
-    name: "Abderrahmane Ouroui Portfolio",
+    image: `${canonicalUrl("/")}assets/me-512.jpeg`,
     description: defaultSeo.description,
-    inLanguage: "en",
-    dateModified: lastmod,
-    primaryImageOfPage: {
-      "@type": "ImageObject",
-      url: defaultSeo.image,
-      width: 1200,
-      height: 630
+    email: "mailto:abdououroui123@gmail.com",
+    worksFor: {
+      "@type": "Organization",
+      name: "Oracle"
     },
-    mainEntity: {
-      "@type": "Person",
-      "@id": `${canonicalUrl("/")}#person`,
-      name: "Abderrahmane Ouroui",
-      alternateName: "webfordata",
-      url: canonicalUrl("/"),
-      image: `${canonicalUrl("/")}assets/me-512.jpeg`,
-      jobTitle: "DevOps Engineer / Platform Engineer",
-      email: "mailto:abdououroui123@gmail.com",
-      worksFor: {
-        "@type": "Organization",
-        name: "Oracle"
-      },
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Casablanca",
-        addressCountry: "MA"
-      },
-      sameAs: [
-        "https://github.com/webfordata",
-        "https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/"
-      ],
-      knowsAbout: [
-        "Oracle Cloud Infrastructure",
-        "Terraform",
-        "Kubernetes",
-        "Oracle Kubernetes Engine",
-        "CI/CD",
-        "Secure Cloud Networking",
-        "Observability",
-        "Autonomous Database",
-        "MLOps",
-        "Cloud-portable platform standards"
-      ],
-      hasCredential: [
-        {
-          "@type": "EducationalOccupationalCredential",
-          name: "Oracle Cloud Infrastructure 2025 Certified Architect Associate",
-          credentialCategory: "certification",
-          url: "https://catalog-education.oracle.com/ords/certview/sharebadge?id=5DCB8BDEE987AB0D33F444C6F0144AEC8E9596EF9BA9A3528575CBDC6F3F67AE",
-          recognizedBy: {
-            "@type": "Organization",
-            name: "Oracle"
-          }
-        },
-        {
-          "@type": "EducationalOccupationalCredential",
-          name: "Oracle Cloud Infrastructure 2024 Certified Foundations Associate",
-          credentialCategory: "certification",
-          url: "https://catalog-education.oracle.com/ords/certview/sharebadge?id=703518BB3025293CEBF2E2E2207E532FEF6B4989E515803FA6B2A07A3956C00F",
-          recognizedBy: {
-            "@type": "Organization",
-            name: "Oracle"
-          }
-        },
-        {
-          "@type": "EducationalOccupationalCredential",
-          name: "Building Scalable Java Microservices with Spring Boot and Spring Cloud",
-          credentialCategory: "certificate",
-          url: "https://www.coursera.org/account/accomplishments/certificate/SD425CFMRN48",
-          recognizedBy: {
-            "@type": "Organization",
-            name: "Coursera"
-          }
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Casablanca",
+      addressCountry: "MA"
+    },
+    sameAs: [
+      "https://github.com/webfordata",
+      "https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/",
+      "https://leetcode.com/webfordata/"
+    ],
+    knowsAbout: [
+      "Oracle Cloud Infrastructure",
+      "Terraform",
+      "Kubernetes",
+      "OKE",
+      "CI/CD",
+      "Secure Cloud Networking",
+      "Observability",
+      "MLOps"
+    ],
+    hasCredential: [
+      {
+        "@type": "EducationalOccupationalCredential",
+        name: "Oracle Cloud Infrastructure 2025 Certified Architect Associate",
+        credentialCategory: "certification",
+        url: "https://catalog-education.oracle.com/ords/certview/sharebadge?id=5DCB8BDEE987AB0D33F444C6F0144AEC8E9596EF9BA9A3528575CBDC6F3F67AE",
+        recognizedBy: {
+          "@type": "Organization",
+          name: "Oracle"
         }
-      ]
-    }
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        name: "Oracle Cloud Infrastructure 2024 Certified Foundations Associate",
+        credentialCategory: "certification",
+        url: "https://catalog-education.oracle.com/ords/certview/sharebadge?id=703518BB3025293CEBF2E2E2207E532FEF6B4989E515803FA6B2A07A3956C00F",
+        recognizedBy: {
+          "@type": "Organization",
+          name: "Oracle"
+        }
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        name: "Building Scalable Java Microservices with Spring Boot and Spring Cloud",
+        credentialCategory: "certificate",
+        url: "https://www.coursera.org/account/accomplishments/certificate/SD425CFMRN48",
+        recognizedBy: {
+          "@type": "Organization",
+          name: "Coursera"
+        }
+      }
+    ]
   };
+}
 
-  return `<script type="application/ld+json">${JSON.stringify(json)}</script>`;
+function buildJsonLdScriptContent() {
+  return JSON.stringify(buildJsonLd());
+}
+
+function buildJsonLdScript() {
+  return `<script type="application/ld+json">${buildJsonLdScriptContent()}</script>`;
+}
+
+function buildSecurityHeaders() {
+  const jsonLdHash = crypto.createHash("sha256").update(buildJsonLdScriptContent()).digest("base64");
+  const csp = [
+    "default-src 'self'",
+    "img-src 'self' data: https:",
+    `script-src 'self' 'sha256-${jsonLdHash}'`,
+    "style-src 'self' 'unsafe-inline'",
+    "font-src 'self'",
+    "object-src 'none'",
+    "frame-src 'self'",
+    "base-uri 'self'",
+    "frame-ancestors 'none'",
+    "upgrade-insecure-requests"
+  ].join("; ");
+
+  return [
+    "/*",
+    `  Content-Security-Policy: ${csp}`,
+    "  Strict-Transport-Security: max-age=31536000; includeSubDomains",
+    "  X-Content-Type-Options: nosniff",
+    "  Referrer-Policy: strict-origin-when-cross-origin",
+    "  Permissions-Policy: camera=(), microphone=(), geolocation=()",
+    "  X-Frame-Options: DENY",
+    ""
+  ].join("\n");
 }
 
 async function writeSitemap() {
   const urls = [
-    ...storySections.map((section) => ({
+    ...sitemapSections.map((section) => ({
       loc: canonicalUrl(section.path),
       priority: section.priority
     })),
@@ -169,6 +189,10 @@ async function writeSitemap() {
   await fs.writeFile(path.join(distDir, "sitemap.xml"), xml);
 }
 
+async function writeSecurityHeaders() {
+  await fs.writeFile(path.join(distDir, "_headers"), buildSecurityHeaders());
+}
+
 async function main() {
   const template = await fs.readFile(templatePath, "utf8");
   const server = await createServer({
@@ -184,7 +208,7 @@ async function main() {
   try {
     const { default: App } = await server.ssrLoadModule("/src/App.jsx");
 
-    for (const route of storySections) {
+    for (const route of prerenderRoutes) {
       const appHtml = renderToString(React.createElement(App, { initialPath: route.path }));
       const html = applyRouteSeo(
         template.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`),
@@ -201,6 +225,7 @@ async function main() {
     }
 
     await writeSitemap();
+    await writeSecurityHeaders();
   } finally {
     await server.close();
   }

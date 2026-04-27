@@ -6,7 +6,7 @@ const pillars = [
   {
     icon: Cpu,
     title: "Cloud platform",
-    text: "Builds OCI foundations, secure network paths, data services, and runtime changes that can move safely across environments."
+    text: "Shapes OCI guardrails, secure network paths, data services, and runtime changes that can move safely across environments."
   },
   {
     icon: RadioTower,
@@ -16,7 +16,7 @@ const pillars = [
   {
     icon: GitBranch,
     title: "Automation",
-    text: "Turns repeated infrastructure and delivery tasks into Terraform modules, CI/CD workflows, runbooks, and cleaner release routines."
+    text: "Turns repeated infrastructure and release tasks into Terraform modules, CI/CD workflows, runbooks, and cleaner routines."
   }
 ];
 
@@ -25,13 +25,13 @@ export default function About() {
     <Section
       id="about"
       eyebrow="identity"
-      title="Platform engineer focused on cloud delivery that holds up in production."
+      title="Platform engineer focused on cloud changes that hold up in production."
       intro={profile.summary}
     >
       <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
         <article className="surface rounded-lg p-6">
           <p className="font-mono text-xs uppercase text-redwood-300">{workingStyle.title}</p>
-          <h3 className="mt-4 text-2xl font-semibold leading-tight text-warm-50">Architecture, delivery, and production ownership in one loop.</h3>
+          <h3 className="mt-4 text-2xl font-semibold leading-tight text-warm-50">Architecture, release, and operations in one loop.</h3>
           <p className="mt-4 text-sm leading-7 text-warm-300">{workingStyle.text}</p>
         </article>
 

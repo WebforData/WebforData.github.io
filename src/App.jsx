@@ -8,7 +8,7 @@ import Experience from "./components/Experience.jsx";
 import Certifications from "./components/Certifications.jsx";
 import Contact from "./components/Contact.jsx";
 import { getPortfolioContent } from "./data/portfolio.js";
-import { canonicalUrl, defaultSeo, portfolioSections, storySections } from "./data/seo.js";
+import { canonicalUrl, caseStudySections, defaultSeo, portfolioSections, storySections } from "./data/seo.js";
 
 const themeStorageKey = "aouroui-portfolio-theme-v2";
 const languageStorageKey = "aouroui-portfolio-language-v2";
@@ -22,6 +22,7 @@ const touchAxisThreshold = 10;
 const touchPageThreshold = 76;
 const verticalScrollableOverflow = 8;
 const verticalEdgeBuffer = 6;
+const verticalScrollSelector = ".story-scroll-y, [class*=\"overflow-y-auto\"], [class*=\"overflow-y-scroll\"]";
 
 function getInitialTheme() {
   if (typeof window === "undefined") return "light";
@@ -34,20 +35,43 @@ function getInitialLanguage() {
 }
 
 function normalizePath(pathname = "/") {
-  const cleanPath = pathname.replace(/\/+$/, "") || "/";
+  const [pathOnly] = pathname.split("#");
+  const cleanPath = pathOnly.replace(/\/+$/, "") || "/";
   return cleanPath === "/index.html" ? "/" : cleanPath;
 }
 
-function getSectionIndexFromPath(pathname = "/") {
+function normalizeHash(hash = "") {
+  const rawHash = hash.includes("#") ? hash.slice(hash.indexOf("#") + 1) : hash;
+  return rawHash.replace(/^\/+/, "").replace(/\/+$/, "");
+}
+
+function normalizeNavigationTarget(pathname = "/", hash = "") {
+  const normalizedPath = normalizePath(pathname);
+  const normalizedHash = normalizeHash(hash || pathname);
+  return `${normalizedPath}${normalizedHash ? `#${normalizedHash}` : ""}`;
+}
+
+function getSectionIndexFromPath(pathname = "/", hash = "") {
   const path = normalizePath(pathname);
+  const hashId = normalizeHash(hash || pathname);
+
+  if (path === "/" && hashId) {
+    const hashIndex = portfolioSections.findIndex((section) => section.id === hashId);
+    if (hashIndex >= 0) return hashIndex;
+  }
+
   const index = portfolioSections.findIndex((section) => normalizePath(section.path) === path);
-  return index >= 0 ? index : 0;
+  if (index >= 0) return index;
+
+  const legacyId = path.replace(/^\/+/, "").replace(/\/+$/, "");
+  const legacyIndex = portfolioSections.findIndex((section) => section.id === legacyId);
+  return legacyIndex >= 0 ? legacyIndex : 0;
 }
 
 function getInitialSectionIndex(initialPath) {
   if (initialPath) return getSectionIndexFromPath(initialPath);
   if (typeof window === "undefined") return 0;
-  return getSectionIndexFromPath(window.location.pathname);
+  return getSectionIndexFromPath(window.location.pathname, window.location.hash);
 }
 
 function setMetaContent(selector, content) {
@@ -87,7 +111,7 @@ function getScrollableY(target, root) {
   if (section && section !== root) {
     if (isScrollableY(section)) return section;
 
-    const candidates = section.querySelectorAll('[class*="overflow-y-auto"], [class*="overflow-y-scroll"]');
+    const candidates = section.querySelectorAll(verticalScrollSelector);
     for (const candidate of candidates) {
       if (isScrollableY(candidate)) {
         return candidate;
@@ -106,7 +130,7 @@ function getPrimaryScrollableY(section) {
   if (!section) return null;
   if (isScrollableY(section)) return section;
 
-  const candidates = section.querySelectorAll('[class*="overflow-y-auto"], [class*="overflow-y-scroll"]');
+  const candidates = section.querySelectorAll(verticalScrollSelector);
   for (const candidate of candidates) {
     if (isScrollableY(candidate)) return candidate;
   }
@@ -171,14 +195,14 @@ export default function App({ initialPath }) {
   const routePath =
     initialPath ?? (typeof window === "undefined" ? "/" : window.location.pathname);
   const routeSeo =
-    storySections.find((section) => normalizePath(section.path) === normalizePath(routePath)) ?? null;
+    caseStudySections.find((section) => normalizePath(section.path) === normalizePath(routePath)) ?? null;
   const selectedStudy = content.caseStudies.find((study) => normalizePath(study.path) === normalizePath(routePath));
 
   const updateLocation = useCallback((index, method = "pushState") => {
     if (typeof window === "undefined") return;
     const section = portfolioSections[index] ?? portfolioSections[0];
     const nextPath = section.path;
-    if (normalizePath(window.location.pathname) === normalizePath(nextPath)) return;
+    if (normalizeNavigationTarget(window.location.pathname, window.location.hash) === normalizeNavigationTarget(nextPath)) return;
     window.history[method]({ section: section.id }, "", nextPath);
   }, []);
 
@@ -214,21 +238,22 @@ export default function App({ initialPath }) {
   }, [language]);
 
   useEffect(() => {
-    const section = selectedStudy && routeSeo ? routeSeo : portfolioSections[activeIndex] ?? portfolioSections[0];
-    const title = section.title || defaultSeo.title;
-    const description = section.description || defaultSeo.description;
-    const url = canonicalUrl(section.path);
+    const section = selectedStudy && routeSeo ? routeSeo : null;
+    const title = section?.title || defaultSeo.title;
+    const description = section?.description || defaultSeo.description;
+    const url = canonicalUrl(section?.path || "/");
     const canonical = document.querySelector('link[rel="canonical"]');
 
     document.title = title;
     if (canonical) canonical.setAttribute("href", url);
     setMetaContent("description", description);
+    setMetaContent("og:type", "profile");
     setMetaContent("og:title", title);
     setMetaContent("og:description", description);
     setMetaContent("og:url", url);
     setMetaContent("twitter:title", title);
     setMetaContent("twitter:description", description);
-  }, [activeIndex]);
+  }, [routeSeo, selectedStudy]);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -372,7 +397,7 @@ export default function App({ initialPath }) {
 
   useEffect(() => {
     const handlePopState = () => {
-      scrollToSection(getSectionIndexFromPath(window.location.pathname), null, { updateUrl: false });
+      scrollToSection(getSectionIndexFromPath(window.location.pathname, window.location.hash), null, { updateUrl: false });
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -425,6 +450,7 @@ export default function App({ initialPath }) {
     section.label;
   const toggleLanguage = () => setLanguage(nextLanguage);
   const cvPath = content.profile.cvHtml;
+  const skipLabel = language === "fr" ? "Aller au contenu" : "Skip to content";
   const languageButton = (
     <button
       type="button"
@@ -439,7 +465,10 @@ export default function App({ initialPath }) {
 
   if (selectedStudy) {
     return (
-      <div className={`theme-${theme} h-screen overflow-hidden bg-ink-950 text-warm-50`}>
+      <div className={`app-shell theme-${theme} h-screen overflow-hidden bg-ink-950 text-warm-50`}>
+        <a href="#main-content" className="skip-link">
+          {skipLabel}
+        </a>
         <nav className="sr-only" aria-label="Portfolio sections">
           {storySections.map((section) => (
             <a key={section.id} href={section.path}>
@@ -460,7 +489,7 @@ export default function App({ initialPath }) {
           <ThemeIcon size={18} aria-hidden="true" />
         </button>
 
-        <main className="redwood-shell h-screen overflow-hidden">
+        <main id="main-content" tabIndex={-1} className="redwood-shell h-screen overflow-hidden">
           <CaseStudyDetail study={selectedStudy} ui={ui.caseDetail} />
         </main>
       </div>
@@ -468,7 +497,10 @@ export default function App({ initialPath }) {
   }
 
   return (
-    <div className={`theme-${theme} h-screen overflow-hidden bg-ink-950 text-warm-50`}>
+    <div className={`app-shell theme-${theme} h-screen overflow-hidden bg-ink-950 text-warm-50`}>
+      <a href="#main-content" className="skip-link">
+        {skipLabel}
+      </a>
       <nav className="sr-only" aria-label="Portfolio sections">
         {storySections.map((section) => (
           <a key={section.id} href={section.path}>
@@ -549,7 +581,9 @@ export default function App({ initialPath }) {
       </button>
 
       <main
+        id="main-content"
         ref={scrollerRef}
+        tabIndex={-1}
         data-active-index={activeIndex}
         className="horizontal-scroll redwood-shell h-screen overflow-hidden"
       >

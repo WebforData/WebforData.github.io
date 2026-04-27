@@ -38,7 +38,7 @@ export default function Contact({ content }) {
 
   return (
     <section id="contact" className="box-border h-screen w-screen min-w-0 shrink-0 snap-start overflow-hidden px-4 pb-8 pt-20 sm:px-6 lg:px-8">
-      <div className="mx-auto flex h-full w-full max-w-7xl flex-col justify-start overflow-y-auto py-2 lg:justify-center lg:py-0">
+      <div className="story-scroll-y mx-auto flex h-full w-full max-w-7xl flex-col justify-start overflow-y-auto py-2 lg:justify-center lg:py-0">
         <div className="contact-card rounded-lg border p-6 shadow-panel sm:p-10 lg:p-12">
           <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-end">
             <div>
@@ -65,11 +65,11 @@ export default function Contact({ content }) {
                 </span>
               </a>
               <div className="contact-email-options sm:col-span-2" aria-label={copy.alternatives}>
-                <a href={gmailHref} target="_blank" rel="noreferrer noopener">
+                <a href={gmailHref} target="_blank" rel="noopener noreferrer">
                   Gmail
                 </a>
                 <span aria-hidden="true">·</span>
-                <a href={outlookHref} target="_blank" rel="noreferrer noopener">
+                <a href={outlookHref} target="_blank" rel="noopener noreferrer">
                   Outlook
                 </a>
               </div>
@@ -93,7 +93,7 @@ function ContactAction({ action }) {
       href={action.href}
       className="contact-action"
       target={!action.download && external ? "_blank" : undefined}
-      rel={!action.download && external ? "noreferrer noopener" : undefined}
+      rel={!action.download && external ? "noopener noreferrer" : undefined}
       download={action.download ? "" : undefined}
     >
       <span className="contact-action-icon">
@@ -101,6 +101,7 @@ function ContactAction({ action }) {
           <img
             src={action.logo}
             alt=""
+            aria-hidden="true"
             className={`h-5 w-5 object-contain ${action.invertOnLight ? "contact-github-logo theme-github-logo" : ""}`}
           />
         ) : (

@@ -18,7 +18,7 @@ export default function Certifications({ content }) {
             key={certification.name}
             href={certification.href}
             target="_blank"
-            rel="noreferrer noopener"
+            rel="noopener noreferrer"
             className="reveal-card interactive-card surface flex min-w-0 flex-col rounded-lg p-5 text-left no-underline"
             aria-label={`${copy.verify}: ${certification.name} - ${certification.issuer}`}
           >

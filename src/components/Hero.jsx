@@ -27,7 +27,7 @@ export default function Hero({ onNavigate, content }) {
   };
 
   return (
-    <section id="top" className="box-border h-screen w-screen min-w-0 shrink-0 snap-start overflow-y-auto overflow-x-hidden px-4 pb-6 pt-[4.5rem] sm:px-6 sm:pt-20 lg:px-8">
+    <section id="top" className="story-scroll-y box-border h-screen w-screen min-w-0 shrink-0 snap-start overflow-y-auto overflow-x-hidden px-4 pb-6 pt-[4.5rem] sm:px-6 sm:pt-20 lg:px-8">
       <div className="mx-auto grid min-h-full w-full min-w-0 max-w-7xl items-start gap-6 py-2 lg:h-full lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:gap-8 lg:py-0">
         <div className="w-full min-w-0 max-w-3xl">
           <p className="mb-4 inline-flex max-w-full items-center gap-2 rounded-md border border-redwood-400/30 bg-redwood-500/10 px-3 py-2 font-mono text-xs uppercase text-redwood-300">
@@ -57,7 +57,7 @@ export default function Hero({ onNavigate, content }) {
               <h1 className="break-words font-display text-[clamp(1.35rem,6vw,1.75rem)] font-semibold leading-[1.04] text-warm-50 sm:text-5xl lg:text-[2.45rem] xl:text-[2.65rem] 2xl:text-6xl">
                 {profile.role}
               </h1>
-              <img src={oracleLogoUrl} alt="Oracle" className="mt-3 h-5 w-[112px] object-contain sm:h-6 sm:w-[132px]" />
+              <img src={oracleLogoUrl} alt="" aria-hidden="true" className="mt-3 h-5 w-[112px] object-contain sm:h-6 sm:w-[132px]" />
             </div>
           </div>
 
@@ -70,6 +70,7 @@ export default function Hero({ onNavigate, content }) {
               <article
                 key={signal.label}
                 className="reveal-card surface-soft min-h-[4.8rem] rounded-lg p-3"
+                role="group"
                 tabIndex={0}
                 aria-label={`${signal.label}: ${signal.detail}`}
               >
@@ -84,7 +85,7 @@ export default function Hero({ onNavigate, content }) {
 
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <a
-              href="/work/"
+              href="/#work"
               onClick={(event) => navigateTo(event, "work")}
               className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-redwood-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-redwood-400 sm:w-auto"
             >
@@ -105,7 +106,7 @@ export default function Hero({ onNavigate, content }) {
                 key={link.label}
                 href={link.href}
                 target="_blank"
-                rel="noreferrer noopener"
+                rel="noopener noreferrer"
                 aria-label={link.label}
                 title={link.label}
                 className="interactive-card inline-flex h-11 w-11 items-center justify-center rounded-md border border-warm-50/12 bg-warm-50/[0.045] transition hover:border-redwood-300/70 hover:bg-redwood-500/10"
@@ -113,12 +114,13 @@ export default function Hero({ onNavigate, content }) {
                 <img
                   src={link.icon}
                   alt=""
+                  aria-hidden="true"
                   className={`h-5 w-5 object-contain ${link.label === "GitHub" ? "theme-github-logo" : ""}`}
                 />
               </a>
             ))}
             <a
-              href="/contact/"
+              href="/#contact"
               onClick={(event) => navigateTo(event, "contact")}
               className="interactive-card inline-flex items-center justify-center gap-2 rounded-md border border-warm-50/12 bg-warm-50/[0.045] px-3 py-2 text-sm font-semibold text-warm-100 transition hover:border-redwood-300/70 hover:bg-redwood-500/10"
             >

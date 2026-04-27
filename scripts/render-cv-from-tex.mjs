@@ -17,8 +17,15 @@ const cvVariants = {
     otherHtmlFile: "abderrahmane-ouroui-cv-fr.html",
     openPdfLabel: "Open PDF",
     downloadPdfLabel: "Download PDF",
+    printLabel: "Print",
+    actionsLabel: "CV actions",
     fallbackText: "Your browser cannot display the embedded CV PDF.",
-    fallbackDownloadLabel: "Download the CV PDF"
+    fallbackDownloadLabel: "Download the CV PDF",
+    quickSignals: [
+      ["Cloud Platform", "OCI, IAM, networking, compute, storage, Autonomous Database"],
+      ["Delivery", "Terraform, Kubernetes/OKE, CI/CD, release validation"],
+      ["Reliability", "Observability, Grafana, incident response, production operations"]
+    ]
   },
   fr: {
     lang: "fr",
@@ -32,8 +39,15 @@ const cvVariants = {
     otherHtmlFile: "abderrahmane-ouroui-cv.html",
     openPdfLabel: "Ouvrir le PDF",
     downloadPdfLabel: "Télécharger le PDF",
+    printLabel: "Imprimer",
+    actionsLabel: "Actions du CV",
     fallbackText: "Votre navigateur ne peut pas afficher le CV PDF intégré.",
-    fallbackDownloadLabel: "Télécharger le CV PDF"
+    fallbackDownloadLabel: "Télécharger le CV PDF",
+    quickSignals: [
+      ["Plateforme cloud", "OCI, IAM, réseau, compute, stockage, Autonomous Database"],
+      ["Livraison", "Terraform, Kubernetes/OKE, CI/CD, validation de release"],
+      ["Fiabilité", "Observabilité, Grafana, incidents, opérations de production"]
+    ]
   }
 };
 
@@ -161,6 +175,10 @@ function cleanLatex(value = "") {
 
 function escapeAttr(value) {
   return escapeHtml(value).replace(/'/g, "&#39;");
+}
+
+function stripTrailingWhitespace(value) {
+  return value.replace(/[ \t]+$/gm, "");
 }
 
 function itemizeToHtml(value) {
@@ -458,12 +476,6 @@ const summaryText =
     .replace(/<[^>]+>/g, "")
     .replace(/\s+/g, " ") || `${fullName} CV`;
 
-const quickSignals = [
-  ["Cloud Platform", "OCI, IAM, networking, compute, storage, Autonomous Database"],
-  ["Delivery", "Terraform, Kubernetes/OKE, CI/CD, release validation"],
-  ["Reliability", "Observability, Grafana, incident response, production operations"]
-];
-
 const cleanLocation = cleanLatex(metadataLocation || location);
 const cleanEmail = cleanLatex(metadataEmail || email);
 const emailSubject = "Portfolio inquiry";
@@ -488,7 +500,7 @@ function socialProfile(href, label) {
 const contactItems = [
   cleanEmail
     ? `<li>
-        <a class="copy-contact" href="${escapeAttr(emailHref)}" target="_blank" rel="noreferrer noopener" aria-label="Open Gmail compose to contact ${escapeAttr(fullName)}">
+        <a class="copy-contact" href="${escapeAttr(emailHref)}" target="_blank" rel="noopener noreferrer" aria-label="Open Gmail compose to contact ${escapeAttr(fullName)}">
           <span class="copy-main">
             <span class="copy-label">Email</span>
             <span class="copy-value">${cleanEmail}</span>
@@ -502,7 +514,7 @@ const contactItems = [
         ${links
           .map(([href, label]) => {
             const profile = socialProfile(href, label);
-            return `<a class="social-contact ${profile.className}" href="${escapeAttr(href)}" target="_blank" rel="noreferrer noopener" aria-label="${profile.name}">
+            return `<a class="social-contact ${profile.className}" href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer" aria-label="${profile.name}">
               ${profile.icon ? `<img src="${profile.icon}" alt="" />` : ""}
               <span>${profile.name}</span>
             </a>`;
@@ -630,7 +642,6 @@ function renderPdfViewerHtml() {
         width: 100%;
       }
 
-      .pdf-frame object,
       .pdf-frame iframe {
         border: 0;
         display: block;
@@ -692,20 +703,18 @@ function renderPdfViewerHtml() {
         <nav class="viewer-actions" aria-label="CV actions">
           <a href="/">${variant.portfolioLabel}</a>
           <a href="${variant.otherHtmlFile}">${variant.otherLabel}</a>
-          <a href="${cvPdfPath}" target="_blank" rel="noreferrer">${variant.openPdfLabel}</a>
+          <a href="${cvPdfPath}" target="_blank" rel="noopener noreferrer">${variant.openPdfLabel}</a>
           <a href="${cvPdfPath}" download>${variant.downloadPdfLabel}</a>
         </nav>
       </header>
 
       <section class="pdf-frame" aria-label="${escapeAttr(fullName)} CV PDF">
-        <object data="${cvPdfPath}#view=FitH" type="application/pdf">
-          <iframe src="${cvPdfPath}#view=FitH" title="${escapeAttr(fullName)} CV PDF">
-            <div class="fallback">
-              <p>${variant.fallbackText}</p>
-              <a href="${cvPdfPath}" download>${variant.fallbackDownloadLabel}</a>
-            </div>
-          </iframe>
-        </object>
+        <iframe src="${cvPdfPath}#view=FitH" title="${escapeAttr(fullName)} CV PDF">
+          <div class="fallback">
+            <p>${variant.fallbackText}</p>
+            <a href="${cvPdfPath}" download>${variant.fallbackDownloadLabel}</a>
+          </div>
+        </iframe>
       </section>
     </main>
   </body>
@@ -713,12 +722,12 @@ function renderPdfViewerHtml() {
 }
 
 const html = `<!doctype html>
-<html lang="en">
+<html lang="${variant.lang}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="${escapeAttr(summaryText)}" />
-    <link rel="canonical" href="https://aouroui.dev/abderrahmane-ouroui-cv.html" />
+    <link rel="canonical" href="https://aouroui.dev/${variant.htmlFile}" />
     <title>${fullName} CV</title>
     <style>
       :root {
@@ -1518,12 +1527,13 @@ const html = `<!doctype html>
   </head>
   <body>
     <main class="cv-shell">
-      <div class="cv-toolbar" aria-label="CV actions">
-        <p class="toolbar-title">Online CV</p>
+      <div class="cv-toolbar" aria-label="${variant.actionsLabel}">
+        <p class="toolbar-title">${variant.onlineLabel}</p>
         <div class="toolbar-actions">
-          <a href="/">Portfolio</a>
-          <a href="/abderrahmane-ouroui-cv.pdf" download>Download PDF</a>
-          <button type="button" onclick="window.print()">Print</button>
+          <a href="/">${variant.portfolioLabel}</a>
+          <a href="/${variant.otherHtmlFile}">${variant.otherLabel}</a>
+          <a href="/${variant.pdfFile}" download>${variant.downloadPdfLabel}</a>
+          <button type="button" onclick="window.print()">${variant.printLabel}</button>
         </div>
       </div>
       <article class="cv-page" aria-label="${escapeAttr(fullName)} CV">
@@ -1541,7 +1551,7 @@ const html = `<!doctype html>
               </ul>
             </div>
             <div class="signal-strip" aria-label="Profile highlights">
-              ${quickSignals
+              ${variant.quickSignals
                 .map(
                   ([title, detail]) => `<div class="signal"><strong>${title}</strong><span>${detail}</span></div>`
                 )
@@ -1557,6 +1567,7 @@ const html = `<!doctype html>
 
 await fs.mkdir(path.dirname(printSourcePath), { recursive: true });
 await fs.mkdir(path.dirname(outputPath), { recursive: true });
-await fs.writeFile(printSourcePath, html);
-await fs.writeFile(outputPath, renderPdfViewerHtml());
+const cleanHtml = stripTrailingWhitespace(html);
+await fs.writeFile(printSourcePath, cleanHtml);
+await fs.writeFile(outputPath, cleanHtml);
 console.log(`Rendered ${path.relative(root, outputPath)} and ${path.relative(root, printSourcePath)} from ${path.relative(root, sourcePath)}`);

@@ -58,10 +58,11 @@ function TimelineItem({ item }) {
   return (
     <article
       className="reveal-card timeline-item relative rounded-lg border border-warm-50/10 bg-warm-50/[0.035] p-3 pl-4 xl:p-2.5 xl:pl-4"
+      role="group"
       tabIndex={0}
       aria-label={`${item.period}: ${item.title}. ${item.detail || item.achievement}`}
     >
-      <span className="absolute left-0 top-4 h-2 w-2 -translate-x-1/2 rounded-full bg-redwood-400 shadow-[0_0_16px_rgba(227,99,79,0.55)] xl:top-3.5" />
+      <span className="absolute left-0 top-4 h-2 w-2 -translate-x-1/2 rounded-full bg-redwood-400 shadow-[0_0_16px_rgba(227,99,79,0.55)] xl:top-3.5" aria-hidden="true" />
       <p className="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-redwood-300">{item.period}</p>
       <h3 className="mt-1 text-sm font-semibold leading-5 text-warm-50 xl:text-[0.82rem] xl:leading-5">{item.title}</h3>
       <p className="mt-1 line-clamp-1 text-xs leading-5 text-warm-300 xl:leading-4">{item.achievement}</p>
@@ -76,6 +77,7 @@ function ProofTile({ item }) {
   return (
     <article
       className="reveal-card proof-tile interactive-card min-w-0 rounded-lg border border-warm-50/10 bg-warm-50/[0.035] p-3 xl:p-2.5"
+      role="group"
       tabIndex={0}
       aria-label={`${item.title}: ${item.handle}`}
     >

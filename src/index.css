@@ -17,6 +17,7 @@
   --surface-soft-shadow: 0 18px 60px rgba(0, 0, 0, 0.24);
   --redwood-accent: #ff8a72;
   --redwood-accent-strong: #e3634f;
+  --focus-ring: #ffd166;
   --terminal-bg: rgba(7, 6, 5, 0.7);
   --terminal-soft-bg: rgba(7, 6, 5, 0.45);
   --glass-bg: rgba(248, 243, 234, 0.045);
@@ -57,6 +58,7 @@ html[data-theme="light"] {
   --surface-soft-shadow: 0 16px 46px rgba(94, 65, 47, 0.12);
   --redwood-accent: #a13a2d;
   --redwood-accent-strong: #c74634;
+  --focus-ring: #7d2a22;
   --terminal-bg: rgba(255, 252, 246, 0.78);
   --terminal-soft-bg: rgba(255, 252, 246, 0.56);
   --glass-bg: rgba(24, 19, 15, 0.055);
@@ -103,9 +105,37 @@ a {
 }
 
 button:focus-visible,
-a:focus-visible {
-  outline: 2px solid var(--redwood-accent-strong);
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus-ring) 24%, transparent);
+}
+
+.skip-link {
+  background: var(--page-bg);
+  border: 1px solid var(--focus-ring);
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  font-weight: 700;
+  left: 1rem;
+  opacity: 0;
+  padding: 0.75rem 1rem;
+  pointer-events: none;
+  position: fixed;
+  text-decoration: none;
+  top: 1rem;
+  transform: translateY(-0.75rem);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+  z-index: 80;
+}
+
+.skip-link:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 ::selection {
@@ -185,6 +215,10 @@ a:focus-visible {
   isolation: isolate;
   overflow: hidden;
   position: relative;
+}
+
+.reveal-card:focus-visible {
+  border-color: color-mix(in srgb, var(--focus-ring) 74%, var(--surface-border));
 }
 
 .reveal-card::after {
@@ -491,6 +525,10 @@ a:focus-visible {
   color: #1e7186;
 }
 
+.theme-dark .text-warm-500 {
+  color: #9f9286;
+}
+
 .theme-light .shadow-panel {
   box-shadow: var(--surface-shadow);
 }
@@ -525,10 +563,23 @@ a:focus-visible {
 
 .horizontal-scroll section,
 .horizontal-scroll section [class*="overflow-y-auto"],
-.horizontal-scroll section [class*="overflow-y-scroll"] {
+.horizontal-scroll section [class*="overflow-y-scroll"],
+.story-scroll-y {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
   touch-action: pan-y pinch-zoom;
+}
+
+@media (max-width: 767px) {
+  .story-scroll-y,
+  .horizontal-scroll section[class*="overflow-y-auto"],
+  .horizontal-scroll section [class*="overflow-y-auto"],
+  .horizontal-scroll section [class*="overflow-y-scroll"],
+  .app-shell main > section [class*="overflow-y-auto"],
+  .app-shell main > section [class*="overflow-y-scroll"] {
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom)) !important;
+    scroll-padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+  }
 }
 
 .story-progress {
@@ -617,6 +668,15 @@ section > div::-webkit-scrollbar {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
   html,
   .horizontal-scroll {
     scroll-behavior: auto !important;
