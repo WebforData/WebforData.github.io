@@ -2,9 +2,49 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
-const sourcePath = path.join(root, "version.tex");
-const outputPath = path.join(root, "public", "abderrahmane-ouroui-cv.html");
-const printSourcePath = path.join(root, "node_modules", ".cache", "aouroui-cv-source.html");
+const langArg = process.argv.find((arg) => arg.startsWith("--lang="))?.split("=")[1] ?? "en";
+
+const cvVariants = {
+  en: {
+    lang: "en",
+    sourceFile: "version.tex",
+    htmlFile: "abderrahmane-ouroui-cv.html",
+    pdfFile: "abderrahmane-ouroui-cv.pdf",
+    printSourceFile: "aouroui-cv-source.html",
+    onlineLabel: "Online CV",
+    portfolioLabel: "Portfolio",
+    otherLabel: "Français",
+    otherHtmlFile: "abderrahmane-ouroui-cv-fr.html",
+    openPdfLabel: "Open PDF",
+    downloadPdfLabel: "Download PDF",
+    fallbackText: "Your browser cannot display the embedded CV PDF.",
+    fallbackDownloadLabel: "Download the CV PDF"
+  },
+  fr: {
+    lang: "fr",
+    sourceFile: "version.fr.tex",
+    htmlFile: "abderrahmane-ouroui-cv-fr.html",
+    pdfFile: "abderrahmane-ouroui-cv-fr.pdf",
+    printSourceFile: "aouroui-cv-source-fr.html",
+    onlineLabel: "CV en ligne",
+    portfolioLabel: "Portfolio",
+    otherLabel: "English",
+    otherHtmlFile: "abderrahmane-ouroui-cv.html",
+    openPdfLabel: "Ouvrir le PDF",
+    downloadPdfLabel: "Télécharger le PDF",
+    fallbackText: "Votre navigateur ne peut pas afficher le CV PDF intégré.",
+    fallbackDownloadLabel: "Télécharger le CV PDF"
+  }
+};
+
+const variant = cvVariants[langArg];
+if (!variant) {
+  throw new Error(`Unknown CV language "${langArg}". Expected one of: ${Object.keys(cvVariants).join(", ")}`);
+}
+
+const sourcePath = path.join(root, variant.sourceFile);
+const outputPath = path.join(root, "public", variant.htmlFile);
+const printSourcePath = path.join(root, "node_modules", ".cache", variant.printSourceFile);
 
 const tex = await fs.readFile(sourcePath, "utf8");
 
@@ -315,22 +355,26 @@ function renderLanguages(body) {
 function renderSection(section) {
   const id = section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const title = cleanLatex(section.title);
+  const normalizedTitle = title
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 
-  if (section.title === "Professional Summary") {
+  if (["professional summary", "resume professionnel"].includes(normalizedTitle)) {
     return `<section class="cv-section summary-section" id="${id}">
       <h2>${title}</h2>
       ${paragraphHtml(section.body)}
     </section>`;
   }
 
-  if (section.title === "Experience") {
+  if (normalizedTitle === "experience" || section.body.includes("\\resumeSubheading")) {
     return `<section class="cv-section" id="${id}">
       <h2>${title}</h2>
       ${section.body.includes("\\resumeSubheading") ? renderResumeSubheadings(section.body, "experience") : renderCventries(section.body, "experience")}
     </section>`;
   }
 
-  if (section.title === "Projects" && section.body.includes("\\resumeProjectHeading")) {
+  if (section.body.includes("\\resumeProjectHeading")) {
     return `<section class="cv-section" id="${id}">
       <h2>${title}</h2>
       <div class="cvitem-list project-list">${renderResumeProjects(section.body)}</div>
@@ -402,7 +446,15 @@ const links = commandEntries(center, "href", 2).filter(([href]) => !href.startsW
 const sections = splitSections(tex);
 const fullName = cleanLatex(metadataName) || `${cleanLatex(firstName)} ${cleanLatex(lastName)}`.trim();
 const summaryText =
-  cleanLatex(sections.find((section) => section.title === "Professional Summary")?.body ?? "")
+  cleanLatex(
+    sections.find((section) => {
+      const title = cleanLatex(section.title)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+      return ["professional summary", "resume professionnel"].includes(title);
+    })?.body ?? ""
+  )
     .replace(/<[^>]+>/g, "")
     .replace(/\s+/g, " ") || `${fullName} CV`;
 
@@ -461,16 +513,16 @@ const contactItems = [
 ].filter(Boolean);
 
 function renderPdfViewerHtml() {
-  const cvPdfPath = "abderrahmane-ouroui-cv.pdf";
+  const cvPdfPath = variant.pdfFile;
   const description = summaryText || `${fullName} CV`;
 
   return `<!doctype html>
-<html lang="en">
+<html lang="${variant.lang}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="${escapeAttr(description)}" />
-    <link rel="canonical" href="https://aouroui.dev/abderrahmane-ouroui-cv.html" />
+    <link rel="canonical" href="https://aouroui.dev/${variant.htmlFile}" />
     <title>${fullName} CV</title>
     <style>
       :root {
@@ -634,13 +686,14 @@ function renderPdfViewerHtml() {
     <main class="viewer-shell">
       <header class="viewer-toolbar">
         <div class="viewer-title">
-          <p>Online CV</p>
+          <p>${variant.onlineLabel}</p>
           <h1>${fullName}</h1>
         </div>
         <nav class="viewer-actions" aria-label="CV actions">
-          <a href="/">Portfolio</a>
-          <a href="${cvPdfPath}" target="_blank" rel="noreferrer">Open PDF</a>
-          <a href="${cvPdfPath}" download>Download PDF</a>
+          <a href="/">${variant.portfolioLabel}</a>
+          <a href="${variant.otherHtmlFile}">${variant.otherLabel}</a>
+          <a href="${cvPdfPath}" target="_blank" rel="noreferrer">${variant.openPdfLabel}</a>
+          <a href="${cvPdfPath}" download>${variant.downloadPdfLabel}</a>
         </nav>
       </header>
 
@@ -648,8 +701,8 @@ function renderPdfViewerHtml() {
         <object data="${cvPdfPath}#view=FitH" type="application/pdf">
           <iframe src="${cvPdfPath}#view=FitH" title="${escapeAttr(fullName)} CV PDF">
             <div class="fallback">
-              <p>Your browser cannot display the embedded CV PDF.</p>
-              <a href="${cvPdfPath}" download>Download the CV PDF</a>
+              <p>${variant.fallbackText}</p>
+              <a href="${cvPdfPath}" download>${variant.fallbackDownloadLabel}</a>
             </div>
           </iframe>
         </object>

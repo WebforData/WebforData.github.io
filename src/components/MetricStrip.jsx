@@ -1,17 +1,16 @@
-import { capabilityLogoRail, capabilityProofPoints, capabilitySignals, cloudPortability } from "../data/portfolio.js";
+export default function MetricStrip({ highlightedSignal, content }) {
+  const { capabilityLogoRail, capabilityProofPoints, capabilitySignals, cloudPortability, ui } = content;
+  const visibleLogos = capabilityLogoRail.slice(0, 14);
+  const visibleCapabilities = capabilitySignals.slice(0, 8);
 
-const visibleLogos = capabilityLogoRail.slice(0, 14);
-const visibleCapabilities = capabilitySignals.slice(0, 8);
-
-export default function MetricStrip({ highlightedSignal }) {
   return (
     <section id="capabilities" className="box-border h-screen w-screen min-w-0 shrink-0 snap-start overflow-hidden px-3 pb-4 pt-20 sm:px-6 sm:pb-8 lg:px-8">
       <div className="mx-auto flex h-full w-full max-w-7xl flex-col justify-start overflow-y-auto overflow-x-hidden py-1 lg:py-0">
         <div className="grid gap-3 sm:gap-4 lg:grid-cols-[0.92fr_1.08fr] lg:items-end">
           <div className="min-w-0">
-            <p className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-redwood-300 sm:text-xs">capabilities</p>
+            <p className="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-redwood-300 sm:text-xs">{ui.capabilities.eyebrow}</p>
             <h2 className="mt-1 max-w-2xl break-words font-display text-[1.75rem] font-semibold leading-[1.05] text-warm-50 sm:mt-2 sm:text-5xl lg:text-4xl 2xl:text-5xl">
-              The platform work I can own.
+              {ui.capabilities.title}
             </h2>
           </div>
           <div className="grid grid-cols-3 gap-2">

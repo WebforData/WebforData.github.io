@@ -1,16 +1,16 @@
 import { MapPin } from "lucide-react";
-import { profile, proofOfWork, timeline } from "../data/portfolio.js";
 import Section from "./Section.jsx";
 
-const visibleProof = proofOfWork.slice(0, 4);
-
-export default function Experience() {
+export default function Experience({ content }) {
+  const { profile, proofOfWork, timeline, ui } = content;
+  const visibleProof = proofOfWork.slice(0, 4);
+  const copy = ui.experience;
   return (
     <Section
       id="experience"
-      eyebrow="experience"
-      title="Experience and delivery patterns."
-      intro="Roles, operating model, and platform work owned from architecture through production."
+      eyebrow={copy.eyebrow}
+      title={copy.title}
+      intro={copy.intro}
       wide
       start
     >
@@ -20,13 +20,13 @@ export default function Experience() {
           <h3 className="mt-4 text-xl font-semibold text-warm-50 sm:text-2xl">{profile.name}</h3>
           <p className="mt-2 text-warm-300">{profile.location}</p>
           <div className="mt-5 rounded-lg border border-redwood-300/20 bg-redwood-500/[0.06] p-3">
-            <p className="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-redwood-300">operating model</p>
+            <p className="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-redwood-300">{copy.operatingModel}</p>
             <p className="mt-2 text-sm leading-6 text-warm-300">{profile.summary}</p>
           </div>
         </aside>
 
         <div className="surface-soft rounded-lg p-4 xl:p-3">
-          <p className="font-mono text-xs uppercase text-redwood-300">career timeline</p>
+          <p className="font-mono text-xs uppercase text-redwood-300">{copy.timeline}</p>
           <div className="mt-3 space-y-2">
             {timeline.map((item) => (
               <TimelineItem key={`${item.period}-${item.title}`} item={item} />
@@ -37,10 +37,10 @@ export default function Experience() {
         <div className="surface rounded-lg p-4 lg:col-span-2 xl:col-span-1">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="font-mono text-xs uppercase text-redwood-300">proof of work</p>
-              <h3 className="mt-2 text-lg font-semibold text-warm-50 sm:text-xl">Delivery patterns I can own.</h3>
+              <p className="font-mono text-xs uppercase text-redwood-300">{copy.proof}</p>
+              <h3 className="mt-2 text-lg font-semibold text-warm-50 sm:text-xl">{copy.proofTitle}</h3>
             </div>
-            <p className="max-w-sm text-xs leading-5 text-warm-400">Architecture, automation, runtime, and reliability patterns shaped by production work.</p>
+            <p className="max-w-sm text-xs leading-5 text-warm-400">{copy.proofIntro}</p>
           </div>
 
           <div className="mt-4 grid gap-2 md:grid-cols-2">

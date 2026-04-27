@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "node scripts/render-cv-from-tex.mjs && vite build && node scripts/prerender.mjs",
-    "cv:html": "node scripts/render-cv-from-tex.mjs",
-    "cv:pdf": "node scripts/render-cv-from-tex.mjs && node scripts/render-cv-pdf.mjs",
+    "build": "node scripts/render-cv-from-tex.mjs --lang=en && node scripts/render-cv-from-tex.mjs --lang=fr && vite build && node scripts/prerender.mjs",
+    "cv:html": "node scripts/render-cv-from-tex.mjs --lang=en && node scripts/render-cv-from-tex.mjs --lang=fr",
+    "cv:pdf": "node scripts/render-cv-from-tex.mjs --lang=en && node scripts/render-cv-pdf.mjs --lang=en && node scripts/render-cv-from-tex.mjs --lang=fr && node scripts/render-cv-pdf.mjs --lang=fr",
     "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {

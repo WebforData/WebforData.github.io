@@ -1,0 +1,210 @@
+%-------------------------
+% CV en LaTeX
+% Version française publique pour Abderrahmane Ouroui
+% Structure inspirée du modèle compact de Jake Gutierrez.
+%-------------------------
+
+\documentclass[a4paper,10pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{enumitem}
+\usepackage[hidelinks,unicode]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[french]{babel}
+\usepackage{tabularx}
+\usepackage[T1]{fontenc}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{inputenc}
+  \input{glyphtounicode}
+  \pdfgentounicode=1
+\fi
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-0.55in}
+\addtolength{\textheight}{1.12in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+\setlist[itemize]{label=\textbullet}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Métadonnées utilisées par le générateur HTML/PDF.
+\newcommand{\cvName}{Abderrahmane Ouroui}
+\newcommand{\cvLocation}{Casablanca, Maroc}
+\newcommand{\cvEmail}{abdououroui123@gmail.com}
+\newcommand{\cvRole}{Ingénieur Plateforme OCI | Ingénieur DevOps}
+
+%-------------------------
+% Commandes personnalisées
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-4pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+  \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-4pt}
+}
+
+\newcommand{\resumeSkill}[2]{
+  \item\small{\textbf{#1}{: #2 \vspace{-2pt}}}
+}
+
+\newcommand{\resumeCertification}[2]{
+  \item\small{\textbf{#1}{: #2 \vspace{-2pt}}}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[itemsep=0pt, topsep=1pt, parsep=0pt]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{0pt}}
+\newcommand{\resumeSkillListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSkillListEnd}{\end{itemize}}
+
+%-------------------------------------------
+\begin{document}
+
+%----------EN-TÊTE----------
+\begin{center}
+    \textbf{\Huge \scshape Abderrahmane Ouroui} \\ \vspace{1pt}
+    \small Ingénieur Plateforme OCI $|$ Ingénieur DevOps $|$ Casablanca, Maroc \\ \vspace{1pt}
+    \small
+    \href{mailto:abdououroui123@gmail.com}{\underline{abdououroui123@gmail.com}} $|$
+    \href{https://aouroui.dev/}{\underline{aouroui.dev}} $|$
+    \href{https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/}{\underline{LinkedIn}} $|$
+    \href{https://github.com/webfordata}{\underline{GitHub}} $|$
+    \href{https://leetcode.com/webfordata/}{\underline{LeetCode}}
+\end{center}
+
+%-----------RÉSUMÉ-----------
+\section{Résumé professionnel}
+\small{Ingénieur Plateforme / DevOps orienté OCI. Je construis des plateformes de production sécurisées et observables avec Terraform, OKE/Kubernetes, IAM, réseau, CI/CD et fondations MLOps/data. OCI est mon environnement le plus approfondi; mes standards restent portables entre clouds : Infrastructure as Code, moindre privilège, promotion de versions, observabilité, coûts et modèles Kubernetes adaptables à AWS, GCP, Azure ou autres clouds.}
+
+%-----------EXPÉRIENCE-----------
+\section{Expérience}
+\resumeSubHeadingListStart
+
+  \resumeSubheading
+    {Ingénieur DevOps II / Ingénieur Plateforme}{2023--Présent}
+    {Oracle}{Casablanca, Maroc}
+    \resumeItemListStart
+      \resumeItem{Concevoir et opérer des fondations OCI dev/test/préprod/prod : IAM, VCN, compute, stockage, OKE, Autonomous Database, Logging et Monitoring.}
+      \resumeItem{Migrer l'infrastructure Terraform en protégeant \textbf{500+ ressources OCI par environnement} contre les recréations inutiles.}
+      \resumeItem{Sécuriser les chemins runtime et ingress : OKE/Kubernetes, Load Balancers, API Gateway, Traefik, CI/CD et authN/authZ tiers.}
+      \resumeItem{Améliorer fiabilité et coûts : Grafana, alarmes, runbooks, triage, MLflow, Object Storage et Data Flow/Spark.}
+    \resumeItemListEnd
+
+  \resumeSubheading
+    {Assistant de recherche}{2023}
+    {Oracle}{Casablanca, Maroc}
+    \resumeItemListStart
+      \resumeItem{Livrer des services backend Java/Groovy et des workflows CI/CD avec Gradle, Jenkins, GitLab, JUnit et Mockito.}
+    \resumeItemListEnd
+
+  \resumeSubheading
+    {Développeur Full Stack / Web}{2021--2022}
+    {diaaland, INTELLCAP SARL}{}
+    \resumeItemListStart
+      \resumeItem{Développer des applications web et intégrations tierces avec React, GraphQL, PHP/WooCommerce, NestJS, MongoDB, Strava et Garmin.}
+    \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%-----------PROJETS-----------
+\section{Projets}
+\resumeSubHeadingListStart
+
+  \resumeProjectHeading
+    {\textbf{Fondation de plateforme OCI} $|$ \emph{Terraform, IAM, VCN, OKE, Autonomous Database}}{}
+    \resumeItemListStart
+      \resumeItem{Socle dev/test/préprod/prod reproductible pour charges de travail cloud sécurisées.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{Migration Terraform sécurisée} $|$ \emph{état Terraform, ressources OCI, transition de données}}{}
+    \resumeItemListStart
+      \resumeItem{Migration d'infrastructure et de données avec maîtrise de l'état et risque réduit.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{Périmètre réseau sécurisé} $|$ \emph{API Gateway, Load Balancer, Traefik, AuthN/AuthZ}}{}
+    \resumeItemListStart
+      \resumeItem{Ingress privé et accès alignés avec l'identité pour services de production.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{Chaîne de livraison OKE} $|$ \emph{Kubernetes, CI/CD, contrôles de promotion, rollback}}{}
+    \resumeItemListStart
+      \resumeItem{Flux Kubernetes avec validation, promotion d'environnement et rollback.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{Observabilité} $|$ \emph{Grafana, OCI Logging, OCI Monitoring, alarmes, runbooks}}{}
+    \resumeItemListStart
+      \resumeItem{Visibilité opérationnelle pour triage, fiabilité et santé de plateforme.}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{Fondation MLOps / Data} $|$ \emph{MLflow, Object Storage, Data Flow, Spark/PySpark}}{}
+    \resumeItemListStart
+      \resumeItem{Flux reproductible d'artefacts data et ML sur OCI.}
+    \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%-----------COMPÉTENCES-----------
+\section{Compétences techniques}
+\resumeSkillListStart
+  \resumeSkill{Plateforme cloud}{OCI, IAM, VCN, Load Balancer, API Gateway, Compute, Object/Block Storage, Autonomous Database, OKE, Logging, Monitoring}
+  \resumeSkill{Livraison / Runtime}{Terraform, Infrastructure as Code, Kubernetes, Docker, GitLab/Jenkins CI/CD, Traefik, promotion de versions, rollback}
+  \resumeSkill{Sécurité / Fiabilité}{IAM à moindre privilège, NSGs, chemins privés de service, authN/authZ, Linux, Grafana, alarmes, runbooks, triage d'incidents, optimisation des coûts}
+  \resumeSkill{Data / Ingénierie}{MLflow, OCI Data Science, Data Flow, Spark, PySpark, Object Storage, Java, Groovy, Python, React, GraphQL, NestJS, MongoDB, MySQL}
+\resumeSkillListEnd
+
+%-----------CERTIFICATIONS-----------
+\section{Certifications}
+\resumeSkillListStart
+  \resumeCertification{Oracle Cloud}{\href{https://catalog-education.oracle.com/ords/certview/sharebadge?id=5DCB8BDEE987AB0D33F444C6F0144AEC8E9596EF9BA9A3528575CBDC6F3F67AE}{OCI 2025 Certified Architect Associate}; \href{https://catalog-education.oracle.com/ords/certview/sharebadge?id=703518BB3025293CEBF2E2E2207E532FEF6B4989E515803FA6B2A07A3956C00F}{OCI 2024 Certified Foundations Associate}}
+  \resumeCertification{Cloud Engineering}{\href{https://www.coursera.org/account/accomplishments/certificate/SD425CFMRN48}{Building Scalable Java Microservices with Spring Boot and Spring Cloud -- Google / Coursera}}
+\resumeSkillListEnd
+
+%-----------FORMATION & LANGUES-----------
+\section{Formation \& Langues}
+\resumeSkillListStart
+  \resumeSkill{Formation}{Diplôme d'ingénieur en informatique, ENSIAS; CPGE Mathématiques}
+  \resumeSkill{Langues}{Arabe, anglais, français}
+\resumeSkillListEnd
+
+%-------------------------------------------
+\end{document}

@@ -5,9 +5,29 @@ import { spawn } from "node:child_process";
 import { pathToFileURL } from "node:url";
 
 const root = process.cwd();
-const texPath = path.join(root, "version.tex");
-const inputPath = path.join(root, "node_modules", ".cache", "aouroui-cv-source.html");
-const outputPath = path.join(root, "public", "abderrahmane-ouroui-cv.pdf");
+const langArg = process.argv.find((arg) => arg.startsWith("--lang="))?.split("=")[1] ?? "en";
+
+const cvVariants = {
+  en: {
+    sourceFile: "version.tex",
+    outputFile: "abderrahmane-ouroui-cv.pdf",
+    printSourceFile: "aouroui-cv-source.html"
+  },
+  fr: {
+    sourceFile: "version.fr.tex",
+    outputFile: "abderrahmane-ouroui-cv-fr.pdf",
+    printSourceFile: "aouroui-cv-source-fr.html"
+  }
+};
+
+const variant = cvVariants[langArg];
+if (!variant) {
+  throw new Error(`Unknown CV language "${langArg}". Expected one of: ${Object.keys(cvVariants).join(", ")}`);
+}
+
+const texPath = path.join(root, variant.sourceFile);
+const inputPath = path.join(root, "node_modules", ".cache", variant.printSourceFile);
+const outputPath = path.join(root, "public", variant.outputFile);
 
 const chromeCandidates = [
   process.env.CHROME_BIN,
@@ -99,7 +119,7 @@ async function compileTexWithLatex(compiler) {
       await runProcess(compiler.path, args);
     }
 
-    const compiledPdf = path.join(outDir, "version.pdf");
+    const compiledPdf = path.join(outDir, `${path.basename(texPath, ".tex")}.pdf`);
     const stat = await fs.stat(compiledPdf);
     if (stat.size < 10_000) {
       throw new Error("LaTeX generated a PDF that is unexpectedly small.");
@@ -130,7 +150,7 @@ async function ensurePrintSource() {
   try {
     await fs.access(inputPath);
   } catch {
-    await runProcess(process.execPath, [path.join(root, "scripts", "render-cv-from-tex.mjs")], { cwd: root });
+    await runProcess(process.execPath, [path.join(root, "scripts", "render-cv-from-tex.mjs"), `--lang=${langArg}`], { cwd: root });
   }
 }
 

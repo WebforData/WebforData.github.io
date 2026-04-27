@@ -1,6 +1,7 @@
 import { ArrowLeft, Home } from "lucide-react";
 
-export default function CaseStudyDetail({ study }) {
+export default function CaseStudyDetail({ study, ui }) {
+  const sectionTitles = ui.sections;
   return (
     <section
       id={`case-${study.slug}`}
@@ -20,11 +21,11 @@ export default function CaseStudyDetail({ study }) {
           <div className="flex flex-wrap gap-2">
             <a href="/work/" className="case-back-link">
               <ArrowLeft size={16} aria-hidden="true" />
-              Case-study index
+              {ui.index}
             </a>
             <a href="/" className="case-back-link">
               <Home size={16} aria-hidden="true" />
-              Home
+              {ui.home}
             </a>
           </div>
         </div>
@@ -32,23 +33,23 @@ export default function CaseStudyDetail({ study }) {
         <div className="grid gap-4 xl:grid-cols-[0.88fr_1.12fr]">
           <article className="surface rounded-lg p-5 sm:p-6">
             <div className="grid gap-4 sm:grid-cols-3">
-              <ProofCell label="Role" value={study.proof.role} />
-              <ProofCell label="Stack" value={study.proof.stack} />
-              <ProofCell label="Outcome" value={study.proof.outcome} />
+              <ProofCell label={ui.proofLabels.role} value={study.proof.role} />
+              <ProofCell label={ui.proofLabels.stack} value={study.proof.stack} />
+              <ProofCell label={ui.proofLabels.outcome} value={study.proof.outcome} />
             </div>
 
             <div className="mt-6 grid gap-5">
-              <StudySection idPrefix={study.slug} title="Problem" text={study.problem} />
-              <StudySection idPrefix={study.slug} title="Context" text={study.context} />
-              <StudySection idPrefix={study.slug} title="My ownership" text={study.ownership} />
-              <StudySection idPrefix={study.slug} title="Architecture / delivery approach" text={study.approach} />
-              <StudySection idPrefix={study.slug} title="Outcome" text={study.outcome} highlight />
+              <StudySection idPrefix={study.slug} title={sectionTitles[0]} text={study.problem} />
+              <StudySection idPrefix={study.slug} title={sectionTitles[1]} text={study.context} />
+              <StudySection idPrefix={study.slug} title={sectionTitles[2]} text={study.ownership} />
+              <StudySection idPrefix={study.slug} title={sectionTitles[3]} text={study.approach} />
+              <StudySection idPrefix={study.slug} title={sectionTitles[4]} text={study.outcome} highlight />
             </div>
           </article>
 
           <div className="grid gap-4">
             <article className="surface-soft rounded-lg p-5 sm:p-6">
-              <p className="font-mono text-xs uppercase text-redwood-300">key decisions</p>
+              <p className="font-mono text-xs uppercase text-redwood-300">{ui.keyDecisions}</p>
               <ul className="mt-4 grid gap-3">
                 {study.keyDecisions.map((decision) => (
                   <li key={decision} className="rounded-md border border-warm-50/10 bg-warm-50/[0.035] p-3 text-sm leading-6 text-warm-300">
@@ -59,16 +60,16 @@ export default function CaseStudyDetail({ study }) {
             </article>
 
             <article className="surface rounded-lg p-5 sm:p-6">
-              <p className="font-mono text-xs uppercase text-redwood-300">architecture examples</p>
+              <p className="font-mono text-xs uppercase text-redwood-300">{ui.architectureExamples}</p>
               <div className="mt-4 grid gap-3 lg:grid-cols-2">
                 {study.artifacts.map((artifact) => (
-                  <ArtifactBlock key={artifact.title} artifact={artifact} />
+                  <ArtifactBlock key={artifact.title} artifact={artifact} label={ui.representativeExample} />
                 ))}
               </div>
             </article>
 
             <article className="surface-soft rounded-lg p-5 sm:p-6">
-              <p className="font-mono text-xs uppercase text-redwood-300">portable standard</p>
+              <p className="font-mono text-xs uppercase text-redwood-300">{ui.portableStandard}</p>
               <p className="mt-3 text-sm leading-7 text-warm-300">{study.portability}</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {study.technologies.map((tech) => (
@@ -106,10 +107,10 @@ function ProofCell({ label, value }) {
   );
 }
 
-function ArtifactBlock({ artifact }) {
+function ArtifactBlock({ artifact, label }) {
   return (
     <div className="artifact-block rounded-lg border border-warm-50/10 bg-warm-50/[0.035] p-4">
-      <p className="font-mono text-[0.58rem] uppercase tracking-[0.12em] text-warm-500">representative example</p>
+      <p className="font-mono text-[0.58rem] uppercase tracking-[0.12em] text-warm-500">{label}</p>
       <h3 className="mt-2 text-base font-semibold leading-6 text-warm-50">{artifact.title}</h3>
       <p className="mt-2 text-xs leading-5 text-warm-400">{artifact.description}</p>
       {artifact.type === "flow" ? <ArtifactFlow artifact={artifact} /> : <ArtifactChecklist artifact={artifact} />}

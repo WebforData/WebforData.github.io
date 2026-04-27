@@ -8,6 +8,8 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/",
   cvHtml: "/abderrahmane-ouroui-cv.html",
   cv: "/abderrahmane-ouroui-cv.pdf",
+  cvFrHtml: "/abderrahmane-ouroui-cv-fr.html",
+  cvFr: "/abderrahmane-ouroui-cv-fr.pdf",
   headline:
     "I build secure, observable, production-ready cloud platforms with Terraform, OKE/Kubernetes, CI/CD, and MLOps foundations - proven on OCI and adaptable across AWS, GCP, Azure, and beyond.",
   summary:
@@ -487,3 +489,760 @@ export const publicProofRepos = [
     focus: "Provider-agnostic standards for IAM, networking, CI/CD, observability, and cost awareness"
   }
 ];
+
+const heroContent = {
+  en: {
+    intro:
+      "Secure, observable production platforms with Terraform, OKE/Kubernetes, CI/CD, and MLOps foundations.",
+    primaryCta: "View case studies",
+    cvCta: "Download CV",
+    contactCta: "Contact",
+    terminalTitle: "oci-architect.sh",
+    terminalLines: [
+      {
+        command: "platform.status --summary",
+        output: "OCI-proven production runway. Cloud-portable standards."
+      }
+    ],
+    promotionLabel: "promotion runway",
+    ownershipLabel: "ownership map",
+    ownershipHint: "hover / click",
+    signals: [
+      {
+        label: "OCI",
+        value: "architecture",
+        detail: "IAM, networking, compute, storage, Autonomous Database, observability, and MLOps-ready foundations."
+      },
+      {
+        label: "IaC",
+        value: "Terraform",
+        detail: "State-aware modules, reviewable release paths, environment promotion, and safer infrastructure change."
+      },
+      {
+        label: "Runtime",
+        value: "OKE / K8s",
+        detail: "Container runtime design, private service paths, release validation, rollback readiness, and production operations."
+      }
+    ],
+    environmentRunway: [
+      { icon: "🧩", label: "dev" },
+      { icon: "🧪", label: "test" },
+      { icon: "🛡️", label: "stage" },
+      { icon: "🚀", label: "prod" }
+    ],
+    controlPlaneMap: [
+      {
+        label: "IaC",
+        value: "Codify OCI with Terraform modules, state-aware reviews, and promotion gates.",
+        target: 1,
+        signal: "Terraform / IaC"
+      },
+      {
+        label: "IAM",
+        value: "Design compartments, policies, service principals, and app auth boundaries.",
+        target: 1,
+        signal: "Cloud architecture"
+      },
+      {
+        label: "Networking",
+        value: "Shape private VCN paths, LB/API Gateway, Traefik, and authN/authZ.",
+        target: 1,
+        signal: "Secure networking"
+      },
+      {
+        label: "OKE",
+        value: "Own workload runtime, images, validation, scaling, and service exposure.",
+        target: 1,
+        signal: "Runtime platforms"
+      },
+      {
+        label: "Data",
+        value: "Wire Autonomous Database, Object Storage, Spark/Data Flow, and data movement.",
+        target: 1,
+        signal: "Data platforms"
+      },
+      {
+        label: "Observability",
+        value: "Build logs, metrics, Grafana dashboards, alarms, and health signals.",
+        target: 1,
+        signal: "Observability"
+      },
+      {
+        label: "MLOps",
+        value: "Prepare MLflow, Data Science pipelines, datasets, and model artifacts.",
+        target: 1,
+        signal: "MLOps foundations"
+      }
+    ]
+  },
+  fr: {
+    intro:
+      "Plateformes de production sécurisées et observables avec Terraform, OKE/Kubernetes, CI/CD et fondations MLOps.",
+    primaryCta: "Voir les projets",
+    cvCta: "Télécharger le CV",
+    contactCta: "Contact",
+    terminalTitle: "oci-architect.sh",
+    terminalLines: [
+      {
+        command: "platform.status --summary",
+        output: "Expérience production OCI. Standards portables entre clouds."
+      }
+    ],
+    promotionLabel: "promotion dev vers prod",
+    ownershipLabel: "périmètre d'intervention",
+    ownershipHint: "survol / clic",
+    signals: [
+      {
+        label: "OCI",
+        value: "architecture",
+        detail: "IAM, réseau, compute, stockage, Autonomous Database, observabilité et fondations MLOps."
+      },
+      {
+        label: "IaC",
+        value: "Terraform",
+        detail: "Modules avec gestion d'état, chemins de release faciles à revoir, promotion d'environnements et changements plus sûrs."
+      },
+      {
+        label: "Runtime",
+        value: "OKE / K8s",
+        detail: "Runtime conteneur, chemins privés, validation de release, rollback et opérations de production."
+      }
+    ],
+    environmentRunway: [
+      { icon: "🧩", label: "dev" },
+      { icon: "🧪", label: "test" },
+      { icon: "🛡️", label: "préprod" },
+      { icon: "🚀", label: "prod" }
+    ],
+    controlPlaneMap: [
+      {
+        label: "IaC",
+        value: "Codifier OCI avec modules Terraform, revues sensibles à l'état et contrôles de promotion.",
+        target: 1,
+        signal: "Terraform / IaC"
+      },
+      {
+        label: "IAM",
+        value: "Concevoir compartiments, policies, principaux de service et frontières d'auth applicative.",
+        target: 1,
+        signal: "Architecture cloud"
+      },
+      {
+        label: "Réseau",
+        value: "Structurer VCN privés, LB/API Gateway, Traefik et authN/authZ.",
+        target: 1,
+        signal: "Réseau sécurisé"
+      },
+      {
+        label: "OKE",
+        value: "Opérer runtime, images, validation, scaling et exposition des services.",
+        target: 1,
+        signal: "Plateformes runtime"
+      },
+      {
+        label: "Data",
+        value: "Connecter Autonomous Database, Object Storage, Spark/Data Flow et mouvements de données.",
+        target: 1,
+        signal: "Plateformes data"
+      },
+      {
+        label: "Observabilité",
+        value: "Construire logs, métriques, dashboards Grafana, alarmes et signaux de santé.",
+        target: 1,
+        signal: "Observabilité"
+      },
+      {
+        label: "MLOps",
+        value: "Préparer MLflow, pipelines Data Science, datasets et artefacts modèles.",
+        target: 1,
+        signal: "Fondations MLOps"
+      }
+    ]
+  }
+};
+
+const uiContent = {
+  en: {
+    language: "English",
+    switchLanguage: "Passer en français",
+    sectionLabels: {
+      top: "Intro",
+      capabilities: "Capabilities",
+      work: "Case Studies",
+      experience: "Experience",
+      certifications: "Certificates",
+      contact: "Contact"
+    },
+    storyControlsLabel: "Portfolio story controls",
+    previousPage: "Previous portfolio page",
+    nextPage: "Next portfolio page",
+    goTo: "Go to",
+    themeTitle: (nextTheme) => `Switch to ${nextTheme} theme`,
+    cvLinkLabel: "Abderrahmane Ouroui CV",
+    contact: {
+      eyebrow: "contact",
+      title: "Let's build reliable cloud platforms.",
+      body:
+        "Hiring for OCI, DevOps, Platform Engineering, Kubernetes, Terraform, or MLOps work? My deepest production experience is on OCI, and I can apply the same secure, observable, automation-first standards across AWS, GCP, Azure, or other cloud environments.",
+      emailSubject: "Portfolio inquiry",
+      sendEmail: "Send email",
+      alternatives: "Alternative email options",
+      actions: {
+        linkedin: ["Open LinkedIn", "Profile and professional history"],
+        github: ["View GitHub", "Code and platform examples"],
+        cvOnline: ["View CV online", "PDF viewer"],
+        cvDownload: ["Download CV", "Recruiter-ready PDF"]
+      }
+    },
+    capabilities: {
+      eyebrow: "capabilities",
+      title: "The platform work I can own."
+    },
+    caseStudies: {
+      eyebrow: "case studies",
+      title: "Selected platform case studies.",
+      intro:
+        "How I turn cloud architecture, release safety, secure networking, and MLOps foundations into production-ready delivery.",
+      read: "Read case study",
+      proofLabels: {
+        role: "Role",
+        stack: "Stack",
+        outcome: "Outcome"
+      }
+    },
+    caseDetail: {
+      index: "Case-study index",
+      home: "Home",
+      sections: ["Problem", "Context", "My ownership", "Architecture / delivery approach", "Outcome"],
+      proofLabels: {
+        role: "Role",
+        stack: "Stack",
+        outcome: "Outcome"
+      },
+      keyDecisions: "key decisions",
+      architectureExamples: "architecture examples",
+      portableStandard: "portable standard",
+      representativeExample: "representative example"
+    },
+    experience: {
+      eyebrow: "experience",
+      title: "Experience and delivery patterns.",
+      intro: "Roles, operating model, and platform work owned from architecture through production.",
+      operatingModel: "operating model",
+      timeline: "career timeline",
+      proof: "proof of work",
+      proofTitle: "Delivery patterns I can own.",
+      proofIntro: "Architecture, automation, runtime, and reliability patterns shaped by production work."
+    },
+    certifications: {
+      eyebrow: "certifications",
+      title: "Verified credentials.",
+      intro: "Focused credentials that support OCI architecture, platform foundations, and scalable backend delivery.",
+      verify: "Verify",
+      opens: (issuer) => `Opens the public verification record from ${issuer}.`
+    }
+  },
+  fr: {
+    language: "Français",
+    switchLanguage: "Switch to English",
+    sectionLabels: {
+      top: "Intro",
+      capabilities: "Compétences",
+      work: "Projets",
+      experience: "Expérience",
+      certifications: "Certifications",
+      contact: "Contact"
+    },
+    storyControlsLabel: "Contrôles du portfolio",
+    previousPage: "Page précédente",
+    nextPage: "Page suivante",
+    goTo: "Aller à",
+    themeTitle: (nextTheme) => `Passer au thème ${nextTheme === "dark" ? "sombre" : "clair"}`,
+    cvLinkLabel: "CV français Abderrahmane Ouroui",
+    contact: {
+      eyebrow: "contact",
+      title: "Construisons des plateformes cloud fiables.",
+      body:
+        "Vous recrutez sur OCI, DevOps, Platform Engineering, Kubernetes, Terraform ou MLOps ? Mon expérience production la plus forte est sur OCI, avec des standards sécurisés, observables et automatisés applicables aussi sur AWS, GCP, Azure ou d'autres clouds.",
+      emailSubject: "Contact portfolio",
+      sendEmail: "Envoyer un email",
+      alternatives: "Options email alternatives",
+      actions: {
+        linkedin: ["Ouvrir LinkedIn", "Profil et parcours professionnel"],
+        github: ["Voir GitHub", "Code et exemples plateforme"],
+        cvOnline: ["Voir le CV en ligne", "Visionneuse PDF"],
+        cvDownload: ["Télécharger le CV", "PDF prêt à partager"]
+      }
+    },
+    capabilities: {
+      eyebrow: "compétences",
+      title: "Le travail plateforme que je peux prendre en charge."
+    },
+    caseStudies: {
+      eyebrow: "projets",
+      title: "Projets plateforme sélectionnés.",
+      intro:
+        "Comment je transforme architecture cloud, sécurité de release, réseau sécurisé et fondations MLOps en livraison prête pour la production.",
+      read: "Lire le projet",
+      proofLabels: {
+        role: "Rôle",
+        stack: "Stack",
+        outcome: "Résultat"
+      }
+    },
+    caseDetail: {
+      index: "Index des projets",
+      home: "Accueil",
+      sections: ["Problème", "Contexte", "Mon périmètre", "Approche architecture / livraison", "Résultat"],
+      proofLabels: {
+        role: "Rôle",
+        stack: "Stack",
+        outcome: "Résultat"
+      },
+      keyDecisions: "décisions clés",
+      architectureExamples: "exemples d'architecture",
+      portableStandard: "standard portable",
+      representativeExample: "exemple représentatif"
+    },
+    experience: {
+      eyebrow: "expérience",
+      title: "Expérience et modes de livraison.",
+      intro: "Rôles, modèle opérationnel et travail plateforme de l'architecture à la production.",
+      operatingModel: "modèle opérationnel",
+      timeline: "parcours",
+      proof: "preuves de travail",
+      proofTitle: "Modes de livraison que je peux prendre en charge.",
+      proofIntro: "Architecture, automatisation, runtime et fiabilité issus du travail de production."
+    },
+    certifications: {
+      eyebrow: "certifications",
+      title: "Certifications vérifiées.",
+      intro: "Certifications soutenant l'architecture OCI, les fondations plateforme et la livraison backend scalable.",
+      verify: "Vérifier",
+      opens: (issuer) => `Ouvre la page publique de vérification ${issuer}.`
+    }
+  }
+};
+
+const frProfile = {
+  ...profile,
+  role: "Ingénieur Plateforme OCI construisant des socles de production fiables",
+  positionTitle: "Ingénieur DevOps / Ingénieur Plateforme",
+  location: "Casablanca, Maroc",
+  cvHtml: profile.cvFrHtml,
+  cv: profile.cvFr,
+  headline:
+    "Je construis des plateformes cloud sécurisées, observables et prêtes pour la production avec Terraform, OKE/Kubernetes, CI/CD et fondations MLOps - prouvé sur OCI et adaptable à AWS, GCP, Azure et au-delà.",
+  summary:
+    "OCI est ma plateforme de production la plus forte. Mon modèle opérationnel est portable : Infrastructure as Code, réseau sécurisé, IAM, Kubernetes, CI/CD, observabilité, maîtrise des coûts et fondations MLOps."
+};
+
+const frCloudPortability = {
+  title: "Des standards cloud, pas un verrouillage fournisseur",
+  text:
+    "OCI est mon environnement de production le plus approfondi. Les standards sont portables : Terraform, Kubernetes, réseau sécurisé, IAM, CI/CD, observabilité, coûts et fondations MLOps peuvent être adaptés à AWS, GCP, Azure et autres clouds.",
+  proofPoints: [
+    "Expérience production prouvée sur OCI",
+    "Standards d'ingénierie indépendants du fournisseur",
+    "Même exigence, primitives cloud différentes"
+  ]
+};
+
+const frCapabilityProofPoints = [
+  { emoji: "🛡️", value: "500+", label: "ressources protégées par environnement" },
+  { emoji: "🛤️", value: "Dev→Prod", label: "responsabilité release" },
+  { emoji: "🤖", value: "IA-ready", label: "fondations MLOps" }
+];
+
+const frCapabilitySignals = [
+  {
+    label: "Architecture cloud",
+    value: "fondations OCI",
+    emoji: "🏗️",
+    brief: "Concevoir identité, réseau, compute, stockage et base de données.",
+    detail: "Concevoir des fondations OCI autour d'IAM, compartments, VCN, compute, stockage, Autonomous Database et chemins de service maîtrisés.",
+    stack: ["OCI", "IAM", "VCN", "Compute", "ADB"]
+  },
+  {
+    label: "Plateformes runtime",
+    value: "conteneurs + compute",
+    emoji: "🚀",
+    brief: "Exécuter les workloads sur Kubernetes, compute, conteneurs et services privés.",
+    detail: "Construire des chemins runtime pour Kubernetes, compute, images conteneur, services privés, scaling, validation et haute disponibilité.",
+    stack: ["OKE", "K8s", "Compute", "Docker", "Linux"]
+  },
+  {
+    label: "Réseau sécurisé",
+    value: "auth vers app",
+    emoji: "🔐",
+    brief: "Connecter utilisateurs, gateways, Traefik, functions, services et bases via des chemins contrôlés.",
+    detail: "Structurer les chemins authentifiés avec Load Balancer, API Gateway, Traefik, OCI Functions, Okta et services data.",
+    stack: ["LB", "API GW", "Traefik", "Functions", "AuthZ"]
+  },
+  {
+    label: "Terraform / IaC",
+    value: "contrôle d'état",
+    emoji: "🧱",
+    brief: "Transformer les changements infra en livraison revue, reproductible et sensible à l'état.",
+    detail: "Concevoir les frontières de modules, préserver l'état, auditer les changements partagés et rendre la livraison OCI reproductible.",
+    stack: ["Terraform", "OCI Provider", "State", "Modules", "Review"]
+  },
+  {
+    label: "CI/CD + release",
+    value: "dev vers prod",
+    emoji: "🛤️",
+    brief: "Faire progresser les changements avec validation, rollback et contrôles de release.",
+    detail: "Promouvoir les changements de dev à prod avec validation, plan de rollback, contrôles post-release et automatisation.",
+    stack: ["GitLab", "Jenkins", "CI/CD", "Artifacts", "Rollback"]
+  },
+  {
+    label: "Observabilité",
+    value: "signaux + alarmes",
+    emoji: "📈",
+    brief: "Rendre la production visible via logs, métriques, alarmes et dashboards.",
+    detail: "Améliorer détection et troubleshooting avec OCI Logging, OCI Monitoring, Grafana, alarmes, fraîcheur data et signaux de capacité.",
+    stack: ["Logging", "Monitoring", "Grafana", "Alarms", "SRE"]
+  },
+  {
+    label: "Plateformes data",
+    value: "ADB + pipelines",
+    emoji: "🗄️",
+    brief: "Supporter base de données, Object Storage, Spark et mouvements de données privés.",
+    detail: "Supporter Autonomous Database, Object Storage, OCI Data Flow, Spark/PySpark, streams et workflows de mouvement de données.",
+    stack: ["ADB", "Object Storage", "Data Flow", "Spark", "Streams"]
+  },
+  {
+    label: "Fondations MLOps",
+    value: "MLflow + pipelines",
+    emoji: "🤖",
+    brief: "Préparer entraînement privé, tracking, artefacts et chemins GPU-ready.",
+    detail: "Activer MLflow, jobs et pipelines OCI Data Science, images OCIR, buckets datasets, artefacts modèles et readiness GPU.",
+    stack: ["MLflow", "OCI DS", "OCIR", "GPU", "MLOps"]
+  }
+];
+
+const frCaseStudyOverrides = {
+  "terraform-safe-oci-platform-foundation": {
+    title: "Fondation de plateforme OCI sécurisée avec Terraform",
+    eyebrow: "Architecture plateforme",
+    summary:
+      "Mise en place d'un chemin de livraison OCI plus sûr avec frontières Terraform, garde-fous IAM, contrôles de promotion et releases faciles à revoir.",
+    problem: "Les environnements cloud avaient besoin de changements reproductibles sans dérive, recréation inutile ni responsabilités floues.",
+    context:
+      "OCI était la plateforme principale. Le travail visait des changements d'infrastructure faciles à revoir, sensibles à l'état et sûrs de dev à production.",
+    ownership:
+      "Responsable des frontières Terraform, garde-fous IAM, contrôles de promotion, structure de revue de release et validation opérationnelle.",
+    approach:
+      "Séparer les responsabilités infra en unités faciles à revoir, protéger les ressources sensibles à l'état et clarifier les chemins de release avant production.",
+    keyDecisions: [
+      "Traiter l'état Terraform comme un actif de production.",
+      "Rendre visibles IAM, réseau et frontières runtime pendant la revue.",
+      "Utiliser des contrôles de promotion pour réduire dérive et recréations surprises."
+    ],
+    outcome:
+      "Protection de 500+ ressources OCI par environnement et changements plateforme plus sûrs à revoir, promouvoir et opérer.",
+    artifacts: [
+      {
+        title: "Flux de promotion d'environnement",
+        type: "flow",
+        description: "Comment les changements plateforme deviennent revus clairement avant production.",
+        steps: ["Plan", "Review", "Dev", "Test", "Préprod", "Prod"],
+        alt: "Flux de promotion de plan et revue vers dev, test, préprod et prod."
+      },
+      {
+        title: "Checklist de release",
+        type: "checklist",
+        description: "Checklist pour changements plateforme Terraform-safe.",
+        items: ["Impact d'état revu", "Frontière IAM vérifiée", "Blast radius réseau compris", "Chemin de rollback documenté"]
+      }
+    ],
+    portability:
+      "Les primitives changent selon le cloud, mais le standard reste portable : frontières d'état, moindre privilège, revues claires et promotion contrôlée.",
+    solution:
+      "Frontières Terraform, garde-fous IAM, contrôles de promotion et chemins de release faciles à revoir.",
+    impact: "500+ ressources OCI protégées par environnement.",
+    proof: {
+      role: "Architecture + livraison",
+      stack: "OCI / Terraform",
+      outcome: "500+ ressources protégées"
+    },
+    signal: "Socle cloud"
+  },
+  "secure-network-and-identity-edge": {
+    title: "Périmètre réseau et identité sécurisé",
+    eyebrow: "Sécurité cloud",
+    summary:
+      "Construction de modèles d'accès sécurisés entre réseau OCI, IAM, ingress et frontières d'environnement pour workloads de production.",
+    problem: "Applications, APIs, bases, functions et identité tierce demandaient une connectivité privée prévisible.",
+    context:
+      "Les chemins production devaient rester sécurisés par défaut et compréhensibles pendant livraison et opérations.",
+    ownership:
+      "Responsable des patterns réseau OCI, de l'alignement IAM, de l'ingress privé, du Load Balancer, d'API Gateway, de Traefik et d'authN/authZ.",
+    approach:
+      "Cartographier les flux par frontière de confiance, aligner IAM et réseau, revoir l'exposition service et garder les frontières explicites.",
+    keyDecisions: [
+      "Favoriser des chemins privés quand l'exposition publique n'est pas nécessaire.",
+      "Aligner identité et réseau dans la même revue.",
+      "Préférer une responsabilité ingress claire et un routage observable."
+    ],
+    outcome:
+      "Routage plus clair, posture sécurité renforcée et releases plus confiantes pour les chemins applicatifs privés.",
+    artifacts: [
+      {
+        title: "Pattern d'accès privé",
+        type: "flow",
+        description: "Pattern représentatif pour raisonner sur frontières de confiance et exposition service.",
+        steps: ["Identité", "Gateway", "Ingress", "Service", "Data"],
+        alt: "Pattern d'accès privé de l'identité vers gateway, ingress, service et data."
+      },
+      {
+        title: "Checklist sécurité",
+        type: "checklist",
+        description: "Questions de revue pour réseau OCI et identité.",
+        items: ["Moindre privilège vérifié", "Règles réseau revues", "Chemin TLS compris", "Responsable ingress identifié"]
+      }
+    ],
+    portability:
+      "Le même standard edge sécurisé se traduit vers AWS, GCP, Azure ou autre cloud en mappant IAM, réseau, ingress et policies équivalents.",
+    solution:
+      "Chemins OCI contrôlés : Load Balancer, API Gateway, NSGs, TLS, Traefik, Functions et authN/authZ.",
+    impact: "Routage plus clair et posture sécurité renforcée.",
+    proof: {
+      role: "Réseau + identité",
+      stack: "Gateway / Traefik",
+      outcome: "Edge privé"
+    },
+    signal: "Edge privé"
+  },
+  "mlops-data-platform-foundation-oci": {
+    title: "Fondation MLOps et plateforme data sur OCI",
+    eyebrow: "Data et AI platform",
+    summary:
+      "Fondations pour MLflow, OCI Object Storage, Data Flow/Spark, tracking d'artefacts et workflows data/ML reproductibles.",
+    problem: "Les workloads data et ML avaient besoin d'entraînement reproductible, tracking, exécution privée et flux d'artefacts.",
+    context:
+      "La plateforme devait supporter des fondations AI/MLOps avec exécution contrôlée, artefacts reproductibles et mouvement data fiable sur OCI.",
+    ownership:
+      "Responsable des fondations OCI Data Science, MLflow, Object Storage, Data Flow/Spark, flux image/artefact, logging et gouvernance de livraison.",
+    approach:
+      "Relier stockage dataset, compute/runtime, tracking modèles, gestion d'artefacts et contrôles opérationnels dans une fondation répétable.",
+    keyDecisions: [
+      "Traiter datasets, images runtime, expériences et artefacts modèles comme sujets plateforme.",
+      "Garder l'exécution privée et observable avant élargissement.",
+      "Utiliser des patterns de livraison répétables plutôt que des notebooks isolés."
+    ],
+    outcome:
+      "Workflows prêts pour l'IA avec exécution contrôlée, flux d'artefacts, logging et gouvernance de livraison.",
+    artifacts: [
+      {
+        title: "Cycle expérience et artefact",
+        type: "flow",
+        description: "Cycle de vie pour travail data et ML reproductible.",
+        steps: ["Dataset", "Job", "Track", "Artefact", "Valider", "Promouvoir"],
+        alt: "Cycle MLOps de dataset à job, tracking, artefact, validation et promotion."
+      },
+      {
+        title: "Checklist readiness MLOps",
+        type: "checklist",
+        description: "Contrôles avant de considérer un chemin data ou ML comme prêt plateforme.",
+        items: ["Dataset défini", "Métadonnées capturées", "Artefacts versionnés", "Signaux opérationnels revus"]
+      }
+    ],
+    portability:
+      "OCI est la référence prouvée; le modèle MLOps s'adapte en mappant stockage, compute, tracking et primitives CI/CD d'un autre fournisseur.",
+    solution:
+      "Fondations privées avec OCI Data Science, MLflow, OCIR, Object Storage, MySQL, Data Flow et Spark.",
+    impact: "Base prête pour l'IA avec exécution contrôlée et flux d'artefacts.",
+    proof: {
+      role: "Construction plateforme",
+      stack: "MLflow / Data Flow",
+      outcome: "Base IA-ready"
+    },
+    signal: "IA-ready"
+  }
+};
+
+const frTimeline = [
+  {
+    period: "2023 - Présent",
+    title: "Ingénieur DevOps II / Ingénieur Plateforme, Oracle",
+    achievement: "Responsabilité sur architecture OCI, migration Terraform, OKE, releases, observabilité et fondations MLOps.",
+    detail:
+      "Construire et opérer des capacités OCI-native : IaC, réseau sécurisé, CI/CD, plateformes data, observabilité, release et fondations MLOps."
+  },
+  {
+    period: "2023",
+    title: "Assistant de recherche, Oracle",
+    achievement: "Livraison backend et CI/CD avec Java, Groovy, Gradle, Jenkins et GitLab.",
+    detail:
+      "Travail sur services backend et workflows CI/CD avec Java, Groovy, Gradle, Jenkins, GitLab, JUnit et Mockito."
+  },
+  {
+    period: "2022",
+    title: "Développeur Full Stack, diaaland",
+    achievement: "Applications produit et intégrations tierces côté backend, base de données et frontend React.",
+    detail:
+      "Développement de workflows fitness avec NestJS, MongoDB, React et intégrations Strava/Garmin."
+  },
+  {
+    period: "2021",
+    title: "Développeur Web, INTELLCAP SARL",
+    achievement: "Fonctionnalités web marketplace avec React, GraphQL, PHP et WooCommerce.",
+    detail:
+      "Livraison d'une application web d'enchères d'art avec React, GraphQL, PHP et WooCommerce."
+  }
+];
+
+const frProofOfWork = [
+  {
+    emoji: "🏗️",
+    title: "Fondations OCI",
+    handle: "Fondations OCI -> IAM, VCN, compute, stockage, Autonomous Database -> garde-fous répétables.",
+    signals: ["OCI + IAM", "ADB"]
+  },
+  {
+    emoji: "🔁",
+    title: "Migration Terraform-safe",
+    handle: "Migration tenancy/données -> état Terraform, accès, réseau, données -> risque réduit.",
+    signals: ["état maîtrisé", "continuité data"]
+  },
+  {
+    emoji: "🔐",
+    title: "Ingress privé",
+    handle: "Chemins privés -> LB, API Gateway, Traefik, TLS, authZ -> ingress plus sûr.",
+    signals: ["ingress sécurisé", "routage privé"]
+  },
+  {
+    emoji: "🚀",
+    title: "Livraison OKE",
+    handle: "Livraison Kubernetes -> OKE, images, contrôles, rollback -> releases validées.",
+    signals: ["OKE", "dev à prod"]
+  },
+  {
+    emoji: "📈",
+    title: "Observabilité Grafana",
+    handle: "Signaux -> logging, monitoring, dashboards Grafana, alarmes -> triage plus rapide.",
+    signals: ["dashboards", "triage"]
+  },
+  {
+    emoji: "🤖",
+    title: "Pipelines MLOps",
+    handle: "Base prête pour l'IA -> MLflow, Data Science, Data Flow, artefacts -> pipelines contrôlés.",
+    signals: ["MLflow", "pipelines"]
+  }
+];
+
+const frCertifications = certifications.map((certification) => ({
+  ...certification,
+  focus:
+    certification.issuer === "Oracle"
+      ? certification.name.includes("Architect")
+        ? "Validation OCI niveau architecture couvrant identité, réseau, compute, stockage, base de données et design résilient."
+        : "Fondamentaux OCI couvrant concepts cloud, bases sécurité, services plateforme et vocabulaire opérationnel."
+      : "Signal backend pour design de services, microservices Java, scalabilité et fondations applicatives prêtes à livrer.",
+  scope:
+    certification.issuer === "Oracle"
+      ? certification.name.includes("Architect")
+        ? ["architecture OCI", "IAM", "réseau"]
+        : ["fondations OCI", "sécurité", "services"]
+      : ["microservices", "Java", "scalabilité"]
+}));
+
+const frSkillGroups = [
+  {
+    title: "Plateforme cloud",
+    skills: ["OCI", "IAM", "Compartments", "VCN", "Subnets", "Route Tables", "Load Balancer", "API Gateway", "Functions", "Compute", "Object Storage", "Autonomous Database", "Certificates", "KMS"]
+  },
+  {
+    title: "Livraison",
+    skills: ["Terraform", "Infrastructure as Code", "CI/CD", "GitLab", "Jenkins", "Docker", "OCIR", "Artifactory", "Release Management", "Rollback"]
+  },
+  {
+    title: "Opérations",
+    skills: ["Kubernetes", "OKE", "Linux", "Networking", "NSGs", "Security Lists", "OCI Logging", "OCI Monitoring", "OCI Events", "Alarms", "Grafana", "Incident Response", "Cost Optimization"]
+  },
+  {
+    title: "Data et AI",
+    skills: ["OCI Data Science", "OCI Data Flow", "Spark", "PySpark", "MLflow", "MySQL", "Autonomous Database", "Object Storage", "LLM Integration", "GPU Readiness", "MLOps Foundations"]
+  }
+];
+
+const frCaseStudies = caseStudies.map((study) => ({
+  ...study,
+  ...(frCaseStudyOverrides[study.slug] ?? {})
+}));
+
+export function getPortfolioContent(language = "en") {
+  if (language !== "fr") {
+    return {
+      language: "en",
+      ui: uiContent.en,
+      hero: heroContent.en,
+      profile,
+      targetRoles,
+      heroHighlights,
+      cloudPortability,
+      certifications,
+      metrics,
+      capabilitySignals,
+      capabilityLogoRail,
+      capabilityProofPoints,
+      caseStudies,
+      additionalDeliveryPatterns,
+      skillGroups,
+      timeline,
+      proofOfWork,
+      workingStyle,
+      publicProofRepos
+    };
+  }
+
+  return {
+    language: "fr",
+    ui: uiContent.fr,
+    hero: heroContent.fr,
+    profile: frProfile,
+    targetRoles: ["DevOps / Plateforme", "Production OCI", "Standards cloud portables"],
+    heroHighlights: [
+      "Architecture plateforme OCI",
+      "Terraform, CI/CD et réseau sécurisé",
+      "Observabilité, plateformes data et MLOps"
+    ],
+    cloudPortability: frCloudPortability,
+    certifications: frCertifications,
+    metrics: [
+      { value: "500+", label: "ressources OCI protégées par environnement" },
+      { value: "~3 ans", label: "construction et opération de plateformes cloud Oracle" },
+      { value: "GA", label: "contribution à une première release générale" }
+    ],
+    capabilitySignals: frCapabilitySignals,
+    capabilityLogoRail,
+    capabilityProofPoints: frCapabilityProofPoints,
+    caseStudies: frCaseStudies,
+    additionalDeliveryPatterns: [
+      {
+        title: "Migration tenancy et données",
+        summary:
+          "Planification contrôlée de migration : fondation plateforme, IAM, réseau, données, validation, rollback et contrôles post-migration.",
+        signal: "Chemin migration",
+        technologies: ["OCI", "IAM", "Networking", "Object Storage", "Autonomous Database", "Terraform"]
+      },
+      {
+        title: "Observabilité et fiabilité",
+        summary:
+          "Patterns répétables de logs, métriques, dashboards Grafana, alarmes et runbooks pour détection, fraîcheur data, capacité et santé production.",
+        signal: "Signals as code",
+        technologies: ["OCI Logging", "OCI Monitoring", "Grafana", "Events", "Alarms"]
+      }
+    ],
+    skillGroups: frSkillGroups,
+    timeline: frTimeline,
+    proofOfWork: frProofOfWork,
+    workingStyle: {
+      title: "Là où je suis le plus utile",
+      text:
+        "Problèmes plateforme ambigus où architecture cloud, automatisation, responsabilité production et apprentissage incident doivent devenir un modèle opérationnel répétable. OCI est mon environnement production le plus fort; les standards sont volontairement portables."
+    },
+    publicProofRepos
+  };
+}

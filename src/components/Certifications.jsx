@@ -1,14 +1,15 @@
 import { ArrowUpRight, Award } from "lucide-react";
-import { certifications } from "../data/portfolio.js";
 import Section from "./Section.jsx";
 
-export default function Certifications() {
+export default function Certifications({ content }) {
+  const { certifications, ui } = content;
+  const copy = ui.certifications;
   return (
     <Section
       id="certifications"
-      eyebrow="certifications"
-      title="Verified credentials."
-      intro="Focused credentials that support OCI architecture, platform foundations, and scalable backend delivery."
+      eyebrow={copy.eyebrow}
+      title={copy.title}
+      intro={copy.intro}
       wide
     >
       <div className="grid gap-3 lg:grid-cols-3">
@@ -19,14 +20,14 @@ export default function Certifications() {
             target="_blank"
             rel="noreferrer noopener"
             className="reveal-card interactive-card surface flex min-w-0 flex-col rounded-lg p-5 text-left no-underline"
-            aria-label={`View certificate: ${certification.name} from ${certification.issuer}`}
+            aria-label={`${copy.verify}: ${certification.name} - ${certification.issuer}`}
           >
             <div className="flex items-start justify-between gap-4">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-redwood-300/20 bg-redwood-500/10 text-signal-amber">
                 <Award size={20} aria-hidden="true" />
               </span>
               <span className="inline-flex items-center gap-1 rounded-md border border-warm-50/10 bg-warm-50/[0.04] px-2.5 py-1 font-mono text-[0.58rem] uppercase tracking-[0.12em] text-redwood-300">
-                Verify
+                {copy.verify}
                 <ArrowUpRight size={12} aria-hidden="true" />
               </span>
             </div>
@@ -48,7 +49,7 @@ export default function Certifications() {
 
             <div className="reveal-panel">
               <p className="text-sm leading-6 text-warm-200">
-                Opens the public verification record from {certification.issuer}.
+                {copy.opens(certification.issuer)}
               </p>
             </div>
           </a>

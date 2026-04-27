@@ -104,6 +104,14 @@ export const extraSitemapUrls = [
   {
     path: "/abderrahmane-ouroui-cv.pdf",
     priority: "0.65"
+  },
+  {
+    path: "/abderrahmane-ouroui-cv-fr.html",
+    priority: "0.7"
+  },
+  {
+    path: "/abderrahmane-ouroui-cv-fr.pdf",
+    priority: "0.65"
   }
 ];
 

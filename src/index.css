@@ -280,7 +280,8 @@ a:focus-visible {
   width: 0.52em;
 }
 
-.theme-toggle {
+.theme-toggle,
+.language-toggle {
   border: 1px solid var(--theme-toggle-border);
   background: var(--theme-toggle-bg);
   color: var(--theme-toggle-fg);
@@ -292,7 +293,8 @@ a:focus-visible {
   transition: transform 220ms ease, opacity 220ms ease;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover,
+.language-toggle:hover {
   border-color: rgba(199, 70, 52, 0.62);
   color: var(--redwood-accent-strong);
 }
@@ -638,6 +640,7 @@ section > div::-webkit-scrollbar {
   .reveal-panel,
   .theme-toggle,
   .theme-toggle svg,
+  .language-toggle,
   .proof-tile {
     transition: none;
   }

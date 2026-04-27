@@ -1,14 +1,15 @@
 import { ArrowRight } from "lucide-react";
 import Section from "./Section.jsx";
-import { caseStudies } from "../data/portfolio.js";
 
-export default function CaseStudies() {
+export default function CaseStudies({ content }) {
+  const { caseStudies, ui } = content;
+  const copy = ui.caseStudies;
   return (
     <Section
       id="work"
-      eyebrow="case studies"
-      title="Selected platform case studies."
-      intro="How I turn cloud architecture, release safety, secure networking, and MLOps foundations into production-ready delivery."
+      eyebrow={copy.eyebrow}
+      title={copy.title}
+      intro={copy.intro}
       wide
     >
       <div className="grid gap-3 lg:grid-cols-3">
@@ -17,7 +18,7 @@ export default function CaseStudies() {
             key={study.title}
             href={study.path}
             className="reveal-card interactive-card surface flex min-w-0 flex-col rounded-lg p-4 text-left no-underline sm:p-5"
-            aria-label={`Read case study: ${study.title}. ${study.summary} Role: ${study.proof.role}. Outcome: ${study.proof.outcome}.`}
+            aria-label={`${copy.read}: ${study.title}. ${study.summary} ${copy.proofLabels.role}: ${study.proof.role}. ${copy.proofLabels.outcome}: ${study.proof.outcome}.`}
           >
             <div className="flex min-w-0 flex-col gap-3">
               <div className="min-w-0">
@@ -39,13 +40,13 @@ export default function CaseStudies() {
             </div>
             <div className="reveal-panel">
               <div className="grid gap-1.5">
-                <ProofCell label="Role" value={study.proof.role} />
-                <ProofCell label="Stack" value={study.proof.stack} />
-                <ProofCell label="Outcome" value={study.proof.outcome} />
+                <ProofCell label={copy.proofLabels.role} value={study.proof.role} />
+                <ProofCell label={copy.proofLabels.stack} value={study.proof.stack} />
+                <ProofCell label={copy.proofLabels.outcome} value={study.proof.outcome} />
               </div>
             </div>
             <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-redwood-300">
-              Read case study <ArrowRight size={16} aria-hidden="true" />
+              {copy.read} <ArrowRight size={16} aria-hidden="true" />
             </span>
           </a>
         ))}

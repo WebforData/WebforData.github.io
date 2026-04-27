@@ -7,10 +7,11 @@ import CaseStudyDetail from "./components/CaseStudyDetail.jsx";
 import Experience from "./components/Experience.jsx";
 import Certifications from "./components/Certifications.jsx";
 import Contact from "./components/Contact.jsx";
-import { caseStudies } from "./data/portfolio.js";
+import { getPortfolioContent } from "./data/portfolio.js";
 import { canonicalUrl, defaultSeo, portfolioSections, storySections } from "./data/seo.js";
 
 const themeStorageKey = "aouroui-portfolio-theme-v2";
+const languageStorageKey = "aouroui-portfolio-language-v2";
 const wheelIntentTimeoutMs = 420;
 const wheelPageThreshold = 160;
 const wheelEdgePageThreshold = 180;
@@ -25,6 +26,11 @@ const verticalEdgeBuffer = 6;
 function getInitialTheme() {
   if (typeof window === "undefined") return "light";
   return window.localStorage.getItem(themeStorageKey) === "dark" ? "dark" : "light";
+}
+
+function getInitialLanguage() {
+  if (typeof window === "undefined") return "en";
+  return window.localStorage.getItem(languageStorageKey) === "fr" ? "fr" : "en";
 }
 
 function normalizePath(pathname = "/") {
@@ -159,11 +165,14 @@ export default function App({ initialPath }) {
   const [activeIndex, setActiveIndexState] = useState(initialIndexRef.current);
   const [highlightedSignal, setHighlightedSignal] = useState(null);
   const [theme, setTheme] = useState(getInitialTheme);
+  const [language, setLanguage] = useState(getInitialLanguage);
+  const content = getPortfolioContent(language);
+  const ui = content.ui;
   const routePath =
     initialPath ?? (typeof window === "undefined" ? "/" : window.location.pathname);
   const routeSeo =
     storySections.find((section) => normalizePath(section.path) === normalizePath(routePath)) ?? null;
-  const selectedStudy = caseStudies.find((study) => normalizePath(study.path) === normalizePath(routePath));
+  const selectedStudy = content.caseStudies.find((study) => normalizePath(study.path) === normalizePath(routePath));
 
   const updateLocation = useCallback((index, method = "pushState") => {
     if (typeof window === "undefined") return;
@@ -198,6 +207,11 @@ export default function App({ initialPath }) {
     document.documentElement.style.colorScheme = theme;
     window.localStorage.setItem(themeStorageKey, theme);
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.lang = language;
+    window.localStorage.setItem(languageStorageKey, language);
+  }, [language]);
 
   useEffect(() => {
     const section = selectedStudy && routeSeo ? routeSeo : portfolioSections[activeIndex] ?? portfolioSections[0];
@@ -401,8 +415,27 @@ export default function App({ initialPath }) {
   }, [activeIndex, scrollToSection]);
 
   const nextTheme = theme === "dark" ? "light" : "dark";
+  const nextLanguage = language === "fr" ? "en" : "fr";
   const ThemeIcon = theme === "dark" ? Sun : Moon;
   const activeSection = portfolioSections[activeIndex];
+  const activeSectionLabel = ui.sectionLabels[activeSection.id] ?? activeSection.label;
+  const getStorySectionLabel = (section) =>
+    ui.sectionLabels[section.id] ??
+    content.caseStudies.find((study) => normalizePath(study.path) === normalizePath(section.path))?.title ??
+    section.label;
+  const toggleLanguage = () => setLanguage(nextLanguage);
+  const cvPath = content.profile.cvHtml;
+  const languageButton = (
+    <button
+      type="button"
+      className="language-toggle fixed bottom-4 right-[4.5rem] z-50 inline-flex h-11 items-center justify-center rounded-full px-3 font-mono text-xs font-semibold uppercase tracking-[0.12em] transition sm:bottom-6 sm:right-20"
+      aria-label={ui.switchLanguage}
+      title={ui.switchLanguage}
+      onClick={toggleLanguage}
+    >
+      {nextLanguage.toUpperCase()}
+    </button>
+  );
 
   if (selectedStudy) {
     return (
@@ -410,24 +443,25 @@ export default function App({ initialPath }) {
         <nav className="sr-only" aria-label="Portfolio sections">
           {storySections.map((section) => (
             <a key={section.id} href={section.path}>
-              {section.label}
+              {getStorySectionLabel(section)}
             </a>
           ))}
-          <a href="/abderrahmane-ouroui-cv.html">Abderrahmane Ouroui CV</a>
+          <a href={cvPath}>{ui.cvLinkLabel}</a>
         </nav>
 
+        {languageButton}
         <button
           type="button"
           className="theme-toggle fixed bottom-4 right-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full transition sm:bottom-6 sm:right-6"
-          aria-label={`Switch to ${nextTheme} theme`}
-          title={`Switch to ${nextTheme} theme`}
+          aria-label={ui.themeTitle(nextTheme)}
+          title={ui.themeTitle(nextTheme)}
           onClick={() => setTheme(nextTheme)}
         >
           <ThemeIcon size={18} aria-hidden="true" />
         </button>
 
         <main className="redwood-shell h-screen overflow-hidden">
-          <CaseStudyDetail study={selectedStudy} />
+          <CaseStudyDetail study={selectedStudy} ui={ui.caseDetail} />
         </main>
       </div>
     );
@@ -438,13 +472,13 @@ export default function App({ initialPath }) {
       <nav className="sr-only" aria-label="Portfolio sections">
         {storySections.map((section) => (
           <a key={section.id} href={section.path}>
-            {section.label}
+            {getStorySectionLabel(section)}
           </a>
         ))}
-        <a href="/abderrahmane-ouroui-cv.html">Abderrahmane Ouroui CV</a>
+        <a href={cvPath}>{ui.cvLinkLabel}</a>
       </nav>
 
-      <div className="story-progress fixed inset-x-0 top-0 z-50 px-3 pt-2 sm:px-6 lg:px-8" aria-label="Portfolio story controls">
+      <div className="story-progress fixed inset-x-0 top-0 z-50 px-3 pt-2 sm:px-6 lg:px-8" aria-label={ui.storyControlsLabel}>
         <div className="mx-auto max-w-7xl">
           <div className="mb-1.5 flex items-center justify-between gap-3">
             <p className="story-label min-w-0 truncate rounded-full px-2.5 py-1 font-mono text-[0.58rem] uppercase tracking-[0.16em] sm:text-[0.66rem]" aria-live="polite">
@@ -452,14 +486,14 @@ export default function App({ initialPath }) {
               <span className="mx-1 text-warm-500">/</span>
               <span>{String(portfolioSections.length).padStart(2, "0")}</span>
               <span className="mx-2 text-redwood-300">·</span>
-              <span>{activeSection.label}</span>
+              <span>{activeSectionLabel}</span>
             </p>
 
             <div className="flex shrink-0 items-center gap-1.5">
               <button
                 type="button"
                 className="story-control"
-                aria-label="Previous portfolio page"
+                aria-label={ui.previousPage}
                 disabled={activeIndex === 0}
                 onClick={() => scrollToSection(activeIndex - 1)}
               >
@@ -468,7 +502,7 @@ export default function App({ initialPath }) {
               <button
                 type="button"
                 className="story-control"
-                aria-label="Next portfolio page"
+                aria-label={ui.nextPage}
                 disabled={activeIndex === portfolioSections.length - 1}
                 onClick={() => scrollToSection(activeIndex + 1)}
               >
@@ -485,7 +519,7 @@ export default function App({ initialPath }) {
                 <button
                   key={section.id}
                   type="button"
-                  aria-label={`Go to ${section.label}`}
+                  aria-label={`${ui.goTo} ${ui.sectionLabels[section.id] ?? section.label}`}
                   aria-current={index === activeIndex ? "step" : undefined}
                   className="group flex h-6 flex-1 appearance-none items-center rounded-full border-0 bg-transparent p-0"
                   onClick={() => scrollToSection(index)}
@@ -503,11 +537,12 @@ export default function App({ initialPath }) {
         </div>
       </div>
 
+      {languageButton}
       <button
         type="button"
         className="theme-toggle fixed bottom-4 right-4 z-50 inline-flex h-11 w-11 items-center justify-center rounded-full transition sm:bottom-6 sm:right-6"
-        aria-label={`Switch to ${nextTheme} theme`}
-        title={`Switch to ${nextTheme} theme`}
+        aria-label={ui.themeTitle(nextTheme)}
+        title={ui.themeTitle(nextTheme)}
         onClick={() => setTheme(nextTheme)}
       >
         <ThemeIcon size={18} aria-hidden="true" />
@@ -519,12 +554,12 @@ export default function App({ initialPath }) {
         className="horizontal-scroll redwood-shell h-screen overflow-hidden"
       >
         <div className="story-track flex min-h-full w-max" style={{ "--story-index": activeIndex }}>
-          <Hero onNavigate={scrollToSection} />
-          <MetricStrip highlightedSignal={highlightedSignal} />
-          <CaseStudies />
-          <Experience />
-          <Certifications />
-          <Contact />
+          <Hero onNavigate={scrollToSection} content={content} />
+          <MetricStrip highlightedSignal={highlightedSignal} content={content} />
+          <CaseStudies content={content} />
+          <Experience content={content} />
+          <Certifications content={content} />
+          <Contact content={content} />
         </div>
       </main>
     </div>

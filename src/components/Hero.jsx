@@ -1,100 +1,22 @@
 import { ArrowRight, ArrowUpRight, Download, Terminal } from "lucide-react";
-import { profile } from "../data/portfolio.js";
 import { portfolioSections } from "../data/seo.js";
 
 const oracleLogoUrl = "/assets/oracle-logo.svg";
 
-const socialLinks = [
-  {
-    label: "GitHub",
-    href: profile.github,
-    icon: "/assets/social/github.svg"
-  },
-  {
-    label: "LinkedIn",
-    href: profile.linkedin,
-    icon: "/assets/social/linkedin.svg"
-  },
-];
-
-const terminalLines = [
-  {
-    command: "platform.status --summary",
-    output: "OCI-proven production runway. Cloud-portable standards."
-  }
-];
-
-const heroSignals = [
-  {
-    label: "OCI",
-    value: "architecture",
-    detail: "IAM, networking, compute, storage, Autonomous Database, observability, and MLOps-ready foundations."
-  },
-  {
-    label: "IaC",
-    value: "Terraform",
-    detail: "State-aware modules, reviewable release paths, environment promotion, and safer infrastructure change."
-  },
-  {
-    label: "Runtime",
-    value: "OKE / K8s",
-    detail: "Container runtime design, private service paths, release validation, rollback readiness, and production operations."
-  }
-];
-
-const environmentRunway = [
-  { icon: "🧩", label: "dev" },
-  { icon: "🧪", label: "test" },
-  { icon: "🛡️", label: "stage" },
-  { icon: "🚀", label: "prod" }
-];
-
-const controlPlaneMap = [
-  {
-    label: "IaC",
-    value: "Codify OCI with Terraform modules, state-aware reviews, and promotion gates.",
-    target: 1,
-    signal: "Terraform / IaC"
-  },
-  {
-    label: "IAM",
-    value: "Design compartments, policies, service principals, and app auth boundaries.",
-    target: 1,
-    signal: "Cloud architecture"
-  },
-  {
-    label: "Networking",
-    value: "Shape private VCN paths, LB/API Gateway, Traefik, and authN/authZ.",
-    target: 1,
-    signal: "Secure networking"
-  },
-  {
-    label: "OKE",
-    value: "Own workload runtime, images, validation, scaling, and service exposure.",
-    target: 1,
-    signal: "Runtime platforms"
-  },
-  {
-    label: "Data",
-    value: "Wire Autonomous Database, Object Storage, Spark/Data Flow, and data movement.",
-    target: 1,
-    signal: "Data platforms"
-  },
-  {
-    label: "Observability",
-    value: "Build logs, metrics, Grafana dashboards, alarms, and health signals.",
-    target: 1,
-    signal: "Observability"
-  },
-  {
-    label: "MLOps",
-    value: "Prepare MLflow, Data Science pipelines, datasets, and model artifacts.",
-    target: 1,
-    signal: "MLOps foundations"
-  }
-];
-
-export default function Hero({ onNavigate }) {
+export default function Hero({ onNavigate, content }) {
+  const { profile, hero } = content;
+  const socialLinks = [
+    {
+      label: "GitHub",
+      href: profile.github,
+      icon: "/assets/social/github.svg"
+    },
+    {
+      label: "LinkedIn",
+      href: profile.linkedin,
+      icon: "/assets/social/linkedin.svg"
+    }
+  ];
   const sectionIndex = (id) => portfolioSections.findIndex((section) => section.id === id);
 
   const navigateTo = (event, idOrIndex, signal = null) => {
@@ -140,11 +62,11 @@ export default function Hero({ onNavigate }) {
           </div>
 
           <p className="mt-5 w-full max-w-full break-words text-base leading-7 text-warm-300 sm:max-w-2xl sm:text-lg sm:leading-7">
-            Secure, observable production platforms with Terraform, OKE/Kubernetes, CI/CD, and MLOps foundations.
+            {hero.intro}
           </p>
 
           <div className="mt-5 grid gap-2 sm:grid-cols-3" aria-label="Hero focus signals">
-            {heroSignals.map((signal) => (
+            {hero.signals.map((signal) => (
               <article
                 key={signal.label}
                 className="reveal-card surface-soft min-h-[4.8rem] rounded-lg p-3"
@@ -166,14 +88,14 @@ export default function Hero({ onNavigate }) {
               onClick={(event) => navigateTo(event, "work")}
               className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-redwood-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-redwood-400 sm:w-auto"
             >
-              View case studies <ArrowRight size={17} aria-hidden="true" />
+              {hero.primaryCta} <ArrowRight size={17} aria-hidden="true" />
             </a>
             <a
               href={profile.cv}
               download
               className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-warm-50/18 bg-ink-950/35 px-5 py-3 text-sm font-semibold text-warm-50 transition hover:border-redwood-300/80 hover:text-redwood-300 sm:w-auto"
             >
-              Download CV <Download size={17} aria-hidden="true" />
+              {hero.cvCta} <Download size={17} aria-hidden="true" />
             </a>
           </div>
 
@@ -200,7 +122,7 @@ export default function Hero({ onNavigate }) {
               onClick={(event) => navigateTo(event, "contact")}
               className="interactive-card inline-flex items-center justify-center gap-2 rounded-md border border-warm-50/12 bg-warm-50/[0.045] px-3 py-2 text-sm font-semibold text-warm-100 transition hover:border-redwood-300/70 hover:bg-redwood-500/10"
             >
-              <span>Contact</span>
+              <span>{hero.contactCta}</span>
               <ArrowUpRight size={15} aria-hidden="true" />
             </a>
           </div>
@@ -215,12 +137,12 @@ export default function Hero({ onNavigate }) {
             </div>
             <div className="flex min-w-0 items-center gap-2 font-mono text-xs uppercase text-warm-300">
               <Terminal size={15} aria-hidden="true" />
-              <span className="truncate">oci-architect.sh</span>
+              <span className="truncate">{hero.terminalTitle}</span>
             </div>
           </div>
 
           <div className="space-y-3 p-3 font-mono sm:p-4">
-            {terminalLines.map((line) => (
+            {hero.terminalLines.map((line) => (
               <div key={line.command} className="min-w-0">
                 <p className="text-xs leading-6 text-signal-jade">
                   aouroui@oci-platform:~$ <span className="text-warm-100">{line.command}</span>
@@ -231,9 +153,9 @@ export default function Hero({ onNavigate }) {
             ))}
 
             <div className="rounded-md border border-redwood-300/20 bg-redwood-500/[0.06] px-3 py-2">
-              <p className="text-[0.66rem] uppercase tracking-[0.2em] text-redwood-300">promotion runway</p>
+              <p className="text-[0.66rem] uppercase tracking-[0.2em] text-redwood-300">{hero.promotionLabel}</p>
               <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {environmentRunway.map((env) => (
+                {hero.environmentRunway.map((env) => (
                   <div key={env.label} className="rounded-md border border-warm-50/10 bg-ink-950/55 px-2 py-2 text-center">
                     <p className="text-base leading-none" aria-hidden="true">{env.icon}</p>
                     <p className="mt-1 text-[0.64rem] uppercase tracking-[0.16em] text-warm-200">{env.label}</p>
@@ -244,11 +166,11 @@ export default function Hero({ onNavigate }) {
 
             <div className="rounded-md border border-warm-50/10 bg-ink-950/70 p-2.5">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-xs uppercase text-redwood-300">ownership map</p>
-                <p className="hidden text-[0.6rem] uppercase tracking-[0.12em] text-warm-500 sm:block">hover / click</p>
+                <p className="text-xs uppercase text-redwood-300">{hero.ownershipLabel}</p>
+                <p className="hidden text-[0.6rem] uppercase tracking-[0.12em] text-warm-500 sm:block">{hero.ownershipHint}</p>
               </div>
               <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                {controlPlaneMap.map((item, index) => (
+                {hero.controlPlaneMap.map((item, index) => (
                   <article
                     key={item.label}
                     className={`reveal-card rounded-md border border-warm-50/10 ${
