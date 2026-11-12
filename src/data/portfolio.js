@@ -5,7 +5,7 @@ export const profile = {
   location: "Casablanca, Morocco",
   email: "abdououroui123@gmail.com",
   github: "https://github.com/webfordata",
-  linkedin: "https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/",
+  linkedin: "https://www.linkedin.com/in/abderrahmane-ouroui/",
   cvHtml: "/abderrahmane-ouroui-cv.html",
   cv: "/abderrahmane-ouroui-cv.pdf",
   cvFrHtml: "/abderrahmane-ouroui-cv-fr.html",
@@ -400,11 +400,11 @@ export const skillGroups = [
 
 export const timeline = [
   {
-    period: "2023 - Present",
-    title: "DevOps Engineer II / Platform Engineer, Oracle",
+    period: "Sep 2023 - Present",
+    title: "DevOps Engineer / DevOps Engineer II, Oracle",
     achievement: "Started a PaaS project from scratch alongside OCI guardrails, Terraform migrations, OKE releases, and observability.",
     detail:
-      "Build and operate OCI-native capabilities across PaaS foundations, IaC, secure networking, CI/CD, data services, observability, release execution, and reproducible ML workflows."
+      "Promoted to DevOps Engineer II in October 2025. Build and operate OCI-native capabilities across PaaS foundations, IaC, secure networking, CI/CD, data services, observability, release execution, and reproducible ML workflows."
   },
   {
     period: "2023",
@@ -1083,11 +1083,11 @@ const frCaseStudyOverrides = {
 
 const frTimeline = [
   {
-    period: "2023 - Présent",
-    title: "Ingénieur DevOps II / Ingénieur Plateforme, Oracle",
+    period: "Sept. 2023 - Présent",
+    title: "Ingénieur DevOps / Ingénieur DevOps II, Oracle",
     achievement: "Démarrage d'un projet PaaS depuis zéro avec garde-fous OCI, migrations Terraform, releases OKE et observabilité.",
     detail:
-      "Construire et opérer des capacités OCI-native : fondations PaaS, IaC, réseau sécurisé, CI/CD, services data, observabilité, release et workflows ML reproductibles."
+      "Promotion au poste d’ingénieur DevOps II en octobre 2025. Construire et opérer des capacités OCI-native : fondations PaaS, IaC, réseau sécurisé, CI/CD, services data, observabilité, release et workflows ML reproductibles."
   },
   {
     period: "2023",
