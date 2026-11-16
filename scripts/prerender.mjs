@@ -76,7 +76,7 @@ function buildJsonLd() {
     },
     sameAs: [
       "https://github.com/webfordata",
-      "https://www.linkedin.com/in/abderrahmane-ouroui-5b73b1216/",
+      "https://www.linkedin.com/in/abderrahmane-ouroui/",
       "https://leetcode.com/webfordata/"
     ],
     knowsAbout: [
